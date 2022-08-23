@@ -1,0 +1,15 @@
+/build
+/.gradle/
+
+
+/app/.cxx
+/app/build
+/app/release
+/app/release/
+
+/.idea/
+/app/.cxx/
+
+local.properties
+
+/.idea/

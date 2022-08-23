@@ -1,0 +1,130 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.DyncoApp"
+        minSdkVersion 24
+        targetSdkVersion 31
+        versionCode 3
+        versionName "1.0.0"
+        multiDexEnabled true
+//        resConfigs "en"
+        renderscriptTargetApi 24
+        renderscriptSupportModeEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        61
+    }
+    viewBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    buildTypes {
+
+        release {
+            minifyEnabled false
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include "arm64-v8a", "armeabi-v7a"
+            //include "arm64-v8a", "osx-aarch_64", "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
+            universalApk false
+
+        }
+    }
+
+    packagingOptions {
+        pickFirst '**/MDDI.proto'
+        pickFirst '**/libopencv_java3.so'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-notice.md'
+        exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
+}
+
+dependencies {
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    //implementation project(':mddicamera')
+    //implementation project(':mddi')
+    implementation 'com.dynamicelement.mddi.sdk:logic:0.1.17'
+    implementation 'com.dynamicelement.mddi.sdk:logicv1:0.1.17'
+    implementation 'com.dynamicelement.mddi.sdk:ui:0.1.17'
+
+    //noinspection GradleDependency,GradleCompatible
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    //noinspection GradleDependency,GradleCompatible
+    implementation 'com.android.support:design:28.0.3'
+    implementation 'net.sourceforge.jtds:jtds:1.3.1'
+    //  implementation 'com.android.support:multidex:1.0.3'
+    //Lombok dependency
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    implementation 'io.grpc:grpc-android:1.38.0'
+    implementation 'io.grpc:grpc-okhttp:1.38.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.38.0'
+    implementation 'io.grpc:grpc-stub:1.38.0'
+    //noinspection GradleCompatible
+//
+////    implementation 'com.github.MikeOrtiz:TouchImageView:3.0.1'
+//
+    //noinspection GradleDependency
+    implementation 'me.dm7.barcodescanner:zbar:1.9.8'
+    implementation 'com.google.zxing:core:3.4.1'
+
+    implementation platform('com.google.firebase:firebase-bom:30.3.2')
+
+}
+
+
+// Setting an architecture classifier when in Mac OSX for the protobuf dependencies.
+OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
+String archClassifier = os.macOsX ? ":osx-x86_64" : ""
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.12.4' + archClassifier }
+    plugins {
+        grpc { artifact = 'io.grpc:protoc-gen-grpc-java:1.31.0' + archClassifier }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
+    }
+}

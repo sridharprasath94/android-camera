@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:theme="@style/Theme.Design"
+    android:background="@drawable/gray_bg"
+    tools:context=".ui.A1_HomeScreen"
+    tools:visibility="visible">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <RelativeLayout
+            android:id="@+id/logoRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="start"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="TODO"
+                android:src="@drawable/dynamicelementlogo" />
+
+            <Spinner
+                android:id="@+id/userTypeSpinner"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:textAlignment="center"
+                android:layout_alignParentRight="true"
+                android:gravity="center"/>
+
+        </RelativeLayout>
+
+
+
+
+        <LinearLayout
+            android:id="@+id/userIDLayout"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/useridTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="User Name"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/useridEditText"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.85"
+                android:backgroundTint="@android:color/white"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:text="mdditest"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:textColorHighlight="#000000"
+                android:textColorHint="#00003A" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/passwordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/passwordTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Password"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp"
+                android:visibility="visible" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.85"
+                app:passwordToggleEnabled="true"
+                android:clipToPadding="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEditText"
+                    style="@style/Widget.AppCompat.AutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@android:color/white"
+                    android:inputType="textVisiblePassword|textPassword"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:text="password"
+                    android:textColor="@android:color/background_light"
+                    android:textColorHighlight="#000000"
+                    android:textColorHint="#FFFFFF"
+                    android:textColorLink="#0D0017"
+                    android:drawableStart="@drawable/blank_pwd"
+                    android:drawableLeft="@drawable/blank_pwd" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+
+
+            <Button
+                android:id="@+id/connectButton"
+                android:layout_width="300dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="55dp"
+                android:textSize="18sp"
+                android:background = "@drawable/buttoncustom_blue"
+                android:textColor="@color/cardview_light_background"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:text="Log in" />
+
+            <TextView
+                android:id="@+id/versionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/versionId"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:textSize="14sp"
+                android:visibility="visible" />
+            <TextView
+                android:id="@+id/copyRightTextView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="(C) 2020-2021 DynamicElement AG"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+
+            <Button
+                android:id="@+id/defaultsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:padding="10dp"
+                android:text="Restore Defaults"
+                android:textSize="11sp"
+                android:background= "@drawable/buttoncustom_darkblue"
+                android:textAlignment="center"
+                android:textColor="@color/cardview_light_background"
+                android:visibility="visible" />
+
+
+
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

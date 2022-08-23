@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.DyncoApp">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <uses-feature
+        android:name="android.hardware.camera.setDisplayOrientation(90)"
+        android:hardwareAccelerated="false"
+        android:required="false" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
+    <application
+        android:name=".ui.GlobalVariables"
+        android:icon="@drawable/dynamicelementlogo"
+        android:label="@string/Label"
+        android:largeHeap="true"
+        android:screenOrientation="portrait"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        tools:replace="android:label"
+        tools:targetApi="q">
+
+        <activity
+            android:name=".ui.A0_Onboarding"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/SplashScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.A5_SqlCameraScreen"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.A3_CameraScan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.A4_ResultScreen"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.A2_LoginScreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity
+            android:name=".ui.A1_HomeScreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreenTheme" />
+    </application>
+
+</manifest>

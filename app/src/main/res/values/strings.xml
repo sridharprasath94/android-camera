@@ -1,0 +1,104 @@
+<resources>
+    <string name="todo">TODO</string>
+    <string name="Added">Successfully Added</string>
+    <string name="sql_Added"> Show the Description!!</string>
+    <string name="sql_NotAdded">Save Description</string>
+    <string name="sqlUID">ciduid</string>
+    <string name="sqlDescription">description</string>
+    <string name="sqlImage">ImageResult</string>
+    <string name="modifySecondChannel">Modify Channel 2</string>
+    <string name="AdminUser">Admin</string>
+    <string name="TestUser">Test</string>
+    <string name="ReadonlyUser">ReadOnly</string>
+    <string name="adminPwd">admin@123</string>
+    <string name="testPwd">test123</string>
+    <string name="readOnlyPwd">readonly123</string>
+    <string name="TableNameAdmin">config_admin</string>
+    <string name="TableNameTest">config_test</string>
+
+    <string name="internalDbSno">DB SNO Internal</string>
+    <string name="internalIvf">IVF Internal</string>
+    <string name="proIvfSno">IVF SNO Pro</string>
+    <string name="proDbSno">DB SNO Pro</string>
+    <string name="proIvf">IVF Pro</string>
+
+    <string name="Label">Dynco</string>
+    //Android Build ID
+    <string name="versionId">V1.0.0</string>
+
+    <string name="wrongIpFormat1" translatable="false">"3.65.251"</string>
+    <string name="wrongIpFormat2" translatable="false">"3.65.251.78787"</string>
+    <string name="nonExistingIp">"3.65.251.67"</string>
+
+    <string name="hostInternalDbSno">"3.65.251.79"</string>
+    <string name="hostInternalIvf">"18.193.133.33"</string>
+    <string name="hostProIvfSno">"3.68.148.143"</string>
+    <string name="hostProDbSno">"18.193.44.245"</string>
+    <string name="hostProIvf">"18.159.47.218"</string>
+
+    <string name="hostDirectoryService">"3.64.43.12"</string>
+
+    <string name="ca">"-----BEGIN CERTIFICATE-----
+MIIFsTCCA5mgAwIBAgIUQoknGB6jz0t/aL3Bd0uQvLGOGQUwDQYJKoZIhvcNAQEL
+BQAwaDELMAkGA1UEBhMCREUxEDAOBgNVBAgMB0dlcm1hbnkxEzARBgNVBAcMClJh
+dmVuc2J1cmcxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxFDASBgNVBAMM
+C21kZGlzZXJ2aWNlMB4XDTIxMDcxNjAzMzE0NloXDTI0MDcxNTAzMzE0NlowaDEL
+MAkGA1UEBhMCREUxEDAOBgNVBAgMB0dlcm1hbnkxEzARBgNVBAcMClJhdmVuc2J1
+cmcxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxFDASBgNVBAMMC21kZGlz
+ZXJ2aWNlMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAw0WKhGcqG67N
+vN0pnBTheWVybrT1JyCgfwZ0i8V0cPBVZWi9FoY43cbTEhgVZFW7L0wwfbDhGlaj
+QsrKFDJgT++5dDciWzI3o3fNSZKV7vs8Gvqm9y1GDw7ML0Ltyo+HRQZIsrE8fTn+
+nKKKFpQhwiig4g6uer7+rJ6ivr8e99sUUxnYzvP9pY5OjSoJRUl+thwAWW5bDfXd
+YhGA2OykHRJjYpOllcsh1NRWd/nAHZSMkdYybVlT1ImtXRVvc3y4NFoo0BBiiiVG
+omCFu3RBeAPb1CyeG1xq3zGdvBgs/RgsXQSqH/ds3UnyIK8tVcgeaSxmT5RcA4Vs
+aNHIY62eDYQAKWG2Q4MpfaQpWFKkYuF1HoC1ei0+UND6RGXIVavXukJiNVgkXHQe
+J1uVqObMezCzkWM9izzsLwK8Eucw6xpIYdkBaenvlg8OtHsd4I1mW2Rz139zMJ41
+WpozQ1iI2BiLnz6zSCnfFEfEj5m5lYcH/N1/2FTdk1YiIrnz1S3jwfiJxWVPBRbu
+yOcGZAPznMAFjGjHJ1GtlEFnDOjYznHR6gE4x5630vevaRRwlgFVkPZUARVXyrlU
+xqg5/PoDiKMO67vgdZzSxtRUfl9kIxLpVVC8Hw2H1IFh5PawtiwnU3fM86JaeDK9
+HEKLxdueMvtSKEOGOQxiVvBWolwufKECAwEAAaNTMFEwHQYDVR0OBBYEFHDcQdk0
+fPcYf6pPJsAOCA2M75iBMB8GA1UdIwQYMBaAFHDcQdk0fPcYf6pPJsAOCA2M75iB
+MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBABEHdvh3x6VqSWYb
+v254SUIQ7N6l+fOQ+626wO8HwHcxqo0o8bAE6C+y7jC28JtLEewJxvEz68Aroycu
+9qr6FEgm/phKDwWLhEi8U1d6sKqAsaq1mynPTW9C0TLrXuEQd4ZsFqAYVmB9IZuT
+j0TP65zn4+aZ29Q3UYOp1tW3+gOu017INM53id0uv7sxO+aslmYFOMkVavqJodce
+o2wEIXIsI4po012V6jvYS3vpNHuzoioMxBBZc11oQXDoKYSsvyMV31QJXHF+yyu0
+VO5IJnxzmwUoFoaKRulftrtvXs44+RS1BQXVvhZaFNo0iiCZdJKRvOYH18Z4d8IF
+pF1UF/SdWbMXbbXEsP8y+r44K+9pAqwCB8MyO6J1OkdkZJygSwV8XhWzHYjk1ZQY
+3fTnzHbHAAoji6oi4b9jgaVb9ijl26OLUsvX38Zp2LIti3xInCniJL9JRJIELWCt
+DAKI740HG3sFXl3+ZibxzqAOsgOqAcycRx7AeWXXZXXYvKuLnIZI7PyzIq8vwrVC
+tF7/RYleiV/J037a+gWn5F0fiezfW/T1zeVvDw0Z/+hf8kVpkdV5Tqh+YRjDQHPQ
+LO90gNUlqL/keetxr3Lo07p0pKYsRYoVZDYfdHYtO+1rHLvZXYMwtHn6/g21ORxl
+stkh4E8j2iPM6dqVQHVu/CWrALTx
+-----END CERTIFICATE-----"
+            </string>
+
+    <string name="ca3">"-----BEGIN CERTIFICATE-----
+MIIDvTCCAqWgAwIBAgIUC4Q+pLuURPmwGPVnV11Hsg8oFA0wDQYJKoZIhvcNAQEL
+BQAwbjELMAkGA1UEBhMCREUxEDAOBgNVBAgMB0dlcm1hbnkxEzARBgNVBAcMClJh
+dmVuc2J1cmcxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxGjAYBgNVBAMM
+ESoubWRkaXNlcnZpY2UuY29tMB4XDTIxMTEwNTE0MDMzNloXDTMxMTEwMzE0MDMz
+NlowbjELMAkGA1UEBhMCREUxEDAOBgNVBAgMB0dlcm1hbnkxEzARBgNVBAcMClJh
+dmVuc2J1cmcxDTALBgNVBAoMBFRlc3QxDTALBgNVBAsMBFRlc3QxGjAYBgNVBAMM
+ESoubWRkaXNlcnZpY2UuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAuwP6kwivD5JzinOLzkfHfJmM8Dz45VX/i03ND5fpFo+SK0K7MsvHaPGRJ/YZ
+Q8W8hPTPPNDtYq75k9b3emZrUUc14VZsbwFEN228NZDdKnUvyV7XhN0qZmUCv8Vg
+wqTnLoXevGIkrBYAHkLcsaNGpQw9AjN7AG2zcvSpJPY3UJYxiH0i51d9MAgYExBT
+JteZjTBqpuAeB/rIxOhsg8IUY5TxXKi+XNcSxT4werX5tnn+KT8tur5lOlwyIbL4
+x5yg4JuIkcWdibrIdD1uM1lBzukoHnIeJZ4TT7fQZyjgtXEISSA5tzH86L6yYT/F
+2dzwCzPEQbyOTo7RjtyCZa7TCQIDAQABo1MwUTAdBgNVHQ4EFgQU9N3vO75CKvSM
+UvHW58z1aNm/y9owHwYDVR0jBBgwFoAU9N3vO75CKvSMUvHW58z1aNm/y9owDwYD
+VR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAsvzToMLGSz30MFsf1loB
+hLmsbaUqKhYEZoSVj9/Q1aSrMdB3kg1Qvb7E/8Omov2bectw2N6eF3DhbLPU1dDM
++WPULU1fnq3wyh9cDUJMp+f17xQjSl6Cfx07K6efBYhM1I4dmzZKVAYxA2TMWzIJ
+rkzf2QU6CTRQK3nen4qVB1xMe5ByqzPy0Y+dNzji7r0YUaMIksjQCp3XVMtzI8Pq
+pLupWhIUmVb7zKvjMbs9pQ2oNBZYAx4CvMw76ycHISnkJA0+BM9UKT2VpFSIpMFh
+U/vIuD9zanbOsOlP6rDhq78PHhXkD15FqlrjKIN1mTj+/Gi2/8g/XbsMt8Bt56kD
+yA==
+-----END CERTIFICATE-----"
+         </string>
+    <string name="nextText">Next</string>
+    <string name="finishText">Finish</string>
+    <string name="prevText">Previous</string>
+</resources>
+
