@@ -237,7 +237,7 @@ public class A2_LoginScreen extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void checkConnectionV1() {
+    private void checkConnectionV1(String cid) {
         com.mddiv1.mddiclient.ClientService clientService = globalVariables.clientServiceV1.createNewSession();
         clientService.checkConnection(new com.mddiv1.Callback<com.mddiv1.ping.PingResult>() {
             @Override
@@ -251,7 +251,7 @@ public class A2_LoginScreen extends AppCompatActivity {
                     return;
                 }
 
-                globalVariables.userCid = cidEditText.getText().toString();
+                globalVariables.userCid = cid;
                 globalVariables.createCollection = createCollectionTB.isChecked();
 
 //                            if (globalVariables.createCollection) {
@@ -291,22 +291,7 @@ public class A2_LoginScreen extends AppCompatActivity {
                             Integer.parseInt(instanceConfig[2]),globalVariables.currentInstanceMode == instanceMode.DB_SNO
                                     ? InstanceType.DB_SNO : InstanceType.IVF);
 
-
-                    if (!isInternetAvailable(getApplicationContext())) {
-                        enableLayoutItems();
-                        runOnUiThread(() -> {
-                            loadingAnimation.stop();
-                            loadingImageView.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(), currentInstance == instanceMode.IVF ?
-                                    "IVF Service Active. Connected" : "DB SNO Service Active. Connected", Toast.LENGTH_SHORT).show();
-                        });
-                        return;
-                    }
-
-                    globalVariables.userCid = currentInstance == instanceMode.DB_SNO ? "fm1" : "1";
-                    globalVariables.createCollection = createCollectionTB.isChecked();
-
-                    moveToNextActivity();
+                    checkConnectionV1( currentInstance == instanceMode.DB_SNO ? "fm1" : "1");
                 }
 
                 /**
