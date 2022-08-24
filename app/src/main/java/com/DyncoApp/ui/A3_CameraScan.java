@@ -282,15 +282,15 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                     public void onNegativeResponse(io.dynamicelement.grpc.mddi.SearchStreamResponse searchStreamResponse, Bitmap bitmap, com.mddiv1.search.SearchResult searchResult) {
                            Log.d("Mddi score", String.valueOf(bitmap.getWidth()));
 
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 //                                picCountView.setVisibility(View.VISIBLE);
 //                                picCountView.setText(String.valueOf(pictureCount));
-//                                mddiTextView.setText( searchResult.imageLogMessage);
-//                               mddiImageView.setImageBitmap(bitmap);
-//                            }
-//                        });
+                                mddiTextView.setText( searchResult.imageLogMessage);
+                               mddiImageView.setImageBitmap(bitmap);
+                            }
+                        });
 //
 //                        saveImage(bitmap, picDir, "IVF_ImageDatasets",  String.valueOf(pictureCount));
 //                        pictureCount++;
@@ -482,8 +482,8 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         overlayImageView.getLayoutParams().width = (int) (cameraview.getLayoutParams().width  * (2.3 / 3));
         wifiButton.setVisibility(View.INVISIBLE);
         sttTextView.setVisibility(View.INVISIBLE);
-        mddiImageView.setVisibility(View.INVISIBLE);
-        mddiTextView.setVisibility(View.INVISIBLE);
+        mddiImageView.setVisibility(View.VISIBLE);
+        mddiTextView.setVisibility(View.VISIBLE);
     }
 
     /**
