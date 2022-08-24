@@ -98,16 +98,13 @@ public class A2_LoginScreen extends AppCompatActivity {
         ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.colorGreen));
         assert actionBar != null;
         actionBar.setBackgroundDrawable(colorDrawable);
+
         initializeLayout();
         enableLayoutItems();
         globalVariables = (GlobalVariables) getApplicationContext();
 
-        //Check storage permission
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    50);
-        }
+        checkStoragePermission();
+
         if (globalVariables.selectedUserMode == SelectedUserMode.ADMIN) {
             sqlList.add(getResources().getString(R.string.proDbSno));
             sqlList.add(getResources().getString(R.string.internalDbSno));
@@ -150,7 +147,6 @@ public class A2_LoginScreen extends AppCompatActivity {
                             getIvfProClientService() : getIvfSnoClientService();
                     globalVariables.versionOneSelected = false;
                 }
-
             }
 
             @Override
@@ -187,27 +183,35 @@ public class A2_LoginScreen extends AppCompatActivity {
                 if(globalVariables.versionOneSelected){
                     checkPingDirectory(globalVariables.currentInstanceMode,globalVariables.clientServiceV1);
                 }else{
-                    checkConnection();
+                    checkConnectionV0();
                 }
 
             });
         });
     }
 
+    /**
+     * Check storage permission
+     */
+    private void checkStoragePermission() {
+        //Check storage permission
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    50);
+        }
+    }
+
+    /**
+     * Check the connection for version 0
+     */
     @RequiresApi(api = Build.VERSION_CODES.P)
-    private void checkConnection() {
+    private void checkConnectionV0() {
         ClientService clientService = globalVariables.clientService.createNewSession();
         clientService.checkConnection(new Callback<PingResult>() {
             @Override
             public void onResponse(PingResult response) {
-                if (!isInternetAvailable(getApplicationContext())) {
-                    enableLayoutItems();
-                    runOnUiThread(() -> {
-                        loadingAnimation.stop();
-                        loadingImageView.setVisibility(View.INVISIBLE);
-                    });
-                    return;
-                }
+                if (noInternetAvailable()) return;
                 globalVariables.userCid = cidEditText.getText().toString();
                 globalVariables.createCollection = createCollectionTB.isChecked();
 
@@ -223,36 +227,38 @@ public class A2_LoginScreen extends AppCompatActivity {
 
             @Override
             public void onError(ExceptionType exceptionType, Exception e) {
-                runOnUiThread(() -> {
-                    loadingAnimation.stop();
-                    loadingImageView.setVisibility(View.INVISIBLE);
-                });
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
-                enableLayoutItems();
-                Intent intent = new Intent(getApplicationContext(), A2_LoginScreen.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                handleException(e);
             }
         });
     }
 
+    private boolean noInternetAvailable() {
+        if (!isInternetAvailable(getApplicationContext())) {
+            enableLayoutItems();
+            runOnUiThread(() -> {
+                loadingAnimation.stop();
+                loadingImageView.setVisibility(View.INVISIBLE);
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check the connection for version 1
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkConnectionV1(String cid) {
         com.mddiv1.mddiclient.ClientService clientService = globalVariables.clientServiceV1.createNewSession();
         clientService.checkConnection(new com.mddiv1.Callback<com.mddiv1.ping.PingResult>() {
             @Override
             public void onResponse(com.mddiv1.ping.PingResult response) {
-                if (!isInternetAvailable(getApplicationContext())) {
-                    enableLayoutItems();
-                    runOnUiThread(() -> {
-                        loadingAnimation.stop();
-                        loadingImageView.setVisibility(View.INVISIBLE);
-                    });
-                    return;
-                }
+                if (noInternetAvailable()) return;
 
                 globalVariables.userCid = cid;
                 globalVariables.createCollection = createCollectionTB.isChecked();
+
+                moveToNextActivity();
 
 //                            if (globalVariables.createCollection) {
 //                                if (!(clientService.getHost().equals(getResources().getString(R.string.productionmddidbsno)) ||
@@ -261,24 +267,19 @@ public class A2_LoginScreen extends AppCompatActivity {
 //                                    return;
 //                                }
 //                            }
-                moveToNextActivity();
+
             }
 
             @Override
             public void onError(com.mddiv1.exceptions.ExceptionType exceptionType, Exception e) {
-                runOnUiThread(() -> {
-                    loadingAnimation.stop();
-                    loadingImageView.setVisibility(View.INVISIBLE);
-                });
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
-                enableLayoutItems();
-                Intent intent = new Intent(getApplicationContext(), A2_LoginScreen.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                handleException(e);
             }
         });
     }
 
+    /**
+     * Check the connection for the directory service
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkPingDirectory(instanceMode currentInstance,com.mddiv1.mddiclient.ClientService clientService) {
         try (com.mddiv1.mddiclient.ClientService clientServiceAutoClosable = clientService.createNewSession()) {
@@ -300,29 +301,36 @@ public class A2_LoginScreen extends AppCompatActivity {
                  */
                 @Override
                 public void onError(com.mddiv1.exceptions.ExceptionType exceptionType, Exception e) {
-                    runOnUiThread(() -> {
-                        loadingAnimation.stop();
-                        loadingImageView.setVisibility(View.INVISIBLE);
-                    });
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
-                    enableLayoutItems();
-                    Intent intent = new Intent(getApplicationContext(), A2_LoginScreen.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                    handleException(e);
                 }
             });
         } catch (Exception e) {
-            runOnUiThread(() -> {
-                loadingAnimation.stop();
-                loadingImageView.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(), e.getMessage() + "...Try Again", Toast.LENGTH_SHORT).show();
-            });
+            handleException(e);
         }
     }
 
+    /**
+     * Handle the exception from Mddi service call
+     */
+    private void handleException(Exception e) {
+        runOnUiThread(() -> {
+            loadingAnimation.stop();
+            loadingImageView.setVisibility(View.INVISIBLE);
+        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
+        enableLayoutItems();
+        Intent intent = new Intent(getApplicationContext(), A2_LoginScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    /**
+     * Get the backend instance credentials from the directory service
+     */
     private String[] getBackendInstance(String response) {
         return response.split(",");
     }
+
     /**
      * When press the back button
      */
