@@ -5,6 +5,7 @@ import static com.mddi.misc.MddiParameters.createResizedBitmap;
 import static com.mddi.misc.MddiParameters.getBytesFromBitmap;
 import static com.mddi.misc.MddiParameters.getImageVariance;
 import static com.mddicamera.CameraLayoutType.LAYOUT_WITH_SCAN_ANIM;
+import static com.mddicamera.CameraMddiMode.MDDI_SEARCH_OFF;
 import static com.mddicamera.CameraMddiMode.MDDI_SEARCH_ON;
 
 import android.annotation.SuppressLint;
@@ -39,6 +40,7 @@ import com.mddi.add.AddResult;
 import com.mddi.exceptions.ExceptionType;
 import com.mddi.getsample.GetSampleResult;
 import com.mddi.mddiclient.ClientService;
+import com.mddi.misc.InstanceType;
 import com.mddi.search.SearchResult;
 import com.mddicamera.CameraMddiCallback;
 import com.mddicamera.CameraParameters;
@@ -49,6 +51,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -107,6 +110,8 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         globalVariables.userSno = "1";
         initializeLayout();
 
+
+
 //        currentDirectoryCount = sharedPreferences.getInt(DirectoryCount, DEFAULT_DIR_COUNT);
 //        currentDirectoryCount++;
 //        sharedPreferences.edit().putInt(DirectoryCount,currentDirectoryCount).apply();
@@ -129,12 +134,11 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         }
 
 
-        flashState = cameraview.isFlashEnabled();
+        flashState = globalVariables.toggleFlash;
         flashButton.setImageResource(flashState ? R.drawable.ic_flash_on : R.drawable.ic_flash_off_);
         zoomSeekbar.setProgress(5);
         zoomSeekbar.setMin(1);
         zoomSeekbar.setMax(cameraview.getMaxZoom());
-
 
         zoomSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -165,23 +169,28 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
             if(globalVariables.selectedUserMode==SelectedUserMode.READONLY){
                 return false;
             }
+
+            if(globalVariables.versionOneSelected){
+                return false;
+            }
             if (addBitmap == null) {
                 Toast.makeText(this, "Wait for some time", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             double sharpness = getImageVariance(addBitmap, 480, 640, Bitmap.Config.ARGB_8888);
-            if (sharpness < 100) {
+            if (sharpness < 40) {
                 Toast.makeText(this, "Not enough features. Add another image", Toast.LENGTH_SHORT).show();
                 return false;
             }
             cameraview.stopMddiSearch();
-            Toast.makeText(this, "The sharpness is " + sharpness, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "The sharpness is " + sharpness, Toast.LENGTH_SHORT).show();
             Bitmap resizedBitmap = createResizedBitmap(addBitmap, 480, 640, Bitmap.Config.ARGB_8888);
             addProcess(resizedBitmap);
 
             return false;
         });
+
     }
 
     /**
@@ -195,10 +204,35 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         cameraview.initCamera(globalVariables.clientService, globalVariables.userCid,
                 globalVariables.userSno, cameraParameters, new CameraMddiCallback() {
                     @Override
+                    public void onOverlayAvailable(int overlayWidth, int overlayHeight) {
+
+                        if(globalVariables.clientService.getInstanceType() != InstanceType.DB_SNO){
+                            if (!sampleImageObtained) {
+                                getSampleImage(globalVariables.userCid);
+                            }
+                        }else{
+                            getSampleImage("fm1");
+                        }
+
+                        runOnUiThread(() -> {
+                            overlayImageView.requestLayout();
+                            overlayImageView.getLayoutParams().height = overlayHeight;
+                            overlayImageView.getLayoutParams().width = overlayWidth;
+                        });
+                    }
+
+                    @Override
                     public void onImageObtained(Bitmap bitmap, String barcodeResult, String cid, String sno) {
-                        if (!sampleImageObtained) {
+
+                        Log.d("ONGETIMAGE",String.valueOf(bitmap.getWidth()));
+                        if(globalVariables.clientService.getInstanceType() == InstanceType.DB_SNO){
+                            if(decodedBarcodeResult==null) {
+                                return;
+                            }
+                            sampleImageObtained = false;
                             getSampleImage(cid);
                         }
+
                         addBitmap = bitmap;
                         mddiCid = cid;
                         mddiSno = sno;
@@ -266,8 +300,42 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         cameraview.initCameraV1(globalVariables.clientServiceV1, globalVariables.userCid,
                 globalVariables.userSno, cameraParameters, new CameraV1MddiCallback() {
                     @Override
+                    public void onOverlayAvailable(int overlayWidth, int overlayHeight) {
+                        if(globalVariables.clientServiceV1.instanceType != com.mddiv1.misc.InstanceType.DB_SNO){
+                            if (sampleImageObtained) {
+                                return;
+                            }
+                            getSampleImageV1(globalVariables.userCid);
+                        }else{
+                            getSampleImageV1("fm1");
+                        }
+
+                        runOnUiThread(() -> {
+                            overlayImageView.requestLayout();
+                            overlayImageView.getLayoutParams().height = overlayHeight;
+                            overlayImageView.getLayoutParams().width = overlayWidth;
+                        });
+
+//                        if (sampleImageObtained) {
+//                            return;
+//                        }
+//                        getSampleImageV1(globalVariables.userCid);
+//                        runOnUiThread(() -> {
+//                            overlayImageView.requestLayout();
+//                            overlayImageView.getLayoutParams().height = overlayHeight;
+//                            overlayImageView.getLayoutParams().width = overlayWidth;
+//                        });
+                    }
+
+                    @Override
                     public void onImageObtained(Bitmap bitmap, String barcodeResult, String cid, String sno) {
-                        if (!sampleImageObtained) {
+
+                        Log.d("ONGETIMAGE",String.valueOf(bitmap.getWidth()));
+                        if(globalVariables.clientServiceV1.instanceType == com.mddiv1.misc.InstanceType.DB_SNO){
+                            if(barcodeResult==null) {
+                                return;
+                            }
+                            sampleImageObtained = false;
                             getSampleImageV1(cid);
                         }
 
@@ -282,15 +350,17 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                     public void onNegativeResponse(io.dynamicelement.grpc.mddi.SearchStreamResponse searchStreamResponse, Bitmap bitmap, com.mddiv1.search.SearchResult searchResult) {
                            Log.d("Mddi score", String.valueOf(searchStreamResponse.getSearchresponse().getScore()));
 
-                        runOnUiThread(() -> {
-//                                picCountView.setVisibility(View.VISIBLE);
-//                                picCountView.setText(String.valueOf(pictureCount));
-                            mddiTextView.setText( searchResult.imageLogMessage);
-                           mddiImageView.setImageBitmap(bitmap);
-                        });
+
+//                        runOnUiThread(() -> {
+////                            picCountView.setVisibility(View.VISIBLE);
+////                            picCountView.setText(String.valueOf(pictureCount));
+//                            mddiTextView.setText(searchResult.imageLogMessage);
+//                            mddiImageView.setImageBitmap(bitmap);
+//                        });
 //
 //                        saveImage(bitmap, picDir, "IVF_ImageDatasets",  String.valueOf(pictureCount));
 //                        pictureCount++;
+
 //                        runOnUiThread(() -> {
 //                            wifiButton.setVisibility(View.VISIBLE);
 //                            sttTextView.setVisibility(View.VISIBLE);
@@ -337,6 +407,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                                 "Provided collection not exists. Long press the screen to add the first image", Toast.LENGTH_SHORT).show());
                     }
                 });
+        cameraview.changeFlashState(globalVariables.toggleFlash);
     }
 
     /**
@@ -434,6 +505,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
     /**
      * Initialize the layout
      */
+    @RequiresApi(api = Build.VERSION_CODES.P)
     protected void initializeLayout() {
         cameraview = findViewById(R.id.cameraView);
         uploadingImageview = findViewById(R.id.uploadingImageView);
@@ -474,13 +546,13 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 
         overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_overlay : R.drawable.ic_overlay11);
         overlayImageView.setVisibility(overlayEnabled ? View.VISIBLE : View.INVISIBLE);
-        overlayImageView.requestLayout();
-        overlayImageView.getLayoutParams().height = (int) (cameraview.getLayoutParams().height * (2.3 / 4));
-        overlayImageView.getLayoutParams().width = (int) (cameraview.getLayoutParams().width  * (2.3 / 3));
+
+
         wifiButton.setVisibility(View.INVISIBLE);
         sttTextView.setVisibility(View.INVISIBLE);
         mddiImageView.setVisibility(View.VISIBLE);
         mddiTextView.setVisibility(View.VISIBLE);
+//        cameraview.changeFlashState(false);
     }
 
     /**
@@ -532,11 +604,9 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 
                     AsyncTask.execute(() -> {
                         Bitmap bitmap = buildBitmapFromIntegerList(response.pixelsList, 512, 512, Bitmap.Config.RGB_565);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                overlayImageView.setImageBitmap(bitmap);
-                            }
+                        runOnUiThread(() -> {
+//                            overlayImageView.setVisibility(View.VISIBLE);
+                            overlayImageView.setImageBitmap(bitmap);
                         });
                     });
                 }
@@ -557,12 +627,16 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
             clientServiceAutoClosable.getSample(cid, new Callback<GetSampleResult>() {
                 @Override
                 public void onResponse(GetSampleResult response) {
+                    Log.d("ONGET", String.valueOf(response.status));
                     sampleImageObtained = true;
                     overlayImageView.setAlpha(100);
 
                     AsyncTask.execute(() -> {
                         Bitmap bitmap = buildBitmapFromIntegerList(response.pixelsList, 480, 640, Bitmap.Config.RGB_565);
-                        runOnUiThread(() -> overlayImageView.setImageBitmap(bitmap));
+                        runOnUiThread(() -> {
+//                            overlayImageView.setVisibility(View.VISIBLE);
+                            overlayImageView.setImageBitmap(bitmap);
+                        });
                     });
                 }
 

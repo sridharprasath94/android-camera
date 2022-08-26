@@ -1,5 +1,6 @@
 package com.DyncoApp.ui;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -26,8 +28,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.DyncoApp.R;
-import com.DyncoApp.sqlitedb.CredentialsData;
-import com.DyncoApp.sqlitedb.CredentialsDataBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class A1_HomeScreen extends AppCompatActivity {
     protected static final String SHARED_PREFS_HOME_SCREEN = "sharedPrefsHomeScreen";
     protected static final String LOGIN_USERNAME_ADMIN = "username";
     protected static final String LOGIN_PASSWORD_ADMIN = "password";
-    protected static final String DEF_LOGIN_USERNAME_ADMIN = "Admin";
+    protected static final String  DEF_LOGIN_USERNAME_ADMIN = "Admin";
     protected static final String DEF_LOGIN_PASSWORD_ADMIN = "admin";
 
     protected static final String LOGIN_USERNAME_TEST = "usernameTest";
@@ -59,6 +59,7 @@ public class A1_HomeScreen extends AppCompatActivity {
     protected Button defaultsButton;
     protected Button loginButton;
     protected Spinner userTypeSpinner;
+    protected ImageView imageLogoView;
     protected List<String> userList = new ArrayList<>();
 
     protected Vibrator vibrator;
@@ -68,6 +69,7 @@ public class A1_HomeScreen extends AppCompatActivity {
     protected SharedPreferences sharedPreferences;
     protected SharedPreferences.Editor editor;
     protected GlobalVariables globalVariables = new GlobalVariables();
+    protected int press = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -84,6 +86,7 @@ public class A1_HomeScreen extends AppCompatActivity {
         initializeLayout();
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        globalVariables.model = Build.MODEL;
 
 
         loginButton.setOnClickListener(v -> {
@@ -138,6 +141,23 @@ public class A1_HomeScreen extends AppCompatActivity {
             }
         });
         defaultsButton.setOnClickListener(v -> restoreDefaults());
+
+        imageLogoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                press++;
+                if(press==5){
+                    //Move  to this activity
+                    Intent intent = new Intent(getApplicationContext(), Activity_0_secret.class);
+
+                    press = 0;
+                    Bundle b = ActivityOptions.makeSceneTransitionAnimation(A1_HomeScreen.this).toBundle();
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+
+            }
+        });
     }
     /**
      * When the back button is pressed
@@ -160,6 +180,7 @@ public class A1_HomeScreen extends AppCompatActivity {
         userTypeSpinner = findViewById(R.id.userTypeSpinner);
         userIdLayout = findViewById(R.id.userIDLayout);
         passwordLayout = findViewById(R.id.passwordLayout);
+        imageLogoView = findViewById(R.id.logoView);
 
         loginButton.setEnabled(true);
         passwordEditText.setEnabled(true);

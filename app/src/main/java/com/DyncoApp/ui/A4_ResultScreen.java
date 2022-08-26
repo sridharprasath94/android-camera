@@ -159,14 +159,20 @@ public class A4_ResultScreen extends AppCompatActivity {
             sqlSno = "SNO = " + mddiSno;
             sqlScore = String.valueOf(mddiScore);
             uidTextView.setText(mddiUid);
-            scoreTextView.setText(String.format("Score = %s", mddiScore));
+
             if (globalVariables.currentInstance == InstanceType.DB_SNO) {
                 sqlTextView.setText("SNO = " + mddiSno);
             } else {
                 sqlTextView.setVisibility(View.INVISIBLE);
             }
-            responseRatingBar.setRating(mddiRating);
-            scoreRating = responseRatingBar.getRating();
+            if(globalVariables.showScore) {
+                scoreTextView.setText(String.format("Score = %s", mddiScore));
+                responseRatingBar.setRating(mddiRating);
+                scoreRating = responseRatingBar.getRating();
+            }else{
+                scoreTextView.setVisibility(View.INVISIBLE);
+                responseRatingBar.setVisibility(View.INVISIBLE);
+            }
         } else if (Objects.equals(option, "Add")) {
             closeButton.setEnabled(false);
             saveDescriptionButton.setEnabled(false);
@@ -277,14 +283,21 @@ public class A4_ResultScreen extends AppCompatActivity {
      */
     private void showMddiLayout() {
         currentLayout = grpcLayout;
-        responseRatingBar.setVisibility(View.VISIBLE);
-        scoreTextView.setVisibility(View.VISIBLE);
-        responseRatingBar.setRating(scoreRating);
+        if(globalVariables.showScore){
+            scoreTextView.setVisibility(View.VISIBLE);
+            responseRatingBar.setVisibility(View.VISIBLE);
+            scoreTextView.setText(String.format("Score = %s", mddiScore));
+            responseRatingBar.setRating(scoreRating);
+        }else{
+            scoreTextView.setVisibility(View.INVISIBLE);
+            responseRatingBar.setVisibility(View.INVISIBLE);
+        }
+
         responseImageView.requestLayout();
         responseImageView.getLayoutParams().width = imageViewWidth;
         responseImageView.getLayoutParams().height = imageViewHeight;
         responseImageView.setImageBitmap(searchBitmap);
-        scoreTextView.setText(String.format("Score = %s", mddiScore));
+
         if (globalVariables.currentInstance == InstanceType.DB_SNO) {
             sqlTextView.setText("SNO = " + mddiSno);
         } else {

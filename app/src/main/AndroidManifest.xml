@@ -54,6 +54,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".ui.Activity_0_secret"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".ui.A3_CameraScan"
             android:screenOrientation="portrait" />
         <activity
@@ -68,5 +72,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme" />
     </application>
+    <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode">
+
+    </meta-data>
 
 </manifest>

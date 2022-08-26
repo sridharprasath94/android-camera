@@ -14,11 +14,14 @@ public class GlobalVariables extends Application {
     Boolean versionOneSelected;
     SelectedUserMode selectedUserMode = SelectedUserMode.READONLY;
     instanceMode currentInstanceMode = instanceMode.IVF;
+    String model;
+    Boolean toggleFlash = true;
+    Boolean showScore = true;
 
     int width = 480;
     int height = 640;
 
-//    String picDir = Environment.DIRECTORY_PICTURES + "/" + "CrossFunctionality" + "/" + "IVF_Datasets";
+    String picDir = Environment.DIRECTORY_PICTURES + "/" + "CrossFunctionality" + "/" + "IVFDatasets";
 
     String userName;
     String userId;

@@ -135,17 +135,33 @@ public class A2_LoginScreen extends AppCompatActivity {
                     globalVariables.versionOneSelected = true;
                     globalVariables.currentInstanceMode = instanceMode.DB_SNO;
                     globalVariables.clientServiceV1 = Constants.getDirectoryClientService();
+                    cidLayout.setVisibility(View.INVISIBLE);
+                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else if(instanceName.equals(getResources().getString(R.string.internalIvf))){
                     globalVariables.versionOneSelected = true;
                     globalVariables.currentInstanceMode = instanceMode.IVF;
                     globalVariables.clientServiceV1 = Constants.getDirectoryClientService();
+                    cidLayout.setVisibility(View.INVISIBLE);
+                    createCollectionLayout.setVisibility(View.INVISIBLE);
+                }
+                else if(instanceName.equals(getResources().getString(R.string.proDbSno))){
+                    globalVariables.clientService = Constants.getDbSnoProClientService();
+                    globalVariables.versionOneSelected = false;
+                    cidLayout.setVisibility(View.INVISIBLE);
+                    createCollectionLayout.setVisibility(View.INVISIBLE);
+                }
+                else if(instanceName.equals(getResources().getString(R.string.proIvf))){
+                    globalVariables.clientService = Constants.getIvfProClientService();
+                    globalVariables.versionOneSelected = false;
+                    cidLayout.setVisibility(View.VISIBLE);
+                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else{
-                    globalVariables.clientService = instanceName.equals(getResources().getString(R.string.proDbSno)) ?
-                            getDbSnoProClientService() :  instanceName.equals(getResources().getString(R.string.proIvf)) ?
-                            getIvfProClientService() : getIvfSnoClientService();
+                    globalVariables.clientService = Constants.getIvfSnoClientService();
                     globalVariables.versionOneSelected = false;
+                    cidLayout.setVisibility(View.VISIBLE);
+                    createCollectionLayout.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -248,7 +264,7 @@ public class A2_LoginScreen extends AppCompatActivity {
      * Check the connection for version 1
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void checkConnectionV1(String cid) {
+    private void  checkConnectionV1(String cid) {
         com.mddiv1.mddiclient.ClientService clientService = globalVariables.clientServiceV1.createNewSession();
         clientService.checkConnection(new com.mddiv1.Callback<com.mddiv1.ping.PingResult>() {
             @Override
