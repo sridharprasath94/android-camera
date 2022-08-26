@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -49,8 +50,8 @@ public class Activity_0_secret extends AppCompatActivity {
 
         model_TV.setText(global.model);
         version_TV.setText(getResources().getString(R.string.versionId));
-        cid_TV.setText("co1");
-        instance_TV.setText("IVF");
+        instance_TV.setText(Build.BRAND);
+        cid_TV.setText(Build.HARDWARE);
          loadData();
 
         flashToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -144,8 +145,8 @@ public class Activity_0_secret extends AppCompatActivity {
      */
     public void loadData() {
         sharedPreferences = getSharedPreferences(SHARED_PREFS_SECRET, MODE_PRIVATE);
-        flashToggle.setChecked(sharedPreferences.getBoolean(FLASH_TOGGLE,false));
-        scoreToggle.setChecked(sharedPreferences.getBoolean(SCORE_TOGGLE,false));
+        flashToggle.setChecked(sharedPreferences.getBoolean(FLASH_TOGGLE,global.toggleFlash));
+        scoreToggle.setChecked(sharedPreferences.getBoolean(SCORE_TOGGLE,global.showScore));
     }
 
     @Override
