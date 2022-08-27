@@ -139,6 +139,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         zoomSeekbar.setProgress(5);
         zoomSeekbar.setMin(1);
         zoomSeekbar.setMax(cameraview.getMaxZoom());
+        cameraview.autoFitViewToDisplay();
 
         zoomSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -213,7 +214,8 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                         }else{
                             getSampleImage("fm1");
                         }
-
+                        Log.d("OVERLAY_HEIGHT",String.valueOf(overlayHeight));
+                        Log.d("OVERLAY_WIDTH", String.valueOf(overlayWidth));
                         runOnUiThread(() -> {
                             overlayImageView.requestLayout();
                             overlayImageView.getLayoutParams().height = overlayHeight;
@@ -633,9 +635,10 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 
                     AsyncTask.execute(() -> {
                         Bitmap bitmap = buildBitmapFromIntegerList(response.pixelsList, 480, 640, Bitmap.Config.RGB_565);
+                        Bitmap resized = createResizedBitmap(bitmap,240,320, Bitmap.Config.ARGB_8888);
                         runOnUiThread(() -> {
 //                            overlayImageView.setVisibility(View.VISIBLE);
-                            overlayImageView.setImageBitmap(bitmap);
+                            overlayImageView.setImageBitmap(resized);
                         });
                     });
                 }

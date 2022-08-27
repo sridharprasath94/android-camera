@@ -99,8 +99,8 @@
 
             <com.mddicamera.CameraView
                 android:id="@+id/cameraView"
-                android:layout_width="match_parent"
-                android:layout_height="520dp"
+                android:layout_width="330dp"
+                android:layout_height="440dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -185,9 +185,10 @@
 
             <ImageView
                 android:id="@+id/overlayImageView"
-                android:layout_width="match_parent"
-                android:layout_height="520dp"
-                android:contentDescription="TODO"
+                android:layout_width="240dp"
+                android:layout_height="360dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
