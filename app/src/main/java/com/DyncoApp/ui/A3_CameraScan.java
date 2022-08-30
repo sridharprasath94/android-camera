@@ -165,6 +165,12 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        cameraview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraview.focusCamera();
+            }
+        });
         cameraview.setOnLongClickListener(v -> {
 
             if(globalVariables.selectedUserMode==SelectedUserMode.READONLY){
@@ -454,9 +460,6 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                break;
-            case R.id.cameraView:
-                cameraview.focusCamera();
                 break;
         }
     }
