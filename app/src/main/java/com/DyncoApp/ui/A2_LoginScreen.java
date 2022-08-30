@@ -299,7 +299,7 @@ public class A2_LoginScreen extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkPingDirectory(instanceMode currentInstance,com.mddiv1.mddiclient.ClientService clientService) {
         try (com.mddiv1.mddiclient.ClientService clientServiceAutoClosable = clientService.createNewSession()) {
-            clientServiceAutoClosable.getSample(currentInstance == instanceMode.DB_SNO ? "fm1" : "1", new com.mddiv1.Callback<GetSampleResult>() {
+            clientServiceAutoClosable.getSample(currentInstance == instanceMode.DB_SNO ? "fm1" : "2", new com.mddiv1.Callback<GetSampleResult>() {
                 @Override
                 public void onResponse(GetSampleResult response) {
                     String[] instanceConfig = getBackendInstance(response.imageResponse);
@@ -308,7 +308,7 @@ public class A2_LoginScreen extends AppCompatActivity {
                             Integer.parseInt(instanceConfig[2]),globalVariables.currentInstanceMode == instanceMode.DB_SNO
                                     ? InstanceType.DB_SNO : InstanceType.IVF);
 
-                    checkConnectionV1( currentInstance == instanceMode.DB_SNO ? "fm1" : "1");
+                    checkConnectionV1( currentInstance == instanceMode.DB_SNO ? "fm1" : "2");
                 }
 
                 /**
