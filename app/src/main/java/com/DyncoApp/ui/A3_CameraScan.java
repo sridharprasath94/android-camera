@@ -140,6 +140,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         zoomSeekbar.setProgress(5);
         zoomSeekbar.setMin(1);
         zoomSeekbar.setMax(cameraview.getMaxZoom());
+        cameraview.changeZoomLevel(6);
 //        cameraview.autoFitViewToDisplay();
 
         zoomSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
