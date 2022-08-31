@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -70,10 +71,10 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
     protected TextView addingTextview;
     protected ImageView uploadingImageview;
     protected ImageView overlayImageView;
-    protected ImageButton flashButton;
-    protected ImageButton switchCameraButton;
+//    protected ImageButton flashButton;
+//    protected ImageButton switchCameraButton;
     protected ImageButton overlayButton;
-    protected ImageButton zoomAdjustButton;
+//    protected ImageButton zoomAdjustButton;
     protected ImageButton backButton;
     protected ImageButton homeButton;
     protected ImageButton wifiButton;
@@ -135,11 +136,11 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 
 
         flashState = globalVariables.toggleFlash;
-        flashButton.setImageResource(flashState ? R.drawable.ic_flash_on : R.drawable.ic_flash_off_);
+//        flashButton.setImageResource(flashState ? R.drawable.ic_flash_on : R.drawable.ic_flash_off_);
         zoomSeekbar.setProgress(5);
         zoomSeekbar.setMin(1);
         zoomSeekbar.setMax(cameraview.getMaxZoom());
-        cameraview.autoFitViewToDisplay();
+//        cameraview.autoFitViewToDisplay();
 
         zoomSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -427,22 +428,22 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         vibrator.vibrate(VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE));
         switch (v.getId()) {
-            case R.id.switchCameraButton:
-                cameraview.switchNextCamera();
-                break;
-
-            case R.id.flashButton:
-                flashButton.setImageResource(flashState ? R.drawable.ic_flash_off_ : R.drawable.ic_flash_on);
-                cameraview.changeFlashState(!flashState);
-                flashState = !flashState;
-                break;
-
-            case R.id.zoomButton:
-                zoomAdjustButton.setImageResource(isZoomButtonVisible ? R.drawable.ic_zoom : R.drawable.ic_baseline_zoom_in_24);
-                zoomSeekbar.setVisibility(isZoomButtonVisible ? View.INVISIBLE : View.VISIBLE);
-                zoomSeekbar.setEnabled(!isZoomButtonVisible);
-                isZoomButtonVisible = !isZoomButtonVisible;
-                break;
+//            case R.id.switchCameraButton:
+//                cameraview.switchNextCamera();
+//                break;
+//
+//            case R.id.flashButton:
+//                flashButton.setImageResource(flashState ? R.drawable.ic_flash_off_ : R.drawable.ic_flash_on);
+//                cameraview.changeFlashState(!flashState);
+//                flashState = !flashState;
+//                break;
+//
+//            case R.id.zoomButton:
+//                zoomAdjustButton.setImageResource(isZoomButtonVisible ? R.drawable.ic_zoom : R.drawable.ic_baseline_zoom_in_24);
+//                zoomSeekbar.setVisibility(isZoomButtonVisible ? View.INVISIBLE : View.VISIBLE);
+//                zoomSeekbar.setEnabled(!isZoomButtonVisible);
+//                isZoomButtonVisible = !isZoomButtonVisible;
+//                break;
 
             case R.id.overlayButton:
                 overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_overlay11 : R.drawable.ic_overlay);
@@ -516,10 +517,10 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         uploadingImageview = findViewById(R.id.uploadingImageView);
         overlayImageView = findViewById(R.id.overlayImageView);
         addingTextview = findViewById(R.id.addTextView);
-        flashButton = findViewById(R.id.flashButton);
-        switchCameraButton = findViewById(R.id.switchCameraButton);
+//        flashButton = findViewById(R.id.flashButton);
+//        switchCameraButton = findViewById(R.id.switchCameraButton);
         overlayButton = findViewById(R.id.overlayButton);
-        zoomAdjustButton = findViewById(R.id.zoomButton);
+//        zoomAdjustButton = findViewById(R.id.zoomButton);
         zoomSeekbar = findViewById(R.id.zoomSeekbar);
         backButton = findViewById(R.id.backButton);
         homeButton = findViewById(R.id.homeButton);
@@ -529,9 +530,9 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         mddiTextView = findViewById(R.id.mddiTextView);
         picCountView = findViewById(R.id.picCountTextView);
 
-        flashButton.setOnClickListener(this);
-        zoomAdjustButton.setOnClickListener(this);
-        switchCameraButton.setOnClickListener(this);
+//        flashButton.setOnClickListener(this);
+//        zoomAdjustButton.setOnClickListener(this);
+//        switchCameraButton.setOnClickListener(this);
         overlayButton.setOnClickListener(this);
         backButton.setOnClickListener(this);
         homeButton.setOnClickListener(this);
@@ -547,7 +548,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         //Get the vibration service from the system
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        overlayEnabled = sharedPreferences.getBoolean(overlayOption, false);
+        overlayEnabled = sharedPreferences.getBoolean(overlayOption, true);
 
         overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_overlay : R.drawable.ic_overlay11);
         overlayImageView.setVisibility(overlayEnabled ? View.VISIBLE : View.INVISIBLE);
@@ -558,15 +559,29 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         mddiImageView.setVisibility(View.VISIBLE);
         mddiTextView.setVisibility(View.VISIBLE);
 //        cameraview.changeFlashState(false);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+//        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+        width = width - 150;
+
+        while (width % 3 != 0) {
+            width++;
+        }
+        int height = (width * 4)/3 ;
+        cameraview.requestLayout();
+        cameraview.getLayoutParams().width =  width;
+        cameraview.getLayoutParams().height = height;
     }
 
     /**
      * Enable the layout items
      */
     private void enableLayoutItems() {
-        flashButton.setVisibility(View.VISIBLE);
-        switchCameraButton.setVisibility(View.VISIBLE);
-        zoomAdjustButton.setVisibility(View.VISIBLE);
+//        flashButton.setVisibility(View.VISIBLE);
+//        switchCameraButton.setVisibility(View.VISIBLE);
+//        zoomAdjustButton.setVisibility(View.VISIBLE);
         overlayButton.setVisibility(View.VISIBLE);
         backButton.setVisibility(View.VISIBLE);
         homeButton.setVisibility(View.VISIBLE);
@@ -576,13 +591,13 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
      * Disable the layout items
      */
     private void disableLayoutItems() {
-        flashButton.setVisibility(View.INVISIBLE);
-        switchCameraButton.setVisibility(View.INVISIBLE);
-        zoomAdjustButton.setVisibility(View.INVISIBLE);
+//        flashButton.setVisibility(View.INVISIBLE);
+//        switchCameraButton.setVisibility(View.INVISIBLE);
+//        zoomAdjustButton.setVisibility(View.INVISIBLE);
         overlayButton.setVisibility(View.INVISIBLE);
         backButton.setVisibility(View.INVISIBLE);
         homeButton.setVisibility(View.INVISIBLE);
-        zoomAdjustButton.setImageResource(R.drawable.ic_zoom);
+//        zoomAdjustButton.setImageResource(R.drawable.ic_zoom);
     }
 
 //    /**
