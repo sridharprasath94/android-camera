@@ -13,16 +13,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.DyncoApp.R;
-import com.mddiv1.misc.InstanceType;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Activity_0_secret extends AppCompatActivity {
     protected GlobalVariables global = new GlobalVariables();
-    protected TextView model_TV;
+//    protected TextView model_TV;
     protected TextView version_TV;
-    protected TextView cid_TV;
-    protected TextView instance_TV;
+    protected TextView device_TV;
+    protected TextView model_TV;
     protected ImageButton back_secretLayout;
     protected ToggleButton flashToggle;
     protected ToggleButton scoreToggle;
@@ -38,20 +37,20 @@ public class Activity_0_secret extends AppCompatActivity {
         setContentView(R.layout.secretlayout);
         showFullScreen();
 
-        model_TV = findViewById(R.id.model_2_textview);
+//        model_TV = findViewById(R.id.model_2_textview);
         version_TV = findViewById(R.id.version_2_textview);
-        cid_TV = findViewById(R.id.cid_2_textview);
-        instance_TV = findViewById(R.id.instance_2_textview);
+        device_TV = findViewById(R.id.deviceDescTextView);
+        model_TV = findViewById(R.id.modelDescTextView);
         flashToggle = findViewById(R.id.flashToggleView);
         scoreToggle = findViewById(R.id.scoreToggleView);
 
 
         back_secretLayout = findViewById(R.id.backButton);
 
-        model_TV.setText(global.model);
+//        model_TV.setText(global.model);
         version_TV.setText(getResources().getString(R.string.versionId));
-        instance_TV.setText(Build.BRAND);
-        cid_TV.setText(Build.HARDWARE);
+        model_TV.setText(getAndroidVersion());
+        device_TV.setText(new StringBuilder().append(Build.BRAND).append(" ").append(Build.MODEL).toString());
          loadData();
 
         flashToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -100,6 +99,12 @@ public class Activity_0_secret extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private String getAndroidVersion() {
+        String release = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        return "Android SDK: " + sdkVersion + " (" + release +")";
     }
 
     /**
