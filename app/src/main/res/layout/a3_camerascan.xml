@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:gravity="top"
@@ -75,7 +75,7 @@
                 android:layout_weight="0.25"
                 android:background="@drawable/gray_bg"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ic_overlay11"
+                android:src="@drawable/ic_stack_slash"
                 tools:ignore="PrivateResource" />
 
             <SeekBar

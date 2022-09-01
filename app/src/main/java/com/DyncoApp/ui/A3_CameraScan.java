@@ -447,7 +447,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 //                break;
 
             case R.id.overlayButton:
-                overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_overlay11 : R.drawable.ic_overlay);
+                overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack_slash : R.drawable.ic_stack);
                 overlayImageView.setVisibility(overlayEnabled ? View.INVISIBLE : View.VISIBLE);
                 overlayEnabled = !overlayEnabled;
                 sharedPreferences.edit().putBoolean(overlayOption, overlayEnabled).apply();
@@ -551,7 +551,7 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
 
         overlayEnabled = sharedPreferences.getBoolean(overlayOption, true);
 
-        overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_overlay : R.drawable.ic_overlay11);
+        overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack : R.drawable.ic_stack_slash);
         overlayImageView.setVisibility(overlayEnabled ? View.VISIBLE : View.INVISIBLE);
 
 
