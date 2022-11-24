@@ -106,6 +106,9 @@ public class A2_LoginScreen extends AppCompatActivity {
         checkStoragePermission();
 
         if (globalVariables.selectedUserMode == SelectedUserMode.ADMIN) {
+            createCollectionLayout.setVisibility(View.INVISIBLE);
+            createCollectionLayout.setEnabled(false);
+            cidLayout.setVisibility(View.VISIBLE);
             sqlList.add(getResources().getString(R.string.proDbSno));
             sqlList.add(getResources().getString(R.string.internalDbSno));
             sqlList.add(getResources().getString(R.string.proIvf));
@@ -113,6 +116,9 @@ public class A2_LoginScreen extends AppCompatActivity {
             sqlList.add(getResources().getString(R.string.proIvfSno));
         } else if(globalVariables.selectedUserMode == SelectedUserMode.READONLY){
             cidLayout.setVisibility(View.INVISIBLE);
+            cidLayout.setEnabled(false);
+            createCollectionLayout.setVisibility(View.INVISIBLE);
+            createCollectionLayout.setEnabled(false);
             sqlList.add(getResources().getString(R.string.internalIvf));
             sqlList.add(getResources().getString(R.string.internalDbSno));
         } else {
@@ -135,33 +141,33 @@ public class A2_LoginScreen extends AppCompatActivity {
                     globalVariables.versionOneSelected = true;
                     globalVariables.currentInstanceMode = instanceMode.DB_SNO;
                     globalVariables.clientServiceV1 = Constants.getDirectoryClientService();
-                    cidLayout.setVisibility(View.INVISIBLE);
-                    createCollectionLayout.setVisibility(View.INVISIBLE);
+//                    cidLayout.setVisibility(View.INVISIBLE);
+//                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else if(instanceName.equals(getResources().getString(R.string.internalIvf))){
                     globalVariables.versionOneSelected = true;
                     globalVariables.currentInstanceMode = instanceMode.IVF;
                     globalVariables.clientServiceV1 = Constants.getDirectoryClientService();
-                    cidLayout.setVisibility(View.INVISIBLE);
-                    createCollectionLayout.setVisibility(View.INVISIBLE);
+//                    cidLayout.setVisibility(View.INVISIBLE);
+//                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else if(instanceName.equals(getResources().getString(R.string.proDbSno))){
                     globalVariables.clientService = Constants.getDbSnoProClientService();
                     globalVariables.versionOneSelected = false;
-                    cidLayout.setVisibility(View.INVISIBLE);
-                    createCollectionLayout.setVisibility(View.INVISIBLE);
+//                    cidLayout.setVisibility(View.INVISIBLE);
+//                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else if(instanceName.equals(getResources().getString(R.string.proIvf))){
                     globalVariables.clientService = Constants.getIvfProClientService();
                     globalVariables.versionOneSelected = false;
-                    cidLayout.setVisibility(View.VISIBLE);
-                    createCollectionLayout.setVisibility(View.INVISIBLE);
+//                    cidLayout.setVisibility(View.VISIBLE);
+//                    createCollectionLayout.setVisibility(View.INVISIBLE);
                 }
                 else{
                     globalVariables.clientService = Constants.getIvfSnoClientService();
                     globalVariables.versionOneSelected = false;
-                    cidLayout.setVisibility(View.VISIBLE);
-                    createCollectionLayout.setVisibility(View.VISIBLE);
+//                    cidLayout.setVisibility(View.VISIBLE);
+//                    createCollectionLayout.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -267,6 +273,7 @@ public class A2_LoginScreen extends AppCompatActivity {
     private void  checkConnectionV1(String cid) {
         com.mddiv1.mddiclient.ClientService clientService = globalVariables.clientServiceV1.createNewSession();
         clientService.checkConnection(new com.mddiv1.Callback<com.mddiv1.ping.PingResult>() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onResponse(com.mddiv1.ping.PingResult response) {
                 if (noInternetAvailable()) return;
@@ -276,18 +283,20 @@ public class A2_LoginScreen extends AppCompatActivity {
 
                 moveToNextActivity();
 
-//                            if (globalVariables.createCollection) {
-//                                if (!(clientService.getHost().equals(getResources().getString(R.string.productionmddidbsno)) ||
-//                                        clientService.getHost().equals(getResources().getString(R.string.productionmddiivf)))) {
-//                                    deleteAlertMessage();
-//                                    return;
-//                                }
-//                            }
+
+                            if (globalVariables.createCollection) {
+                                if (!(clientService.getHost().equals(getResources().getString(R.string.proDbSno)) ||
+                                        clientService.getHost().equals(getResources().getString(R.string.proIvf)))) {
+                                    deleteAlertMessage();
+                                    return;
+                                }
+                            }
 
             }
 
             @Override
             public void onError(com.mddiv1.exceptions.ExceptionType exceptionType, Exception e) {
+
                 handleException(e);
             }
         });
@@ -298,8 +307,10 @@ public class A2_LoginScreen extends AppCompatActivity {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void checkPingDirectory(instanceMode currentInstance,com.mddiv1.mddiclient.ClientService clientService) {
+
         try (com.mddiv1.mddiclient.ClientService clientServiceAutoClosable = clientService.createNewSession()) {
-            clientServiceAutoClosable.getSample(currentInstance == instanceMode.DB_SNO ? "fm1" : "2", new com.mddiv1.Callback<GetSampleResult>() {
+            clientServiceAutoClosable.getSample(currentInstance == instanceMode.DB_SNO ?  cidEditText.getText().toString() : "2",
+                    new com.mddiv1.Callback<GetSampleResult>() {
                 @Override
                 public void onResponse(GetSampleResult response) {
                     String[] instanceConfig = getBackendInstance(response.imageResponse);
@@ -308,7 +319,7 @@ public class A2_LoginScreen extends AppCompatActivity {
                             Integer.parseInt(instanceConfig[2]),globalVariables.currentInstanceMode == instanceMode.DB_SNO
                                     ? InstanceType.DB_SNO : InstanceType.IVF);
 
-                    checkConnectionV1( currentInstance == instanceMode.DB_SNO ? "fm1" : "2");
+                    checkConnectionV1( currentInstance == instanceMode.DB_SNO ? cidEditText.getText().toString() : "2");
                 }
 
                 /**
@@ -317,6 +328,7 @@ public class A2_LoginScreen extends AppCompatActivity {
                  */
                 @Override
                 public void onError(com.mddiv1.exceptions.ExceptionType exceptionType, Exception e) {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), cidEditText.getText().toString(), Toast.LENGTH_SHORT).show());
                     handleException(e);
                 }
             });

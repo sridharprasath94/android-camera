@@ -317,9 +317,10 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
                             }
                             getSampleImageV1(globalVariables.userCid);
                         }else{
-                            getSampleImageV1("fm1");
+                            getSampleImageV1(globalVariables.userCid);
                         }
-
+                        Log.d("OVERLAY_HEIGHT",String.valueOf(overlayHeight));
+                        Log.d("OVERLAY_WIDTH", String.valueOf(overlayWidth));
                         runOnUiThread(() -> {
                             overlayImageView.requestLayout();
                             overlayImageView.getLayoutParams().height = overlayHeight;
