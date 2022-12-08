@@ -28,7 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.DyncoApp.R;
-import com.mddi.misc.InstanceType;
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;

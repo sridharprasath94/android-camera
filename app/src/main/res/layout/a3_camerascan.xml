@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
 
-            <com.mddicamera.CameraView
+            <com.dynamicelement.sdk.android.ui.CameraView
                 android:id="@+id/cameraView"
                 android:layout_width="330dp"
                 android:layout_height="440dp"

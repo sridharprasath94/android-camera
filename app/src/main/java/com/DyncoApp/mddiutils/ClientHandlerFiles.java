@@ -7,18 +7,18 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.mddi.add.AddCallback;
-import com.mddi.exceptions.ClientException;
-import com.mddi.mddiclient.ClientService;
-import com.mddi.misc.InstanceType;
-import com.mddi.misc.MddiData;
-import com.mddi.search.SearchCallBack;
 
 import java.io.File;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.dynamicelement.mddi.StreamImage;
+import com.dynamicelement.sdk.android.add.AddCallback;
+import com.dynamicelement.sdk.android.exceptions.ClientException;
+import com.dynamicelement.sdk.android.mddiclient.ClientService;
+import com.dynamicelement.sdk.android.mddiclient.MddiData;
+import com.dynamicelement.sdk.android.misc.InstanceType;
+import com.dynamicelement.sdk.android.search.SearchCallBack;
 
 public class ClientHandlerFiles {
     protected ClientService clientService;
@@ -77,18 +77,18 @@ public class ClientHandlerFiles {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void createMDDIData(Bitmap bitmap, int width, int height, String defaultCID, String defaultSNO, boolean barcodeMode, MddiData.MddiDataCallback mddiCallback) throws Exception {
         //Initialise the mddi_process function for the camera image
-        mddiData = MddiData.builder().bitmap(bitmap).cropWidth(width).cropHeight(height).instanceType(instanceType).
-                cid(defaultCID).sno(defaultSNO).barcodeMode(true).mddiDataCallback(new MddiData.MddiDataCallback() {
+        new MddiData(bitmap, width, height, instanceType, defaultCID, defaultSNO, true, true, new MddiData.MddiDataCallback() {
             @Override
-            public void onDBSNO(String barcodeResult, String mddiCid, String mddiSno, StreamImage mddiImage, Bitmap originalBitmap) {
-                mddiCallback.onDBSNO(barcodeResult, mddiCid, mddiSno, mddiImage, originalBitmap);
+            public void onDBSNO(String barcodeResult, String mddiCid, String mddiSno,
+                                StreamImage mddiStreamImage, Bitmap centerCroppedBitmap) {
+                mddiCallback.onDBSNO(barcodeResult, mddiCid, mddiSno, mddiStreamImage, centerCroppedBitmap);
             }
 
             @Override
-            public void onIVF(String mddiCid, String mddiSno, StreamImage mddiImage, Bitmap originalBitmap) {
-                mddiCallback.onIVF(mddiCid, mddiSno, mddiImage, originalBitmap);
+            public void onIVF(String mddiCid, String mddiSno, StreamImage mddiImage, Bitmap centerCroppedBitmap) {
+                mddiCallback.onIVF(mddiCid, mddiSno, mddiImage, centerCroppedBitmap);
             }
-        }).build();
+        }, "dev");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

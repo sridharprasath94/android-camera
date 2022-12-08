@@ -1,6 +1,7 @@
 package com.DyncoApp.mddiutils;
 
-import com.mddi.exceptions.ExceptionType;
+
+import com.dynamicelement.sdk.android.exceptions.ExceptionType;
 
 import java.io.File;
 

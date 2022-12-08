@@ -1,8 +1,9 @@
 package com.DyncoApp.mddiutils;
 
-import com.mddi.exceptions.ClientException;
-import com.mddi.exceptions.ExceptionType;
-import com.mddi.misc.InstanceType;
+
+import com.dynamicelement.sdk.android.exceptions.ClientException;
+import com.dynamicelement.sdk.android.exceptions.ExceptionType;
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 import java.io.BufferedReader;
 import java.io.File;

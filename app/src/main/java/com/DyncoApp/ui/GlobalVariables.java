@@ -3,14 +3,13 @@ package com.DyncoApp.ui;
 import android.app.Application;
 import android.os.Environment;
 
-import com.mddi.mddiclient.ClientService;
-import com.mddi.misc.InstanceType;
+import com.dynamicelement.sdk.android.mddiclient.ClientService;
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 import java.sql.Connection;
 
 public class GlobalVariables extends Application {
     ClientService clientService;
-    com.mddiv1.mddiclient.ClientService clientServiceV1;
     Boolean versionOneSelected;
     SelectedUserMode selectedUserMode = SelectedUserMode.READONLY;
     instanceMode currentInstanceMode = instanceMode.IVF;

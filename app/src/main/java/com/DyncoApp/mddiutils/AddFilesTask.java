@@ -1,9 +1,7 @@
 package com.DyncoApp.mddiutils;
 
 import static com.DyncoApp.mddiutils.MddiUtils.assignCidSno;
-import static com.mddi.misc.MddiConstants.MIN_HEIGHT;
-import static com.mddi.misc.MddiConstants.MIN_WIDTH;
-import static com.mddi.misc.MddiConstants.TIME_DELAY;
+import static com.dynamicelement.sdk.android.misc.MddiConstants.TIME_DELAY;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -12,15 +10,15 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.mddi.Callback;
-import com.mddi.add.AddCallback;
-import com.mddi.add.AddTask;
-import com.mddi.collection.CollectionResult;
-import com.mddi.exceptions.ClientException;
-import com.mddi.exceptions.ExceptionType;
-import com.mddi.mddiclient.ClientService;
-import com.mddi.misc.InstanceType;
-import com.mddi.misc.MddiParameters;
+import com.dynamicelement.sdk.android.Callback;
+import com.dynamicelement.sdk.android.add.AddCallback;
+import com.dynamicelement.sdk.android.add.AddTask;
+import com.dynamicelement.sdk.android.collection.CollectionResult;
+import com.dynamicelement.sdk.android.exceptions.ClientException;
+import com.dynamicelement.sdk.android.exceptions.ExceptionType;
+import com.dynamicelement.sdk.android.mddiclient.ClientService;
+import com.dynamicelement.sdk.android.mddiclient.MddiParameters;
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 import java.io.File;
 import java.util.Objects;
@@ -50,7 +48,7 @@ public class AddFilesTask extends AddTask {
                     setFiniteAdd(jpgFiles.length);
                     if (createNewCollection) {
                         //Get the Mat from the file
-                        Bitmap collectionBitmap = MddiParameters.createResizedBitmapFromFile(jpgFiles[0].getPath(), MIN_WIDTH, MIN_HEIGHT, Bitmap.Config.ARGB_8888);
+                        Bitmap collectionBitmap = MddiParameters.createResizedBitmapFromFile(jpgFiles[0].getPath(), 480, 640, Bitmap.Config.ARGB_8888);
 
                         //Assign Cid and Sno
                         MddiUtils.CidSnoResult cidSnoResult = assignCidSno(jpgFiles[0], txtFiles, instanceType);

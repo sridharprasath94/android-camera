@@ -1,12 +1,11 @@
 package com.DyncoApp.ui;
 
-import static com.mddi.misc.InstanceType.DB_SNO;
-import static com.mddi.misc.InstanceType.IVF;
-import static com.mddi.misc.InstanceType.IVF_SNO;
+import android.os.Build;
 
-import com.mddi.exceptions.ConfigurationException;
-import com.mddi.mddiclient.ClientService;
-import com.mddiv1.misc.InstanceType;
+import androidx.annotation.RequiresApi;
+
+import com.dynamicelement.sdk.android.mddiclient.ClientService;
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 public interface Constants {
     String hostIP_IvfSno = "3.68.148.143";
@@ -15,12 +14,12 @@ public interface Constants {
     String hostIP_IvfPro = "18.159.47.218";
     String hostIP_IvfInternal = "18.193.133.33";
     String hostIP_directoryService = "3.64.43.12";
+    String hostDefaultEC2 = "3.121.52.42";
     int port = 443;
     String username = "sri";
     String userid = "sri9101";
     String password = "9101";
     String hostname = "www.mddiservice.com";
-    com.mddi.misc.InstanceType instanceType = IVF_SNO;
     String cert = "-----BEGIN CERTIFICATE-----\n" +
             "MIIDvTCCAqWgAwIBAgIUC4Q+pLuURPmwGPVnV11Hsg8oFA0wDQYJKoZIhvcNAQEL\n" +
             "BQAwbjELMAkGA1UEBhMCREUxEDAOBgNVBAgMB0dlcm1hbnkxEzARBgNVBAcMClJh\n" +
@@ -79,75 +78,101 @@ public interface Constants {
             "stkh4E8j2iPM6dqVQHVu/CWrALTx\n" +
             "-----END CERTIFICATE-----\n";
 
-    /**
-     * Get the ivf sno client service
-     */
-    static ClientService getIvfSnoClientService() {
-        return ClientService.builder().host(Constants.hostIP_IvfSno).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                caCert(Constants.cert).InstanceType(Constants.instanceType).build().createNewSession();
-    }
-
-    /**
-     * Get the db sno pro client service
-     */
-    static ClientService getDbSnoProClientService() {
-        return ClientService.builder().host(Constants.hostIP_DbSnoPro).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                caCert(Constants.cert).InstanceType(DB_SNO).build().createNewSession();
-    }
-
-    /**
-     * Get the ivf pro client service
-     */
-    static ClientService getIvfProClientService() {
-        return ClientService.builder().host(Constants.hostIP_IvfPro).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName("mddiservice").
-                caCert(Constants.ivfProCert).InstanceType(IVF).build().createNewSession();
-    }
+//    /**
+//     * Get the ivf sno client service
+//     */
+//    static ClientService getIvfSnoClientService() {
+//        return ClientService.builder().host(Constants.hostIP_IvfSno).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                caCert(Constants.cert).InstanceType(Constants.instanceType).build()
+//                .createNewSession();
+//    }
+//
+//    /**
+//     * Get the db sno pro client service
+//     */
+//    static ClientService getDbSnoProClientService() {
+//        return ClientService.builder().host(Constants.hostIP_DbSnoPro).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                caCert(Constants.cert).InstanceType(DB_SNO).build().createNewSession();
+//    }
+//
+//    /**
+//     * Get the ivf pro client service
+//     */
+//    static ClientService getIvfProClientService() {
+//        return ClientService.builder().host(Constants.hostIP_IvfPro).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName("mddiservice").
+//                caCert(Constants.ivfProCert).InstanceType(IVF).build().createNewSession();
+//    }
+//
+//    /**
+//     * Get the ivf internal client service
+//     */
+//    static ClientService getIvfInternalClientService() {
+//        return ClientService.builder().host(Constants.hostIP_IvfInternal).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                caCert(Constants.cert).InstanceType(IVF).build().createNewSession();
+//    }
 
     /**
      * Get the ivf internal client service
      */
-    static ClientService getIvfInternalClientService() {
-        return ClientService.builder().host(Constants.hostIP_IvfInternal).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                caCert(Constants.cert).InstanceType(IVF).build().createNewSession();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    static ClientService getDefaultEc2ClientService() {
+
+        return new ClientService(Constants.hostDefaultEC2, port, username, password, userid,
+                hostname, cert, InstanceType.DB_SNO, "pli");
     }
 
-    /**
-     * Get the db sno internal client service
-     */
-    static com.mddiv1.mddiclient.ClientService getDbSnoInternalClientService() {
-        return com.mddiv1.mddiclient.ClientService.builder().host(Constants.hostIP_DbSnoInternal).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build().createNewSession();
-    }
+//    /**
+//     * Get the db sno internal client service
+//     */
+//    static com.mddiv1.mddiclient.ClientService getDbSnoInternalClientService() {
+//        return com.mddiv1.mddiclient.ClientService.builder().host(Constants
+//        .hostIP_DbSnoInternal).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build()
+//                .createNewSession();
+//    }
 
-    /**
-     * Get the new ivf internal client service
-     */
-    static com.mddiv1.mddiclient.ClientService getNewIVFInternalClientService() {
-        return com.mddiv1.mddiclient.ClientService.builder().host(Constants.hostIP_directoryService).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build().createNewSession();
-    }
-
-    /**
-     * Get the directory client service
-     */
-    static com.mddiv1.mddiclient.ClientService getDirectoryClientService() {
-        return com.mddiv1.mddiclient.ClientService.builder().host(Constants.hostIP_directoryService).port(Constants.port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build().createNewSession();
-    }
-
-    /**
-     * Get the Mddi backend service
-     */
-    static com.mddiv1.mddiclient.ClientService getMddiBackendService(String host,int port,InstanceType instanceType) throws ConfigurationException {
-        return com.mddiv1.mddiclient.ClientService.builder().host(host).port(port).
-                userName(Constants.username).password(Constants.password).userID(Constants.userid).hostName(Constants.hostname).
-                certID(Constants.cert).InstanceType(instanceType).build().createNewSession();
-    }
+//    /**
+//     * Get the new ivf internal client service
+//     */
+//    static com.mddiv1.mddiclient.ClientService getNewIVFInternalClientService() {
+//        return com.mddiv1.mddiclient.ClientService.builder().host(Constants
+//        .hostIP_directoryService).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build()
+//                .createNewSession();
+//    }
+//
+//    /**
+//     * Get the directory client service
+//     */
+//    static com.mddiv1.mddiclient.ClientService getDirectoryClientService() {
+//        return com.mddiv1.mddiclient.ClientService.builder().host(Constants
+//        .hostIP_directoryService).port(Constants.port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                certID(Constants.cert).InstanceType(InstanceType.DB_SNO).build()
+//                .createNewSession();
+//    }
+//
+//    /**
+//     * Get the Mddi backend service
+//     */
+//    static com.mddiv1.mddiclient.ClientService getMddiBackendService(String host,int port,
+//    InstanceType instanceType) throws ConfigurationException {
+//        return com.mddiv1.mddiclient.ClientService.builder().host(host).port(port).
+//                userName(Constants.username).password(Constants.password).userID(Constants
+//                .userid).hostName(Constants.hostname).
+//                certID(Constants.cert).InstanceType(instanceType).build().createNewSession();
+//    }
 }

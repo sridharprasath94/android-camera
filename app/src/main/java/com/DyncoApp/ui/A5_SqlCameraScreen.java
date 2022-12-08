@@ -3,7 +3,8 @@ package com.DyncoApp.ui;
 
 
 
-import static com.mddi.misc.ImageUtil.buildBitmapFromCameraImage;
+
+import static com.dynamicelement.sdk.android.misc.ImageUtil.buildBitmapFromCameraImage;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -62,8 +63,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.DyncoApp.R;
-import com.mddicamera.CameraView;
-import com.mddicamera.CameraZoom;
+import com.dynamicelement.sdk.android.ui.CameraZoom;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.PreparedStatement;

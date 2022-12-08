@@ -1,6 +1,7 @@
 package com.DyncoApp.mddiutils;
 
-import com.mddi.misc.InstanceType;
+
+import com.dynamicelement.sdk.android.misc.InstanceType;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,7 +1,7 @@
 package com.DyncoApp.mddiutils;
 
 import static com.DyncoApp.mddiutils.MddiUtils.assignCidSno;
-import static com.mddi.misc.MddiConstants.TIME_DELAY;
+import static com.dynamicelement.sdk.android.misc.MddiConstants.TIME_DELAY;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -10,12 +10,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
-import com.mddi.exceptions.ClientException;
-import com.mddi.exceptions.ExceptionType;
-import com.mddi.mddiclient.ClientService;
-import com.mddi.misc.InstanceType;
-import com.mddi.search.SearchCallBack;
-import com.mddi.search.SearchTask;
+import com.dynamicelement.sdk.android.exceptions.ClientException;
+import com.dynamicelement.sdk.android.exceptions.ExceptionType;
+import com.dynamicelement.sdk.android.mddiclient.ClientService;
+import com.dynamicelement.sdk.android.misc.InstanceType;
+import com.dynamicelement.sdk.android.search.SearchCallBack;
+import com.dynamicelement.sdk.android.search.SearchTask;
 
 import java.io.File;
 
