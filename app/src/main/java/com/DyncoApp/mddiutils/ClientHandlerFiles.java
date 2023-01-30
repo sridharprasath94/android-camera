@@ -39,7 +39,7 @@ public class ClientHandlerFiles {
         this.context = context;
         this.instanceType = instanceType;
 
-        if (this.instanceType != InstanceType.DB_SNO && this.instanceType != InstanceType.IVF && this.instanceType != InstanceType.IVF_SNO) {
+        if (this.instanceType != InstanceType.DB_SNO && this.instanceType != InstanceType.IVF) {
             throw new ClientException("Wrong instance type");
         }
 
@@ -72,24 +72,24 @@ public class ClientHandlerFiles {
         this.addTaskCreated = false;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////// Creating the mddi data//////////////////////////
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void createMDDIData(Bitmap bitmap, int width, int height, String defaultCID, String defaultSNO, boolean barcodeMode, MddiData.MddiDataCallback mddiCallback) throws Exception {
-        //Initialise the mddi_process function for the camera image
-        new MddiData(bitmap, width, height, instanceType, defaultCID, defaultSNO, true, true, new MddiData.MddiDataCallback() {
-            @Override
-            public void onDBSNO(String barcodeResult, String mddiCid, String mddiSno,
-                                StreamImage mddiStreamImage, Bitmap centerCroppedBitmap) {
-                mddiCallback.onDBSNO(barcodeResult, mddiCid, mddiSno, mddiStreamImage, centerCroppedBitmap);
-            }
-
-            @Override
-            public void onIVF(String mddiCid, String mddiSno, StreamImage mddiImage, Bitmap centerCroppedBitmap) {
-                mddiCallback.onIVF(mddiCid, mddiSno, mddiImage, centerCroppedBitmap);
-            }
-        }, "dev");
-    }
+//    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    ////////////////////////// Creating the mddi data//////////////////////////
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void createMDDIData(Bitmap bitmap, int width, int height, String defaultCID, String defaultSNO, boolean barcodeMode, MddiData.MddiDataCallback mddiCallback) throws Exception {
+//        //Initialise the mddi_process function for the camera image
+//        new MddiData(bitmap, width, height, instanceType, defaultCID, defaultSNO, true, true, new MddiData.MddiDataCallback() {
+//            @Override
+//            public void onDBSNO(String barcodeResult, String mddiCid, String mddiSno,
+//                                StreamImage mddiStreamImage, Bitmap centerCroppedBitmap) {
+//                mddiCallback.onDBSNO(barcodeResult, mddiCid, mddiSno, mddiStreamImage, centerCroppedBitmap);
+//            }
+//
+//            @Override
+//            public void onIVF(String mddiCid, String mddiSno, StreamImage mddiImage, Bitmap centerCroppedBitmap) {
+//                mddiCallback.onIVF(mddiCid, mddiSno, mddiImage, centerCroppedBitmap);
+//            }
+//        }, "dev");
+//    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////// Search from files//////////////////////////

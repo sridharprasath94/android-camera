@@ -56,7 +56,6 @@ public class MddiUtils {
 
                             break;
                         case IVF:
-                        case IVF_SNO:
                             cid_Image = QR_str.substring(0, QR_str.indexOf(","));
                             sno_Image = QR_str.substring(QR_str.indexOf(",") + 1);
                             break;

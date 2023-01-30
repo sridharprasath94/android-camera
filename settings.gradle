@@ -1,2 +1,4 @@
 rootProject.name='Dynco'
 include ':app'
+//include ':logic'
+//include ':ui'

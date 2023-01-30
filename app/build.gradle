@@ -1,44 +1,50 @@
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+def localProperties = new Properties()
+if (rootProject.file("local.properties").exists()) {
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+}
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.DyncoApp"
-        minSdkVersion 24
-        targetSdkVersion 31
+        minSdkVersion 26
+        targetSdkVersion 33
         versionCode 7
         versionName "1.0.0"
         multiDexEnabled true
-//        resConfigs "en"
-        renderscriptTargetApi 24
-        renderscriptSupportModeEnabled true
+        resConfigs "en"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        61
-    }
-    viewBinding {
-        enabled = true
     }
 
     lintOptions {
         abortOnError false
     }
-    buildTypes {
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    buildTypes {
+        debug {
+            debuggable = true
+            //testCoverageEnabled = true
+        }
         release {
             minifyEnabled false
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     splits {
@@ -46,15 +52,28 @@ android {
             enable true
             reset()
             include "arm64-v8a", "armeabi-v7a"
-            //include "arm64-v8a", "osx-aarch_64", "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
             universalApk false
+        }
+    }
 
+        viewBinding {
+        enabled = true
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
 
     packagingOptions {
-        pickFirst '**/MDDI.proto'
-        pickFirst '**/libopencv_java3.so'
+        pickFirst '**/com.mddi.*'
+        pickFirst '**/com.mddi.Callback'
+        pickFirst '**/*.so'
+        pickFirst '**/Callback.dex'
+        pickFirst '**/*.proto'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-notice.md'
@@ -66,75 +85,193 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
     }
-
 }
 
-dependencies {
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'com.google.android.gms:play-services-vision:20.1.3'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    //implementation project(':mddi')
-//    implementation 'com.dynamicelement.mddi.sdk:logic:0.2.4'
-//    implementation 'com.dynamicelement.mddi.sdk:ui:0.2.4'
-//    implementation 'com.dynamicelement.mddi.sdk:logicv1:0.2.4'
+//android {
+//    compileSdkVersion 33
+//    buildToolsVersion "30.0.3"
+//
+//    defaultConfig {
+//        applicationId "com.DyncoApp"
+//        minSdkVersion 26
+//        targetSdkVersion 33
+//        versionCode 7
+//        versionName "1.0.0"
+//        multiDexEnabled true
+////        resConfigs "en"
+//        renderscriptTargetApi 24
+//        renderscriptSupportModeEnabled true
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+////        61
+//    }
+//    dexOptions {
+//        javaMaxHeapSize "4g"
+//    }
+//    viewBinding {
+//        enabled = true
+//    }
+//    buildFeatures {
+//        viewBinding true
+//    }
+//    lintOptions {
+//        abortOnError false
+//    }
+//    buildTypes {
+//
+//        release {
+//            minifyEnabled false
+//            useProguard true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//        }
+//    }
+//    compileOptions {
+//        sourceCompatibility = 1.8
+//        targetCompatibility = 1.8
+//    }
+//
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include "arm64-v8a", "armeabi-v7a"
+//            //include "arm64-v8a", "osx-aarch_64", "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
+//            universalApk false
+//
+//        }
+//    }
+//
+//    packagingOptions {
+//        pickFirst '**/MDDI.proto'
+//        pickFirst '**/libopencv_java3.so'
+//        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/LICENSE'
+//        exclude 'META-INF/LICENSE-notice.md'
+//        exclude 'META-INF/LICENSE.md'
+//        exclude 'META-INF/LICENSE.txt'
+//        exclude 'META-INF/license.txt'
+//        exclude 'META-INF/NOTICE'
+//        exclude 'META-INF/NOTICE.txt'
+//        exclude 'META-INF/notice.txt'
+//        exclude 'META-INF/ASL2.0'
+//    }
 
+//}
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
     //noinspection GradleDependency,GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
     //noinspection GradleDependency,GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:28.0.3'
-    implementation 'net.sourceforge.jtds:jtds:1.3.1'
-    //  implementation 'com.android.support:multidex:1.0.3'
-    //Lombok dependency
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    implementation 'com.google.mlkit:barcode-scanning:17.0.3'
+    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.0.7'
+    implementation 'com.dynamicelement.sdk.android:ui:1.0.7'
+//    implementation project(':logic')
+//    implementation project(':ui')
+
+    implementation 'io.grpc:grpc-android:1.51.1'
+    implementation 'io.grpc:grpc-okhttp:1.51.1'
+    implementation 'io.grpc:grpc-protobuf-lite:1.51.1'
+    implementation 'io.grpc:grpc-stub:1.51.1'
+
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    implementation 'com.google.mlkit:barcode-scanning:17.0.3'
-
-    implementation 'io.grpc:grpc-android:1.38.0'
-    implementation 'io.grpc:grpc-okhttp:1.38.0'
-    implementation 'io.grpc:grpc-protobuf-lite:1.38.0'
-    implementation 'io.grpc:grpc-stub:1.38.0'
-    //noinspection GradleCompatible
-//
-////    implementation 'com.github.MikeOrtiz:TouchImageView:3.0.1'
-//
-    //noinspection GradleDependency
-//    implementation 'me.dm7.barcodescanner:zbar:1.9.8'
-//    implementation 'com.google.zxing:core:3.4.1'
-
-    implementation 'com.dynamicelement.mddi.sdk.android:logic:0.2.7'
-    implementation 'com.dynamicelement.sdk.android:ui:0.2.7'
-
-    implementation platform('com.google.firebase:firebase-bom:30.3.2')
-
-    // Declare the dependencies for the Remote Config and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-config'
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
 
+    androidTestImplementation platform('com.google.firebase:firebase-bom:29.0.4')
+    androidTestImplementation 'com.google.firebase:firebase-analytics'
+    androidTestImplementation 'com.google.firebase:firebase-perf'
+    androidTestImplementation 'com.google.firebase:firebase-core:21.1.1'
+    androidTestImplementation 'androidx.test:runner:1.5.1'
+
+//    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+//    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+//    implementation 'com.android.support:multidex:1.0.3'
+//
+//
+//
+
+//
+//    //noinspection GradleDependency,GradleCompatible
+//    implementation 'androidx.appcompat:appcompat:1.3.1'
+//    //noinspection GradleDependency,GradleCompatible
+//    implementation 'com.android.support:appcompat-v7:28.0.0'
+//    //noinspection GradleCompatible
+//    implementation 'com.android.support:design:28.0.3'
+//    //noinspection GradleCompatible
+//    implementation 'com.android.support:appcompat-v7:28.0.0'
+//
+//    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+//
+//    implementation 'net.sourceforge.jtds:jtds:1.3.1'
+//    //  implementation 'com.android.support:multidex:1.0.3'
+//    //Lombok dependency
+//    compileOnly 'org.projectlombok:lombok:1.18.22'
+//    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+//    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+//    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+//
+//    //noinspection GradleCompatible
+////
+//////    implementation 'com.github.MikeOrtiz:TouchImageView:3.0.1'
+////
+//    //noinspection GradleDependency
+////    implementation 'me.dm7.barcodescanner:zbar:1.9.8'
+////    implementation 'com.google.zxing:core:3.4.1'
+//
+////    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.0.7'
+////    implementation 'com.dynamicelement.sdk.android:ui:1.0.7'
+////    implementation(name:'logic-1.0.7', ext:'aar')
+////    implementation(name:'ui-1.0.7', ext:'aar')
+////    implementation 'com.dynamicelement.mddi.sdk.android:logic:0.2.7'
+////    implementation 'com.dynamicelement.sdk.android:ui:0.2.7'
+//    implementation project(':logic')
+//    implementation project(':ui')
+//
+//    implementation platform('com.google.firebase:firebase-bom:30.3.2')
+//    implementation 'com.google.firebase:firebase-analytics'
+//    implementation 'com.google.firebase:firebase-perf'
+//    implementation 'com.google.firebase:firebase-core:21.1.1'
+//
+//    // Declare the dependencies for the Remote Config and Analytics libraries
+//    // When using the BoM, you don't specify versions in Firebase library dependencies
+//    implementation 'com.google.firebase:firebase-config'
+//    implementation 'com.google.firebase:firebase-analytics'
+//
+//    testImplementation 'androidx.test:runner:1.5.1'
+//    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
+//    testImplementation 'org.mockito:mockito-inline:4.9.0'
 }
 
 
-// Setting an architecture classifier when in Mac OSX for the protobuf dependencies.
-OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
-String archClassifier = os.macOsX ? ":osx-x86_64" : ""
-protobuf {
-    protoc { artifact = 'com.google.protobuf:protoc:3.12.4' + archClassifier }
-    plugins {
-        grpc { artifact = 'io.grpc:protoc-gen-grpc-java:1.31.0' + archClassifier }
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java { option 'lite' }
-            }
-            task.plugins {
-                grpc { option 'lite' }
-            }
-        }
-    }
-}
+//// Setting an architecture classifier when in Mac OSX for the protobuf dependencies.
+//OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
+//String archClassifier = os.macOsX ? ":osx-x86_64" : ""
+//protobuf {
+//    protoc { artifact = 'com.google.protobuf:protoc:3.12.4' + archClassifier }
+//    plugins {
+//        grpc { artifact = 'io.grpc:protoc-gen-grpc-java:1.31.0' + archClassifier }
+//    }
+//    generateProtoTasks {
+//        all().each { task ->
+//            task.builtins {
+//                java { option 'lite' }
+//            }
+//            task.plugins {
+//                grpc { option 'lite' }
+//            }
+//        }
+//    }
+//}

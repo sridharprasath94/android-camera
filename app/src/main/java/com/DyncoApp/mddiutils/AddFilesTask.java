@@ -39,7 +39,7 @@ public class AddFilesTask extends AddTask {
                         @NonNull File addFolder,
                         @NonNull AddCallback addCallback) {
 
-        super(clientService, addFolder, createNewCollection, addCallback);
+        super(clientService, addFolder,  addCallback);
         Objects.requireNonNull(addCallback);
         try {
             CheckFiles.builder().currentFolder(addFolder).instanceType(instanceType).checkFilesCallback(new CheckFilesCallback() {
@@ -52,18 +52,18 @@ public class AddFilesTask extends AddTask {
 
                         //Assign Cid and Sno
                         MddiUtils.CidSnoResult cidSnoResult = assignCidSno(jpgFiles[0], txtFiles, instanceType);
-
-                        executeCreateCollectionTask(collectionBitmap, cidSnoResult.cid, cidSnoResult.sno, new Callback<CollectionResult>() {
-                            @Override
-                            public void onResponse(CollectionResult response) {
-                                addTask(jpgFiles, txtFiles);
-                            }
-
-                            @Override
-                            public void onError(ExceptionType exceptionType, Exception e) {
-                                addCallback.onError(exceptionType, e);
-                            }
-                        });
+//
+//                        executeCreateCollectionTask(collectionBitmap, cidSnoResult.cid, cidSnoResult.sno, new Callback<CollectionResult>() {
+//                            @Override
+//                            public void onResponse(CollectionResult response) {
+//                                addTask(jpgFiles, txtFiles);
+//                            }
+//
+//                            @Override
+//                            public void onError(ExceptionType exceptionType, Exception e) {
+//                                addCallback.onError(exceptionType, e);
+//                            }
+//                        });
                     } else {
                         addTask(jpgFiles, txtFiles);
                     }

@@ -27,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -46,8 +45,6 @@ import com.dynamicelement.sdk.android.ping.PingResult;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.SneakyThrows;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class A2_LoginScreen extends AppCompatActivity {
@@ -82,7 +79,6 @@ public class A2_LoginScreen extends AppCompatActivity {
     protected ImageButton backButton;
 
     @SuppressLint("WrongThread")
-    @SneakyThrows
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +93,7 @@ public class A2_LoginScreen extends AppCompatActivity {
         enableLayoutItems();
         globalVariables = (GlobalVariables) getApplicationContext();
 
-        checkStoragePermission();
+//        checkStoragePermission();
 
         if (globalVariables.selectedUserMode == SelectedUserMode.ADMIN) {
             createCollectionLayout.setVisibility(View.INVISIBLE);
@@ -603,25 +599,25 @@ public class A2_LoginScreen extends AppCompatActivity {
         dialog.show();
     }
 
-    /**
-     * Request storage permission
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 50) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Toast this message
-                Toast.makeText(this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
-            } else {
-                //Toast this message
-                Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
-        }
-    }
+//    /**
+//     * Request storage permission
+//     */
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == 50) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                //Toast this message
+//                Toast.makeText(this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
+//            } else {
+//                //Toast this message
+//                Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
+//                onBackPressed();
+//            }
+//        }
+//    }
 }
 
 //Restore to defaults//////////////////////////

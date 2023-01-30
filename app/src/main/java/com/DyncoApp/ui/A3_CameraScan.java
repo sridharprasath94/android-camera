@@ -4,8 +4,6 @@ import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.buildBitm
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.createResizedBitmap;
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.getBytesFromBitmap;
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.getImageVariance;
-import static com.dynamicelement.sdk.android.ui.CameraLayoutType.LAYOUT_WITHOUT_SCAN;
-import static com.dynamicelement.sdk.android.ui.CameraLayoutType.LAYOUT_WITH_SCAN;
 import static com.dynamicelement.sdk.android.ui.CameraMddiMode.MDDI_SEARCH_ON;
 
 import android.annotation.SuppressLint;
@@ -56,7 +54,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class A3_CameraScan extends AppCompatActivity implements View.OnClickListener {
     private static final String sharedprefs = "sharedPrefsOverlay";
     private static final String overlayOption = "overlayOption";
@@ -95,8 +92,8 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
     protected int currentDirectoryCount;
     protected File picDir;
 
-    @SuppressLint("CommitPrefEdits")
     @RequiresApi(api = Build.VERSION_CODES.P)
+    @SuppressLint("CommitPrefEdits")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,11 +202,17 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
      */
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void startSearch() {
-        CameraParameters cameraParameters = new CameraParameters.Builder(MDDI_SEARCH_ON)
-                .setLayoutConfig(LAYOUT_WITH_SCAN)
+        CameraParameters cameraParameters = new CameraParameters.Builder()
+                .selectRatio(CameraParameters.CameraRatioMode.RATIO_1X1)
+                .enableBarcodeScan(true)
+                .enableDefaultLayout(false)
+                .selectPrimaryCamera(true)
+                .blurBeforeBarcode(true)
                 .build();
-        cameraview.initCamera(globalVariables.clientService, globalVariables.userCid,
-                globalVariables.userSno, cameraParameters, new CameraMddiCallback() {
+        cameraview.initCameraMddi(globalVariables.clientService, MDDI_SEARCH_ON, this,
+                globalVariables.userCid,
+                globalVariables.userSno,
+                cameraParameters, new CameraMddiCallback() {
                     @Override
                     public void onInitialised(int overlayWidth, int overlayHeight) {
 
@@ -594,19 +597,19 @@ public class A3_CameraScan extends AppCompatActivity implements View.OnClickList
         mddiTextView.setVisibility(View.VISIBLE);
 //        cameraview.changeFlashState(false);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-        width = width - 150;
-
-        while (width % 3 != 0) {
-            width++;
-        }
-        int height = (width * 4) / 3;
-        cameraview.requestLayout();
-        cameraview.getLayoutParams().width = width;
-        cameraview.getLayoutParams().height = height;
+//        DisplayMetrics displayMetrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+////        int height = displayMetrics.heightPixels;
+//        int width = displayMetrics.widthPixels;
+//        width = width - 150;
+//
+//        while (width % 3 != 0) {
+//            width++;
+//        }
+//        int height = (width * 4) / 3;
+//        cameraview.requestLayout();
+//        cameraview.getLayoutParams().width = width;
+//        cameraview.getLayoutParams().height = height;
     }
 
     /**

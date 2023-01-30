@@ -20,9 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--dontwarn com.google.common.**
-# Ignores: can't find referenced class javax.lang.model.element.Modifier
--dontwarn com.google.errorprone.annotations.**
--dontwarn javax.naming.**
--dontwarn okio.**
--dontwarn sun.misc.Unsafe
+#-dontwarn com.google.common.**
+## Ignores: can't find referenced class javax.lang.model.element.Modifier
+#-dontwarn com.google.errorprone.annotations.**
+#-dontwarn javax.naming.**
+#-dontwarn okio.**
+#-dontwarn sun.misc.Unsafe
+-dontwarn com.fasterxml.jackson.databind.**
+-keepclassmembers class * {
+     @com.fasterxml.jackson.annotation.* *;
+}

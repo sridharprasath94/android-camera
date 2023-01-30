@@ -124,9 +124,8 @@ public interface Constants {
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     static ClientService getDefaultEc2ClientService() {
-
         return new ClientService(Constants.hostDefaultEC2, port, username, password, userid,
-                hostname, cert, InstanceType.DB_SNO, "pli");
+                hostname, cert, InstanceType.DB_SNO, "pli",true);
     }
 
 //    /**
