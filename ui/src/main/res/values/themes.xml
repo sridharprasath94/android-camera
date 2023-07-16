@@ -1,0 +1,13 @@
+<resources>
+
+    <style name="DarkActionBar" parent="Theme.AppCompat.DayNight.DarkActionBar" />
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
+    <style name="SplashScreenTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">
+            @drawable/splash_image
+        </item>
+
+
+    </style>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/homeScreenNavigation">
+
+    <fragment
+        android:id="@+id/secretScreen"
+        android:name="com.DyncoApp.ui.secret.SecretScreen"
+        android:label="SecretScreen" >
+        <action
+            android:id="@+id/action_secretScreen_to_homeScreenNavigation"
+            app:destination="@id/homeScreenNavigation" />
+    </fragment>
+    <navigation android:id="@+id/homeScreenNavigation"
+        app:startDestination="@id/homeScreen">
+        <activity
+            android:id="@+id/homeScreen"
+            android:name="com.DyncoApp.ui.home.HomeScreen"
+            android:label="mode_select_screen"
+            tools:layout="@layout/mode_select_screen" />
+        <action
+            android:id="@+id/action_homeScreen_to_secretScreenNavigation"
+            app:destination="@id/secretScreen" />
+    </navigation>
+</navigation>

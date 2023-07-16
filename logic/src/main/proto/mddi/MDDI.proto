@@ -1,0 +1,608 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dynamicelement.mddi";
+option java_outer_classname = "MddiProto";
+option objc_class_prefix = "MDDI";
+
+package mddi;
+
+// RPC's of the front-end Directory service
+service MddiTenantService {
+
+	//createCollection RPC for default instance
+	rpc createTenantCollection(RequestTenantCollection) returns (ResponseTenantCollection) {}
+
+	//create collection RPC for ivf backend (should not be used by client unless stated)
+	rpc createCollection(RequestCollection) returns (ResponseCollection) {}
+
+	//get SampleImage RPC for default instance (best suited for dbsno with the only con - cannot retrieve sample image for collection of ivf type)
+	rpc getCollectionData(TenantCollectionId) returns (CollectionIdData) {}
+
+	//get SampleImage RPC for ivf backend (should not be used by client other than for retrieving sample image from ivf backend )
+	rpc getSampleImage(CollectionId) returns (SampleImageResponse) {}
+
+	//delete Collection RPC for default instance
+	rpc deleteTenantCollection(RequestDeleteTenantCollection) returns (ResponseDeleteTenantCollection) {}
+
+	//delete Collection RPC for ivf backend (should not be used by client unless stated)
+	rpc deleteCollection(RequestDeleteCollection) returns (ResponseDeleteCollection) {}
+
+	//search stream RPC for default instance/ivf backend
+	rpc searchStream(stream StreamImage) returns (stream SearchStreamResponse) {}
+
+	//test image for default instance/ivf backend
+	rpc testImageBeforeAdd(stream StreamImage) returns (stream TestImageBeforeAddStreamResponse) {}
+
+	//add stream RPC for default instance/ivf backend
+	rpc addStream(stream StreamImage) returns (stream AddStreamResponse) {}
+
+}
+
+
+
+//The Image message is the atomic entity of Images message.
+message Image{
+
+	//optional SNO as string
+	string sno = 2;
+
+	//repeated imagepixels
+	repeated uint32 image_pixels = 1;
+
+	//optional but mandatory for creating collection and get sample image API's
+	uint64 image_width = 3;
+
+	uint64 image_height = 4;
+
+	//current mappings
+	//0 - CV_8UC1
+	//1 - CV_8UC3 (color)
+	uint64 image_format = 5;
+
+	string image_ext = 6;
+
+	//this is to be updated
+	string image_name = 7;
+
+	//string for ivf required
+	string user_data = 8;
+
+
+}
+
+//error message entails the error_code(int),message(string),name(string)
+message mddiError{
+
+	//error code as int
+	uint64 errorCode = 1;
+
+	//error message as string
+	string errorMessage = 2;
+
+	//error name/category
+	string errorCategory = 3;
+}
+
+message StreamImage{
+
+	//repeated Image object
+	Image image = 1;
+
+	//mandatory timestamp as string
+	string timestamp = 2;
+
+	//optional version id as string
+	string version_id = 3;
+
+	//mandatory collection_id as integer
+	string cid = 4;
+
+	//flag for debugging
+	bool debug_flag = 5;
+
+	//required by OriginStamps
+	string request_id = 6;
+
+	//required by OriginStamps i.e. signature
+	string signature = 7;
+
+	//string for tenant_id
+	string tenant_id = 8;
+
+}
+
+//return message of SearchStream RPC
+message SearchResponse{
+
+	//mandtory UID to be returned
+	string uid = 1;
+
+	//mandatory score to be returned
+	float score = 2;
+
+	//optional score to be returned
+	float score_2 = 3;
+
+
+}
+
+//integral return message of searchStream RPC
+message SearchStreamResponse{
+
+	//repeated SearchResponse objected
+	SearchResponse searchresponse = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//optional single trip time
+	string single_trip_time = 3;
+
+	//string for rpc authentication
+	string ack = 4;
+
+	//optional filename for validation
+	string filename = 5;
+
+	//required by OriginStamps
+	string request_id = 6;
+
+	//required by OriginStamps i.e. signature
+	string signature = 7;
+
+	//string for version_id
+	string version_id = 8;
+
+	//string SNO - signature
+	string sno = 9;
+
+	//string cid - signature
+	string cid = 10;
+
+	//string for tenant_id
+	string tenant_id = 11;
+
+
+}
+
+//partial message of addStream response
+message AddResponses{
+
+	//list of successfully added snos
+	repeated uint64 success_add_snos = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//list of snos associated with errors
+	repeated uint64 error_add_snos = 3;
+
+	//list of snos with duplicate entries in index
+	repeated uint64 dup_add_snos = 4;
+
+	//uint for total images received
+	uint64 total_count = 5;
+
+	//count of total images added successfully
+	uint64 success_add_count = 6;
+
+	//count of duplicate entries encountered while adding
+	uint64 dup_add_count = 7;
+
+	//error count in adding images because of other reasons
+	uint64 error_add_count = 8;
+
+	//string for tenant_id
+	string tenant_id = 9;
+
+}
+
+//integrated message of addStream response
+message AddStreamResponse{
+
+	//AddResponse
+	AddResponses add_reponses = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//acknowledgement string from the server
+	string ack = 3;
+
+	//string for single trip time
+	string single_trip_time = 4;
+
+	//string for version
+	string version_id = 5;
+
+	//string for tenant_id
+	string tenant_id = 6;
+
+	//string for cid
+	string cid = 7;
+
+}
+
+//request message of MddiTenantService -> getCollectionData rpc
+message TenantCollectionId {
+
+	//string for cid to be fetched
+	string cid = 1;
+
+	//string timestamp for calculating the STT
+	string timestamp = 2;
+
+	//string for specifying the version_id of RPC
+	string version_id = 3;
+
+	//flag to fetch owner_id information
+	bool owner_id_flag = 4;
+
+	//flag to fetch owner name
+	bool owner_name_flag  = 5;
+
+	//flag to fetch owner address
+	bool owner_address_flag  = 6;
+
+	//flag to fetch sample_image
+	bool sample_img_flag = 8;
+
+	//string for SNO - tokyo exhibition requirement
+	string sno = 9;
+
+	//string for tenant_id
+	string tenant_id = 10;
+
+	//flag to fetch sample_image properties
+	bool sample_img_properties_flag = 11;
+
+	//flag to fetch sample_image pixels
+	bool sample_img_pixels_flag = 12;
+
+}
+
+//request message for MddiTenantService -> getSampleImage rpc
+message CollectionId {
+
+	//string for cid to be fetched
+	string cid = 1;
+
+	//mandatory timestamp for calculating the STT
+	string timestamp = 2;
+
+	string version_id = 3;
+
+	//flags to get corresponding information
+	bool owner_id_flag = 4;
+
+	//flag for owner name
+	bool owner_name_flag  = 5;
+
+	//flag for owner address
+	bool owner_address_flag  = 6;
+
+	//flag for owner other information
+	bool owner_other_information_flag  = 7;
+
+	//flag for sample image
+	bool sample_img_flag = 8;
+
+	//string for SNO - tokyo exhibition requirement
+	string sno = 9;
+
+	//string for tenant_id
+	string tenant_id = 10;
+
+	//flag for sample image
+	bool sample_img_properties_flag = 11;
+
+	//flag for sample image pixels
+	bool sample_img_pixels_flag = 12;
+
+
+
+}
+
+//response message for MddiTenantService -> getCollectionData rpc
+message CollectionIdData{
+
+	//Image if sample_image_flag is set in request i.e. CollectionId
+	Image sample_image = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//timestamp as string
+	string single_trip_time = 3;
+
+	//rpc authentication from the server
+	string ack = 4;
+
+	//string for owner name
+	string owner_id = 5;
+
+	//string for owner name
+	string owner_name  = 6;
+
+	//string for owner address
+	string owner_address  = 7;
+
+	//string for ip
+	string ip = 8;
+
+	//string for port
+	string port = 9;
+
+	//string for cid
+	string cid = 10;
+
+	//string for type of instance
+	string cid_type = 11;
+
+	//string for tenant_id retrieved from
+	string tenant_id = 12;
+
+	//string for if sno exists
+	bool sno_exists_flag = 13;
+
+}
+
+//response message for MddiTenantService -> getSampleImage rpc
+message SampleImageResponse{
+
+	//Image if sample_image_flag is set in request i.e. CollectionId
+	Image sample_image = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//timestamp as string
+	string single_trip_time = 3;
+
+	//rpc authentication message from the server
+	string ack = 4;
+
+	//string for owner name
+	string owner_id = 5;
+
+	//string for owner name
+	string owner_name  = 6;
+
+	//string for owner address
+	string owner_address  = 7;
+
+	//string for owner other information
+	string owner_other_information  = 8;
+
+	//string for cid
+	string cid = 9;
+
+	//boolean for SNO-existence -> tokyo exhibition requirement
+	bool sno_exists_flag = 10;
+
+	//string for tenant_id
+	string tenant_id = 11;
+
+	//string for server version id
+	string version_id = 12;
+
+}
+
+
+
+//request message for MddiTenantService -> createTenantCollection rpc
+message RequestTenantCollection {
+
+	//repeated Image object
+	Image image = 1;
+
+	//mandatory timestamp as string
+	string timestamp = 2;
+
+	//mandatory version id as string
+	string version_id = 3;
+
+	//name of the collection
+	string collection_name = 4;
+
+	//ownerid of the collection
+	string collection_owner_id = 5;
+
+	//version of the API
+	string collection_version_id = 6;
+
+	//string CID to be created on the server side
+	string cid = 7;
+
+	//string for TenantID
+	string tenant_id = 8;
+
+}
+
+//request mesage for MddiTenant Service -> createCollection rpc
+message RequestCollection {
+
+
+	//Image object
+	Image image = 1;
+
+	//mandatory timestamp as string
+	string timestamp = 2;
+
+	//mandatory version id as string
+	string version_id = 3;
+
+	//name of the collection
+	string collection_name = 4;
+
+	//ownerid of the collection
+	string collection_owner_id = 5;
+
+	//description short of the collection
+	string collection_description_short = 6;
+
+	//description long of the collection
+	string collection_description_long = 7;
+
+	//version of the API
+	string collection_version_id = 8;
+
+	//string CID to be created on the server side
+	string cid = 9;
+
+	//string for tenant_id
+	string tenant_id = 10;
+
+
+}
+
+//response message for MddiTenantService -> ResponseTenantCollection rpc
+message ResponseTenantCollection {
+
+	//string for collection ID
+	string cid = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//string for single trip time
+	string single_trip_time = 3;
+
+	//rpc ack from the server
+	string ack = 4;
+
+	//port for response
+	string port = 5;
+
+	//string url
+	string ip = 6;
+
+	//string for tenant_id
+	string tenant_id = 7;
+
+}
+
+
+//response message for MDDI Service -> createCollection rpc
+message ResponseCollection {
+
+	//string for collection ID
+	string cid = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//string for single trip time
+	string single_trip_time = 3;
+
+	//string ack from the server
+	string ack = 4;
+
+	//string for tenant_id
+	string tenant_id = 5;
+
+	//string for server version_id
+	string version_id = 6;
+
+}
+
+//request message for DirectoryService -> deleteCollectionDirectory rpc
+message RequestDeleteTenantCollection {
+
+	//mandatory timestamp as string
+	string timestamp = 1;
+
+	//mandatory version id as string
+	string version_id = 2;
+
+	//string for deleting a collection id
+	string cid = 3;
+
+	//string for tenant_id
+	string tenant_id = 4;
+
+}
+
+// request message for MDDI Service -> deleteCollection rpc
+message RequestDeleteCollection {
+
+	//mandatory timestamp as string
+	string timestamp = 1;
+
+	//mandatory version id as string
+	string version_id = 2;
+
+	//string for deleting a collection id
+	string cid = 3;
+
+	//string for tenant_id
+	string tenant_id = 4;
+}
+
+
+//response message for MddiTenantService -> deleteTenantCollection rpc
+message ResponseDeleteTenantCollection {
+
+	//string for single trip time
+	string single_trip_time = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//rpc acknowledgement from the server
+	string ack = 3;
+
+	//string tenant_id
+	string tenant_id = 4;
+
+}
+
+//response message for MddiTenantService -> deleteCollection rpc
+message ResponseDeleteCollection {
+
+	//string for single trip time
+	string single_trip_time = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//string for response
+	string ack = 3;
+
+	//string for tenant_id
+	string tenant_id = 4;
+
+	//string for cid
+	string cid = 5;
+
+	//string for version_id
+	string version_id = 6;
+
+}
+
+//request message for MddiTenantService -> testImage rpc
+message TestImageBeforeAddStreamResponse {
+
+	//string for single trip time
+	string single_trip_time = 1;
+
+	//errorMessage
+	mddiError error = 2;
+
+	//string for response
+	string ack = 3;
+
+	//string for version_id
+	string version_id = 4;
+
+	//string for tenant_id
+	string tenant_id = 5;
+
+	//string for cid
+	string cid = 6;
+
+}
+
+
+

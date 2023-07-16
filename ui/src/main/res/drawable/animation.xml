@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:drawable="@drawable/ic_rect1"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect2"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect3"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect4"
+        android:duration="25" />
+    <item
+        android:drawable="@drawable/ic_rect5"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect6"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect7"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect8"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect9"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect10"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect11"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect10"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect9"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect8"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect7"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect6"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect5"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect4"
+        android:duration="75" />
+
+    <item
+        android:drawable="@drawable/ic_rect3"
+        android:duration="75" />
+    <item
+        android:drawable="@drawable/ic_rect2"
+        android:duration="75" />
+
+</animation-list>

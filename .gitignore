@@ -6,10 +6,10 @@
 /app/build
 /app/release
 /app/release/
+/app/src/main/java/com/DyncoApp/ui/Backup.java
 
 /.idea/
 /app/.cxx/
 
 local.properties
-
-/.idea/
+Backup.java

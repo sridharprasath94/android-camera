@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.DyncoApp">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -27,22 +25,26 @@
         android:resizeable="true"
         android:smallScreens="true" />
 
+
     <application
-        android:name=".ui.GlobalVariables"
         android:icon="@drawable/dynamicelementlogo"
         android:label="@string/Label"
         android:largeHeap="true"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        android:theme="@style/NoActionBarTheme"
         tools:replace="android:label"
         tools:targetApi="q">
-
         <activity
-            android:name=".ui.A0_Onboarding"
+            android:name=".ui.modeSelect.ModeSelectScreen"
             android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.onboarding.OnboardingScreen"
             android:exported="true"
-            android:theme="@style/SplashScreenTheme">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreenTheme"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,30 +52,36 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.A5_SqlCameraScreen"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".ui.Activity_0_secret"
+            android:name=".ui.secret.SecretScreen"
             android:exported="false"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".ui.A3_CameraScan"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.A4_ResultScreen"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.A2_LoginScreen"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+            tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ui.A1_HomeScreen"
+            android:name=".ui.cameraScan.CameraScanScreen"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashScreenTheme" />
-    </application>
-    <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode">
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.summary.SummaryScreen"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.verificationFailure.VerificationFailureScreen"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.selectCollection.SelectCollectionScreen"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.home.HomeScreen"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
-    </meta-data>
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
+    </application>
 
 </manifest>

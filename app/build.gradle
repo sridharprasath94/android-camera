@@ -16,8 +16,8 @@ android {
         applicationId "com.DyncoApp"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 7
-        versionName "1.0.0"
+        versionCode 1
+        versionName "1.1"
         multiDexEnabled true
         resConfigs "en"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -56,7 +56,7 @@ android {
         }
     }
 
-        viewBinding {
+    viewBinding {
         enabled = true
     }
     buildFeatures {
@@ -170,15 +170,22 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
 
     implementation 'com.google.mlkit:barcode-scanning:17.0.3'
-    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.0.7'
-    implementation 'com.dynamicelement.sdk.android:ui:1.0.7'
-//    implementation project(':logic')
-//    implementation project(':ui')
+//    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.0.8'
+//    implementation 'com.dynamicelement.sdk.android:ui:1.0.8'
+//    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.0.7'
+//    implementation 'com.dynamicelement.sdk.android:ui:1.0.7'
+    implementation project(':logic')
+    implementation project(':ui')
 
     implementation 'io.grpc:grpc-android:1.51.1'
     implementation 'io.grpc:grpc-okhttp:1.51.1'
     implementation 'io.grpc:grpc-protobuf-lite:1.51.1'
     implementation 'io.grpc:grpc-stub:1.51.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.navigation:navigation-fragment:2.5.3'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
+
+
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
