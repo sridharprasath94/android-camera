@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.Navigation;
 
 import com.DyncoApp.R;
 import com.DyncoApp.databinding.SecretScreenBinding;
@@ -19,7 +19,6 @@ public class SecretScreen extends Fragment {
     private SecretScreenBinding binding;
     private SecretModel secretModel;
 
-    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = SecretScreenBinding.inflate(inflater, container, false);
@@ -40,10 +39,7 @@ public class SecretScreen extends Fragment {
         binding.flashToggleView.setOnCheckedChangeListener((buttonView, isChecked) -> secretModel.saveToggleFlash(isChecked));
         binding.scoreToggleView.setOnCheckedChangeListener((buttonView, isChecked) -> secretModel.saveShowScore(isChecked));
 
-        binding.backButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager =  requireActivity().getSupportFragmentManager();
-            fragmentManager.popBackStack();
-        });
+        binding.backButton.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_secretScreen_to_homeScreen));
     }
 
     private String getAndroidVersion() {

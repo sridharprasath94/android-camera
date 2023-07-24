@@ -1,42 +1,45 @@
 package com.DyncoApp.ui.cameraScan;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
+import static android.util.Base64.DEFAULT;
 import static com.DyncoApp.ui.common.Constants.DEFAULT_OVERLAY;
 import static com.DyncoApp.ui.common.Constants.DEFAULT_ZOOM_BUTTON_VISIBLE;
 import static com.DyncoApp.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
+import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.createResizedBitmap;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
 
 import com.DyncoApp.R;
 import com.DyncoApp.databinding.CameraScanScreenBinding;
+import com.DyncoApp.navigation.NavigationService;
 import com.DyncoApp.ui.common.Constants;
 import com.DyncoApp.ui.common.MddiMode;
-import com.DyncoApp.ui.modeSelect.ModeSelectScreen;
-import com.DyncoApp.ui.summary.SummaryScreen;
-import com.DyncoApp.ui.verificationFailure.VerificationFailureScreen;
+import com.DyncoApp.ui.common.SummaryViewArguments;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Optional;
 
-public class CameraScanScreen extends AppCompatActivity implements View.OnClickListener {
+public class CameraScanScreen extends Fragment {
     private CameraScanScreenBinding binding;
     protected AnimationDrawable uploadingAnimation;
     protected boolean flashState;
@@ -44,29 +47,39 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
     protected boolean overlayEnabled = DEFAULT_OVERLAY;
     protected Vibrator vibrator;
     private CameraScanModel cameraScanModel;
+    private boolean createCollectionSelected;
+    private boolean userMode;
+    private String mddiCid;
+    private MddiMode mddiMode;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = CameraScanScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
+            }
+        });
+        return binding.getRoot();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
-    @SuppressLint("CommitPrefEdits")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = CameraScanScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        cameraScanModel = new CameraScanModel(this, Constants.getDefaultEc2ClientService1_1());
+        cameraScanModel = new CameraScanModel(this.getContext(), Constants.getDefaultEc2ClientService1_1());
         overlayEnabled = cameraScanModel.getOverlayValue();
         initializeLayout();
 
-        MddiMode mddiMode = (MddiMode) Optional.ofNullable(getIntent().
-                        getSerializableExtra(getString(R.string.mddi_mode)))
-                .orElse(cameraScanModel.getMddiMode());
+        CameraScanScreenArgs args = CameraScanScreenArgs.fromBundle(getArguments());
 
-        boolean createCollectionSelected = getIntent().getBooleanExtra(getString(R.string.create_collection),
-                cameraScanModel.getSavedCreateCollectionValue());
-        String mddiCid = Optional.ofNullable(getIntent().getStringExtra(getString(R.string.mddi_cid)))
-                .orElse(cameraScanModel.getSavedCidText());
+        createCollectionSelected = args.getCreateCollection();
+        mddiCid = args.getMddiCid();
+        mddiMode = args.getMddiMode();
+        userMode = args.getUserMode();
 
-        binding.collectionTextView.setText(String.format("Collection name : %s", mddiCid));
+        binding.collectionTextView.setText(String.format(getString(R.string.camera_scan_collection_name) + " %s", mddiCid));
         cameraScanModel.initMddi(binding.cameraView, mddiMode, mddiCid);
 
         if (mddiMode == MddiMode.REGISTER) {
@@ -75,7 +88,7 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
             verifyProcess();
         }
 
-        cameraScanModel.getExceptionObserver().observe(this, this::handleException);
+        cameraScanModel.getExceptionObserver().observe(this.requireActivity(), this::handleException);
 
         flashState = cameraScanModel.getSavedFlash();
         binding.cameraView.changeFlashState(flashState);
@@ -102,13 +115,46 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
                 isZoomButtonVisible = false;
                 binding.zoomSeekbar.setVisibility(View.INVISIBLE);
                 binding.zoomSeekbar.setEnabled(false);
-                Toast.makeText(CameraScanScreen.this,
-                        "Zoom Level is " + seekBar.getProgress() + "/" + seekBar.getMax(),
+                Toast.makeText(CameraScanScreen.this.requireContext(),
+                        getString(R.string.camera_scan_zoom_level) +
+                                " " + seekBar.getProgress() + "/" + seekBar.getMax(),
                         Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.cameraView.setOnClickListener(v -> binding.cameraView.focusCamera());
+
+
+        binding.flashButton.setOnClickListener(view14 -> {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            binding.flashButton.setImageResource(flashState ? R.drawable.ic_flash_off_ : R.drawable
+                    .ic_flash_on);
+            binding.cameraView.changeFlashState(!flashState);
+            flashState = !flashState;
+        });
+
+        binding.overlayButton.setOnClickListener(view13 -> {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            binding.overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack_slash :
+                    R.drawable.ic_stack);
+            binding.overlayImageView.setVisibility(overlayEnabled ? View.INVISIBLE : View.VISIBLE);
+            overlayEnabled = !overlayEnabled;
+            cameraScanModel.saveOverlayValue(overlayEnabled);
+        });
+
+        binding.zoomButton.setOnClickListener(view12 -> {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            binding.zoomButton.setImageResource(isZoomButtonVisible ? R.drawable.ic_zoom : R
+                    .drawable.ic_baseline_zoom_in_24);
+            binding.zoomSeekbar.setVisibility(isZoomButtonVisible ? View.INVISIBLE : View.VISIBLE);
+            binding.zoomSeekbar.setEnabled(!isZoomButtonVisible);
+            isZoomButtonVisible = !isZoomButtonVisible;
+        });
+
+        binding.backButton.setOnClickListener(view1 -> {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
+        });
     }
 
     private void verifyProcess() {
@@ -116,8 +162,7 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
         binding.verifyTextView.setVisibility(View.VISIBLE);
         binding.progressBar.setMax(NEGATIVE_SEARCH_THRESHOLD);
 
-
-        cameraScanModel.getGetSampleImageObserver().observe(this, bitmap -> {
+        cameraScanModel.getGetSampleImageObserver().observe(this.requireActivity(), bitmap -> {
             binding.overlayImageView.setVisibility(View.VISIBLE);
             binding.overlayImageView.setAlpha((float) 0.4);
             binding.overlayImageView.setImageBitmap(bitmap);
@@ -126,48 +171,53 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        cameraScanModel.getVerifyTextObserver().observe(this, text -> binding.verifyTextView.setText(text));
+        cameraScanModel.getVerifyTextObserver().observe(this.requireActivity(),
+                text -> binding.verifyTextView.setText(text));
 
-        cameraScanModel.getServerResponseCountObserver().observe(this, binding.progressBar::setProgress);
+        cameraScanModel.getServerResponseCountObserver().observe(this.requireActivity(),
+                binding.progressBar::setProgress);
 
-        cameraScanModel.getPositiveResponseObserver().observe(this, searchResult -> {
-            binding.cameraView.stopMddiSearch();
-            cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-            //Go to the next activity
-            Intent intent = new Intent(getApplicationContext(), SummaryScreen.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(getString(R.string.summary_screen_bundle_key), getString(R.string.summary_screen_bundle_type_search));
-            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            searchResult.getMddiImage().compress(Bitmap.CompressFormat.JPEG, 10, bs);
-            intent.putExtra(getString(R.string.summary_screen_bundle_value_image), bs.toByteArray())
-                    .putExtra(getString(R.string.summary_screen_bundle_value_uid), searchResult.getUid())
-                    .putExtra(getString(R.string.summary_screen_bundle_value_score), searchResult.getScore())
-                    .putExtra(getString(R.string.summary_screen_bundle_value_rating), searchResult.getRating()).
-                    putExtras(bundle).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        });
+        cameraScanModel.getPositiveResponseObserver().observe(this.requireActivity(),
+                searchResult -> {
+                    binding.cameraView.stopMddiSearch();
+                    cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
 
-        cameraScanModel.getNegativeThresholdObserver().observe(this, unused -> {
+                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                    searchResult.getMddiImage().compress(Bitmap.CompressFormat.JPEG, 10, bs);
+                    String base64String = Base64.encodeToString(bs.toByteArray(), DEFAULT);
+
+                    SummaryViewArguments arguments = new SummaryViewArguments();
+                    arguments.setCreateCollection(createCollectionSelected);
+                    arguments.setUserMode(userMode);
+                    arguments.setMddiMode(mddiMode.name());
+                    arguments.setMddiBase64Image(base64String);
+                    arguments.setMddiCid(searchResult.getCid());
+                    arguments.setMddiRating(searchResult.getRating());
+                    arguments.setMddiScore(searchResult.getScore());
+                    arguments.setMddiUid(searchResult.getUid());
+
+                    NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
+                });
+
+        cameraScanModel.getNegativeThresholdObserver().observe(this.requireActivity(), unused -> {
             binding.cameraView.onPause();
             cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-            Intent intent = new Intent(getApplicationContext(), VerificationFailureScreen.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            binding.progressBar.setProgress(0);
+            NavigationService.CameraNav.moveToVerificationFailureView(getView(), userMode,
+                    createCollectionSelected, mddiCid, mddiMode);
         });
     }
 
     private void registerProcess(boolean createCollectionSelected, String mddiCid) {
-        Button registerButton = findViewById(R.id.registerButton);
-        registerButton.setVisibility(View.VISIBLE);
+        binding.registerButton.setVisibility(View.VISIBLE);
         binding.overlayImageView.setVisibility(View.INVISIBLE);
         binding.overlayButton.setVisibility(View.INVISIBLE);
 
-        registerButton.setOnClickListener(view -> {
+        binding.registerButton.setOnClickListener(view -> {
             Bitmap addBitmap = cameraScanModel.getCurrentBitmap();
             if (addBitmap == null) {
-                Toast.makeText(CameraScanScreen.this, "Wait for some time", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraScanScreen.this.requireActivity(),
+                        getString(R.string.wait_for_some_time), Toast.LENGTH_SHORT).show();
                 return;
             }
             Bitmap resizedBitmap = createResizedBitmap(addBitmap,
@@ -177,108 +227,40 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
             addAlertDialog(resizedBitmap, mddiCid, createCollectionSelected);
         });
 
-        cameraScanModel.getAddResponseObserver().observe(this, addResult -> {
-            runOnUiThread(() -> Toast.makeText(CameraScanScreen.this, "Added the " +
-                            "image",
+        cameraScanModel.getAddResponseObserver().observe(this.requireActivity(), addResult -> {
+            requireActivity().runOnUiThread(() -> Toast.makeText(CameraScanScreen.this.requireActivity(),
+                    getString(R.string.summary_screen_successful_add),
                     Toast.LENGTH_SHORT).show());
             cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-            Intent intent = new Intent(getApplicationContext(),
-                    SummaryScreen.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(getString(R.string.summary_screen_bundle_key), getString(R.string.summary_screen_bundle_type_add));
 
             ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            addResult.getMddiImage().compress(Bitmap.CompressFormat.PNG, 50, bs);
-            intent.putExtra(getString(R.string.summary_screen_bundle_value_image), bs.toByteArray())
-                    .putExtras(bundle).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            addResult.getMddiImage().recycle();
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            addResult.getMddiImage().compress(Bitmap.CompressFormat.JPEG, 10, bs);
+            String base64String = Base64.encodeToString(bs.toByteArray(), DEFAULT);
+
+            SummaryViewArguments arguments = new SummaryViewArguments();
+            arguments.setCreateCollection(createCollectionSelected);
+            arguments.setUserMode(userMode);
+            arguments.setMddiMode(mddiMode.name());
+            arguments.setMddiBase64Image(base64String);
+            arguments.setMddiCid(mddiCid);
+
+            NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
         });
     }
 
 
-    /**
-     * On click listener for the image buttons
-     */
-    @SuppressLint("NonConstantResourceId")
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
-    public void onClick(View v) {
-        vibrator.vibrate(VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE));
-        switch (v.getId()) {
-            case R.id.flashButton:
-                binding.flashButton.setImageResource(flashState ? R.drawable.ic_flash_off_ : R.drawable
-                        .ic_flash_on);
-                binding.cameraView.changeFlashState(!flashState);
-                flashState = !flashState;
-                break;
-
-            case R.id.zoomButton:
-                binding.zoomButton.setImageResource(isZoomButtonVisible ? R.drawable.ic_zoom : R
-                        .drawable.ic_baseline_zoom_in_24);
-                binding.zoomSeekbar.setVisibility(isZoomButtonVisible ? View.INVISIBLE : View.VISIBLE);
-                binding.zoomSeekbar.setEnabled(!isZoomButtonVisible);
-                isZoomButtonVisible = !isZoomButtonVisible;
-                break;
-
-            case R.id.overlayButton:
-                binding.overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack_slash :
-                        R.drawable.ic_stack);
-                binding.overlayImageView.setVisibility(overlayEnabled ? View.INVISIBLE : View.VISIBLE);
-                overlayEnabled = !overlayEnabled;
-                cameraScanModel.saveOverlayValue(overlayEnabled);
-                break;
-
-            case R.id.backButton:
-                onBackPressed();
-                break;
-        }
-    }
-
-    /**
-     * Check camera permission
-     */
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        binding.cameraView.checkCameraPermission(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * When the activity is resumed
-     */
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         binding.cameraView.onResume();
-
     }
 
-    /**
-     * When the activity is paused
-     */
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         binding.cameraView.onPause();
         cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-    }
-
-    /**
-     * When press the back button
-     */
-    @Override
-    public void onBackPressed() {
-        binding.cameraView.onPause();
-        cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-        Intent intent = new Intent(getApplicationContext(), ModeSelectScreen.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     /**
@@ -286,11 +268,6 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
      */
     @RequiresApi(api = Build.VERSION_CODES.P)
     protected void initializeLayout() {
-        binding.flashButton.setOnClickListener(this);
-        binding.zoomButton.setOnClickListener(this);
-        binding.overlayButton.setOnClickListener(this);
-        binding.backButton.setOnClickListener(this);
-
         binding.uploadingImageView.setBackgroundResource(R.drawable.upload_anim);
         uploadingAnimation = (AnimationDrawable) binding.uploadingImageView.getBackground();
         binding.uploadingImageView.setVisibility(View.INVISIBLE);
@@ -298,7 +275,7 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
         binding.addTextView.setVisibility(View.INVISIBLE);
         binding.zoomSeekbar.setVisibility(View.INVISIBLE);
 
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
 
         binding.overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack :
                 R.drawable.ic_stack_slash);
@@ -308,15 +285,17 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
 
     public void addAlertDialog(Bitmap bitmap, String cid, boolean createCollection) {
         AlertDialog.Builder builder =
-                new AlertDialog.Builder(this).setCancelable(false).setTitle("Add the image").
-                        setMessage("Do you want to add this image?").setIcon(R.drawable.dynamicelementlogo);
+                new AlertDialog.Builder(this.requireActivity()).setCancelable(false)
+                        .setTitle(getString(R.string.camera_scan_add_alert_title))
+                        .setMessage(getString(R.string.camera_scan_add_alert_message)).
+                        setIcon(R.drawable.dynamicelementlogo);
 
-        ImageView showImage = new ImageView(CameraScanScreen.this);
+        ImageView showImage = new ImageView(CameraScanScreen.this.requireActivity());
         showImage.setImageBitmap(bitmap);
         builder.setView(showImage);
 
-        builder.setPositiveButton("Yes", (dialog, option) -> {
-            runOnUiThread(() -> {
+        builder.setPositiveButton(getString(R.string.text_yes), (dialog, option) -> {
+            requireActivity().runOnUiThread(() -> {
                 binding.addTextView.setVisibility(View.VISIBLE);
                 uploadingAnimation.start();
                 binding.uploadingImageView.setVisibility(View.VISIBLE);
@@ -324,24 +303,24 @@ public class CameraScanScreen extends AppCompatActivity implements View.OnClickL
             cameraScanModel.createCollection(bitmap, cid, createCollection);
         });
 
-        builder.setNegativeButton("No", (dialog, option) -> Toast.makeText(getApplicationContext(),
-                "The operation has been cancelled",
-                Toast.LENGTH_SHORT).show());
+        builder.setNegativeButton(getString(R.string.text_no), (dialog, option) ->
+                Toast.makeText(requireActivity().getApplicationContext(),
+                        getString(R.string.operation_cancel),
+                        Toast.LENGTH_SHORT).show());
 
         builder.create().show();
     }
 
     protected void handleException(Exception exception) {
-        runOnUiThread(() -> {
+        requireActivity().runOnUiThread(() -> {
             binding.addTextView.setVisibility(View.INVISIBLE);
             uploadingAnimation.stop();
             binding.uploadingImageView.setVisibility(View.INVISIBLE);
         });
-//        binding.cameraView.resumeMddiSearch();
-        runOnUiThread(() -> Toast.makeText(CameraScanScreen.this, exception.getMessage(), Toast.LENGTH_SHORT).show());
-        Intent intent = new Intent(getApplicationContext(), ModeSelectScreen.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        requireActivity().runOnUiThread(() ->
+                Toast.makeText(CameraScanScreen.this.requireActivity(),
+                        exception.getMessage(), Toast.LENGTH_SHORT).show());
+        NavigationService.CameraNav.moveToModeSelectView(getView(), userMode,
+                createCollectionSelected, mddiCid);
     }
 }

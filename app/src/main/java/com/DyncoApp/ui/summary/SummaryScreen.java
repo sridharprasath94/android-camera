@@ -1,9 +1,13 @@
 package com.DyncoApp.ui.summary;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
+import static android.util.Base64.DEFAULT;
 import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
+import static com.DyncoApp.ui.common.MddiMode.REGISTER;
+import static com.DyncoApp.ui.common.MddiMode.VERIFY;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,52 +16,66 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.DyncoApp.R;
 import com.DyncoApp.databinding.SummaryScreenBinding;
-import com.DyncoApp.ui.cameraScan.CameraScanScreen;
+import com.DyncoApp.navigation.NavigationService;
 import com.DyncoApp.ui.common.MddiMode;
-import com.DyncoApp.ui.home.HomeScreen;
+import com.DyncoApp.ui.common.SummaryViewArguments;
 
 import java.util.Objects;
 
-public class SummaryScreen extends AppCompatActivity {
+public class SummaryScreen extends Fragment {
     private SummaryScreenBinding binding;
+    private SummaryViewArguments customArguments;
 
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = SummaryScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavigationService.SummaryNav.moveToCameraView(getView(), customArguments.isUserMode(),
+                        customArguments.isCreateCollection(), customArguments.getMddiCid(), MddiMode.valueOf(customArguments.getMddiMode()));
+            }
+        });
+        return binding.getRoot();
+    }
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = SummaryScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
+        Vibrator vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        assert bundle != null;
-        String option = bundle.getString(getString(R.string.summary_screen_bundle_key), "");
+        SummaryModel model = new SummaryModel(this.requireContext());
+        SummaryScreenArgs args = SummaryScreenArgs.fromBundle(getArguments());
+        customArguments = args.getSummaryArg();
 
-        setImageViewWithBitmap(intent.getByteArrayExtra(getString(R.string.summary_screen_bundle_value_image)));
-        SummaryModel model = new SummaryModel(this);
-
-        if (Objects.equals(option, getString(R.string.summary_screen_bundle_type_search))) {
+        if (Objects.equals(customArguments.getMddiMode(), VERIFY.name())) {
+            setImageViewWithBitmap(Base64.decode(customArguments.getMddiBase64Image(), DEFAULT), true);
             binding.verifyAgainButton.setText(getString(R.string.summary_screen_verify_again));
-            binding.descriptionTextView.setText(intent.getStringExtra(getString(R.string.summary_screen_bundle_value_uid)));
+            binding.descriptionTextView.setText(customArguments.getMddiUid());
             if (model.getSavedShowScore()) {
-                binding.scoreTextView.setText(String.format("Score = %s", intent.getFloatExtra(getString(R.string.summary_screen_bundle_value_score), 0)));
-                binding.ratingBar.setRating(intent.getIntExtra(getString(R.string.summary_screen_bundle_value_rating), 0));
+                binding.scoreTextView.setText(String.format(getString(R.string.summary_view_score) + " = %s", customArguments.getMddiScore()));
+                binding.ratingBar.setRating(customArguments.getMddiRating());
             } else {
                 binding.scoreTextView.setVisibility(View.INVISIBLE);
                 binding.ratingBar.setVisibility(View.INVISIBLE);
             }
         } else {
+            setImageViewWithBitmap(Base64.decode(customArguments.getMddiBase64Image(), DEFAULT), false);
             binding.verifyAgainButton.setText(getString(R.string.summary_screen_verify));
             binding.scoreTextView.setEnabled(false);
             binding.descriptionTextView.setEnabled(true);
@@ -70,40 +88,38 @@ public class SummaryScreen extends AppCompatActivity {
         }
 
         binding.verifyAgainButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent verifyAgainIntent = new Intent(getApplicationContext(), CameraScanScreen.class);
-            verifyAgainIntent.putExtra(getString(R.string.mddi_mode), MddiMode.VERIFY);
-            startActivity(verifyAgainIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.SummaryNav.moveToCameraView(getView(),
+                    customArguments.isUserMode(), customArguments.isCreateCollection(),
+                    customArguments.getMddiCid(), VERIFY);
         });
 
         binding.registerNewButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent registerNewIntent = new Intent(getApplicationContext(), CameraScanScreen.class);
-            registerNewIntent.putExtra(getString(R.string.mddi_mode), MddiMode.REGISTER);
-            startActivity(registerNewIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.SummaryNav.moveToCameraView(getView(), customArguments.isUserMode(), customArguments.isCreateCollection(),
+                    customArguments.getMddiCid(), REGISTER);
         });
 
         binding.goHomeButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent goHomeIntent = new Intent(getApplicationContext(), HomeScreen.class);
-            goHomeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(goHomeIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.SummaryNav.moveToHomeView(getView());
         });
 
     }
 
-    private void setImageViewWithBitmap(byte[] byteArray) {
+    private void setImageViewWithBitmap(byte[] byteArray, boolean waterMarkNeeded) {
         if (byteArray != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            Bitmap watermarkedBitmap = waterMarkBitmap(bitmap);
-            runOnUiThread(() -> binding.imageView.setImageBitmap(watermarkedBitmap));
+            Bitmap watermarkedBitmap = bitmap;
+            if (waterMarkNeeded) {
+                watermarkedBitmap = waterMarkBitmap(bitmap, getString(R.string.summary_view_verified));
+            }
+            Bitmap finalWatermarkedBitmap = watermarkedBitmap;
+            requireActivity().runOnUiThread(() -> binding.imageView.setImageBitmap(finalWatermarkedBitmap));
         }
     }
 
-    private static Bitmap waterMarkBitmap(Bitmap original) {
+    private static Bitmap waterMarkBitmap(Bitmap original, String waterMarkText) {
         Bitmap src = original.copy(Bitmap.Config.ARGB_8888, true);
         Bitmap result = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
         Canvas canvas = new Canvas(result);
@@ -111,19 +127,18 @@ public class SummaryScreen extends AppCompatActivity {
         Paint paint = new Paint();
         Paint.FontMetrics fm = new Paint.FontMetrics();
         paint.setColor(Color.BLACK);
-        paint.setTextSize(65);
+        paint.setTextSize(120);
         paint.getFontMetrics(fm);
-        int margin = 5;
         float height = paint.measureText("yY");
         int left = 0;
         int top = (int) (src.getHeight() / 2 - height / 2);
-        int right = src.getWidth() - margin;
+        int right = src.getWidth();
         int bottom = (int) (src.getHeight() / 2 + height / 2);
         canvas.drawRect(left, top, right, bottom, paint);
         paint.setColor(Color.RED);
-        int x = (int) (src.getWidth() / 2 - paint.measureText("VERIFIED") / 2);
+        int x = (int) (src.getWidth() / 2 - paint.measureText(waterMarkText) / 2);
         int y = (int) ((top + bottom) / 2 + height / 3);
-        canvas.drawText("VERIFIED", x, y, paint);
+        canvas.drawText(waterMarkText, x, y, paint);
         return result;
     }
 }

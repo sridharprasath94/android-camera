@@ -1,35 +1,42 @@
 package com.DyncoApp.ui.modeSelect;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.DyncoApp.R;
 import com.DyncoApp.databinding.ModeSelectScreenBinding;
-import com.DyncoApp.ui.cameraScan.CameraScanScreen;
+import com.DyncoApp.navigation.NavigationService;
 import com.DyncoApp.ui.common.MddiMode;
-import com.DyncoApp.ui.selectCollection.SelectCollectionScreen;
 
-import java.util.Optional;
-
-public class ModeSelectScreen extends AppCompatActivity {
+public class ModeSelectScreen extends Fragment {
     private ModeSelectScreenBinding binding;
-    private ModeSelectModel modeSelectModel;
+    private boolean userMode;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = ModeSelectScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavigationService.ModeSelectNav.moveToSelectCollectionView(getView(), userMode, false);
+            }
+        });
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ModeSelectScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        modeSelectModel = new ModeSelectModel(this);
-
-
-        boolean createCollectionSelected = getIntent().getBooleanExtra(getString(R.string.create_collection),
-                modeSelectModel.getSavedCreateCollectionValue());
-        String mddiCid = Optional.ofNullable(getIntent().getStringExtra(getString(R.string.mddi_cid)))
-                .orElse(modeSelectModel.getSavedCidText());
+        ModeSelectScreenArgs args = ModeSelectScreenArgs.fromBundle(getArguments());
+        boolean createCollectionSelected = args.getCreateCollection();
+        String mddiCid = args.getMddiCid();
+        userMode = args.getUserMode();
 
         setUpRegisterButton(mddiCid, createCollectionSelected);
         setUpVerifyButton(mddiCid, createCollectionSelected);
@@ -46,22 +53,11 @@ public class ModeSelectScreen extends AppCompatActivity {
     }
 
     private void setUpBackButton() {
-        binding.backButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), SelectCollectionScreen.class);
-            intent.putExtra(getString(R.string.create_collection), false);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        });
+        binding.backButton.setOnClickListener(view -> NavigationService.ModeSelectNav.moveToSelectCollectionView(getView(), userMode, false));
     }
+
 
     private void moveToCameraScanScreen(boolean createCollectionSelected, String mddiCid, MddiMode mddiMode) {
-        Intent intent = new Intent(getApplicationContext(), CameraScanScreen.class);
-        intent.putExtra(getString(R.string.create_collection), createCollectionSelected)
-                .putExtra(getString(R.string.mddi_cid), mddiCid)
-                .putExtra(getString(R.string.mddi_mode), mddiMode);
-        modeSelectModel.saveData(mddiCid, createCollectionSelected);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        NavigationService.ModeSelectNav.moveToCameraView(getView(), userMode, createCollectionSelected, mddiCid, mddiMode);
     }
-
 }

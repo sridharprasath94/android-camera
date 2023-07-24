@@ -1,9 +1,7 @@
 package com.DyncoApp.ui.selectCollection;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_ADMIN_MODE;
 import static com.DyncoApp.ui.common.Constants.DEFAULT_CID;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_CREATE_COLLECTION;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,8 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.DyncoApp.R;
 import com.DyncoApp.ui.common.CompletionCallback;
@@ -32,8 +28,6 @@ import java.util.Objects;
 public class SelectCollectionModel {
     private final SharedPreferences sharedPreferences;
     private final String KEY_CID;
-    private final String KEY_CREATE_COLLECTION_MODE;
-    private final String KEY_USER_MODE;
     private final SharedPreferences.Editor editor;
     private final Context context;
     private final ClientService clientService;
@@ -43,10 +37,6 @@ public class SelectCollectionModel {
         this.clientService = clientService;
         KEY_CID = context.
                 getString(R.string.select_collection_screen_cid);
-        KEY_CREATE_COLLECTION_MODE = context.
-                getString(R.string.select_collection_screen_create_collection_mode);
-        KEY_USER_MODE = context.
-                getString(R.string.select_collection_screen_create_user_mode);
         sharedPreferences = this.context.getSharedPreferences(context.
                 getString(R.string.shared_preferences), MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -54,18 +44,6 @@ public class SelectCollectionModel {
 
     String getSavedCidText() {
         return sharedPreferences.getString(KEY_CID, DEFAULT_CID);
-    }
-
-    boolean isAdminUserSelected() {
-        return sharedPreferences.getBoolean(KEY_USER_MODE, DEFAULT_ADMIN_MODE);
-    }
-
-    boolean getSavedCreateCollectionValue() {
-        return sharedPreferences.getBoolean(KEY_CREATE_COLLECTION_MODE, DEFAULT_CREATE_COLLECTION);
-    }
-
-    void saveUserMode(boolean userMode) {
-        editor.putBoolean(KEY_USER_MODE, userMode).apply();
     }
 
     void saveCidOnFinishEditing(EditText editText) {
@@ -83,11 +61,6 @@ public class SelectCollectionModel {
                 editor.putString(KEY_CID, editable.toString()).apply();
             }
         });
-    }
-
-    void saveCreateCollectionOnFinishChanging(SwitchCompat createCollectionSwitch) {
-        createCollectionSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                editor.putBoolean(KEY_CREATE_COLLECTION_MODE, isChecked).apply());
     }
 
     void checkExistingCid(String cid,

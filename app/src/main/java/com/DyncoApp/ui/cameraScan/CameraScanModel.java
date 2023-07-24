@@ -1,8 +1,6 @@
 package com.DyncoApp.ui.cameraScan;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_CID;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_CREATE_COLLECTION;
 import static com.DyncoApp.ui.common.Constants.DEFAULT_OVERLAY;
 import static com.DyncoApp.ui.common.Constants.DEFAULT_TOGGLE_FLASH;
 import static com.DyncoApp.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
@@ -45,7 +43,6 @@ import com.dynamicelement.sdk.android.ui.CameraParameters;
 import com.dynamicelement.sdk.android.ui.CameraView;
 
 import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -87,10 +84,8 @@ public class CameraScanModel extends ViewModel {
         return clientService;
     }
 
-    private final String KEY_CID;
-    private final String KEY_CREATE_COLLECTION_MODE;
     private final String KEY_OVERLAY_OPTION;
-    private final String KEY_MDDI_MODE;
+
     private final String KEY_TOGGLE_FLASH;
     private final WeakReference<Context> contextRef;
     private final ClientService clientService;
@@ -112,14 +107,8 @@ public class CameraScanModel extends ViewModel {
     public CameraScanModel(Context context, ClientService clientService) {
         this.contextRef = new WeakReference<>(context);
         this.clientService = clientService;
-        KEY_CID = context.
-                getString(R.string.camera_scan_screen_cid);
-        KEY_CREATE_COLLECTION_MODE = context.
-                getString(R.string.camera_scan_screen_create_collection_mode);
         KEY_OVERLAY_OPTION = context.
                 getString(R.string.camera_scan_screen_overlay_option);
-        KEY_MDDI_MODE = context.
-                getString(R.string.camera_scan_screen_mddi_mode);
         KEY_TOGGLE_FLASH = context.
                 getString(R.string.secret_screen_flash);
         sharedPreferences = context.getSharedPreferences(context.
@@ -127,36 +116,13 @@ public class CameraScanModel extends ViewModel {
         editor = sharedPreferences.edit();
     }
 
-    String getSavedCidText() {
-        return sharedPreferences.getString(KEY_CID, DEFAULT_CID);
-    }
-
-    boolean getSavedCreateCollectionValue() {
-        return sharedPreferences.getBoolean(KEY_CREATE_COLLECTION_MODE, DEFAULT_CREATE_COLLECTION);
-    }
 
     boolean getSavedFlash() {
         return sharedPreferences.getBoolean(KEY_TOGGLE_FLASH, DEFAULT_TOGGLE_FLASH);
     }
 
-    MddiMode getMddiMode() {
-        String mddiModeString = sharedPreferences.getString(KEY_MDDI_MODE,
-                contextRef.get().getString(R.string.camera_scan_screen_default_mddi_mode));
-        if (Objects.equals(mddiModeString,
-                contextRef.get().getString(R.string.camera_scan_screen_default_mddi_mode))) {
-            return REGISTER;
-        }
-        return VERIFY;
-    }
-
     void saveFlash(boolean toggleFlash) {
         editor.putBoolean(KEY_TOGGLE_FLASH, toggleFlash).apply();
-    }
-
-    void saveData(String cid, MddiMode mddiMode) {
-        editor.putString(KEY_CID, cid).
-                putBoolean(KEY_CREATE_COLLECTION_MODE, DEFAULT_CREATE_COLLECTION)
-                .putString(KEY_MDDI_MODE, mddiMode.name()).apply();
     }
 
     void getTheSampleImage(String cid) {
@@ -223,7 +189,6 @@ public class CameraScanModel extends ViewModel {
                     public void onNextResponse(AddStreamResponse addStreamResponse,
                                                AddResult result) {
                         if (result.getAddImageStatus() == SUCCESS) {
-                            saveData(cid, REGISTER);
                             addResponseObserver.postValue(result);
                         } else if (result.getAddImageStatus() == DUPLICATE) {
                             exceptionObserver.postValue(new Exception("Duplicate Image. Image already in the database"));
@@ -238,7 +203,6 @@ public class CameraScanModel extends ViewModel {
 
                     @Override
                     public void onError(ExceptionType exceptionType, Exception e) {
-                        saveData(cid, REGISTER);
                         exceptionObserver.postValue(e);
                     }
                 });
@@ -276,17 +240,13 @@ public class CameraScanModel extends ViewModel {
                     @Override
                     public void onNegativeResponse(SearchStreamResponse searchStreamResponse, SearchResult searchResult) {
                         negativeResponseCount++;
-
-                        Log.d("VERIFY_TEXT_RECEIVE_RESPONSE", "RESPONSE_OBTAINED" + searchResult.getImageLogMessage());
                         if (!isUpdatingVerifyText) {
-                            Log.d("VERIFY_TEXT_UPDATE", "Starts to update text");
                             updateVerifyText();
                         }
 
                         serverResponseCountObserver.postValue(negativeResponseCount);
 
                         if (negativeResponseCount == NEGATIVE_SEARCH_THRESHOLD) {
-                            saveData(cid, VERIFY);
                             stopVerifyText();
                             negativeThresholdObserver.postValue(null);
                             negativeResponseCount = 0;
@@ -296,7 +256,6 @@ public class CameraScanModel extends ViewModel {
 
                     @Override
                     public void onPositiveResponse(SearchStreamResponse searchStreamResponse, SearchResult searchResult) {
-                        saveData(cid, VERIFY);
                         positiveResponseObserver.postValue(searchResult);
                         stopVerifyText();
                     }
@@ -321,7 +280,6 @@ public class CameraScanModel extends ViewModel {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.d("VERIFY_TEXT_UPDATING", "updating");
                 String dots = new String(new char[verifyDotCount]).replace("\0", ".");
                 verifyTextObserver.postValue("Verifying" + dots);
                 verifyDotCount = (verifyDotCount % 3) + 1;
@@ -331,10 +289,8 @@ public class CameraScanModel extends ViewModel {
     }
 
     void stopVerifyText() {
-        Log.d("VERIFY_TEXT_STOP", "Stops update text");
         isUpdatingVerifyText = false;
         if (timer != null) {
-            Log.d("VERIFY_TEXT_CANCEL_TIMER", "Cancel the timer");
             timer.cancel();
             timer = null;
         }

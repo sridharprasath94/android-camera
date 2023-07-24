@@ -1,101 +1,106 @@
 package com.DyncoApp.ui.selectCollection;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
 import static com.DyncoApp.ui.common.Miscellaneous.isInternetAvailable;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
 
 import com.DyncoApp.R;
 import com.DyncoApp.databinding.SelectCollectionScreenBinding;
+import com.DyncoApp.navigation.NavigationService;
 import com.DyncoApp.ui.common.CompletionCallback;
 import com.DyncoApp.ui.common.Constants;
-import com.DyncoApp.ui.home.HomeScreen;
-import com.DyncoApp.ui.modeSelect.ModeSelectScreen;
 import com.dynamicelement.sdk.android.delete.DeleteResult;
 import com.dynamicelement.sdk.android.getsample.GetSampleResult;
 
-public class SelectCollectionScreen extends AppCompatActivity {
+public class SelectCollectionScreen extends Fragment {
     private SelectCollectionScreenBinding binding;
     private SelectCollectionModel selectCollectionModel;
     private AnimationDrawable loadingAnimation;
+    private boolean adminMode;
 
-    @SuppressLint("WrongThread")
-    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = SelectCollectionScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavigationService.SelectCollectionNav.moveToHomeView(getView());
+            }
+        });
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = SelectCollectionScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
         setUpLayoutItems();
 
         loadingAnimation = (AnimationDrawable) binding.loadingView.getBackground();
-        selectCollectionModel = new SelectCollectionModel(this, Constants.getDefaultEc2ClientService1_1());
+        selectCollectionModel = new SelectCollectionModel(this.requireContext(), Constants.getDefaultEc2ClientService1_1());
 
         setUpInputs();
-
-        setUpCreateCollectionSwitch();
         setUpCidEditText();
         setUpBackButton();
         setUpConnectButton();
     }
 
     private void setUpInputs() {
-        boolean adminMode = getIntent().getBooleanExtra(getString(R.string.user_mode),
-                selectCollectionModel.isAdminUserSelected());
-        boolean createCollectionSelected = adminMode && getIntent().getBooleanExtra(getString(R.string.create_collection),
-                selectCollectionModel.getSavedCreateCollectionValue());
+        SelectCollectionScreenArgs args = SelectCollectionScreenArgs.fromBundle(getArguments());
+        adminMode = args.getUserMode();
+        boolean createCollectionSelected = adminMode && args.getCreateCollection();
 
-        binding.createCollectionLayout.setVisibility(adminMode ? View.VISIBLE : View.INVISIBLE);
+        binding.createCollectionLayout.setVisibility(adminMode ? VISIBLE : INVISIBLE);
         binding.createCollectionLayout.setEnabled(adminMode);
 
         binding.cidEditText.setText(selectCollectionModel.getSavedCidText());
         binding.createCollectionSwitch.setChecked(createCollectionSelected);
-
-        selectCollectionModel.saveUserMode(adminMode);
     }
 
     private void setUpCidEditText() {
         selectCollectionModel.saveCidOnFinishEditing(binding.cidEditText);
     }
 
-    private void setUpCreateCollectionSwitch() {
-        selectCollectionModel.saveCreateCollectionOnFinishChanging(binding.createCollectionSwitch);
-    }
-
     private void setUpConnectButton() {
         binding.connectButton.setOnClickListener(v -> {
-            if (!isInternetAvailable(this)) {
-                Toast.makeText(getApplicationContext(), "No Internet Connection",
+            if (!isInternetAvailable(this.requireContext())) {
+                Toast.makeText(requireActivity().getApplicationContext(),
+                        getString(R.string.no_internet_connection),
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (binding.cidEditText.getText().toString().isEmpty()) {
-                Toast.makeText(getApplicationContext(), "Enter the details and proceed...",
+                Toast.makeText(requireActivity().getApplicationContext(),
+                        getString(R.string.enter_the_details),
                         Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            runOnUiThread(() -> {
-                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
+            requireActivity().runOnUiThread(() -> {
+                Vibrator vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
+                vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
                 loadingAnimation.start();
-                binding.loadingView.setVisibility(View.VISIBLE);
+                binding.loadingView.setVisibility(VISIBLE);
+                binding.connectButton.setEnabled(false);
             });
 
             selectCollectionModel.checkExistingCid(binding.cidEditText.getText().toString(),
@@ -105,16 +110,16 @@ public class SelectCollectionScreen extends AppCompatActivity {
     }
 
     private void setUpBackButton() {
-        binding.backButton.setOnClickListener(v -> onBackPressed());
+        binding.backButton.setOnClickListener(v -> NavigationService.SelectCollectionNav.moveToHomeView(getView()));
     }
 
     private void setUpLayoutItems() {
-        binding.backButton.setVisibility(View.VISIBLE);
+        binding.backButton.setVisibility(VISIBLE);
         binding.connectButton.setEnabled(true);
-        binding.cidLayout.setVisibility(View.VISIBLE);
-        binding.createCollectionSwitch.setVisibility(View.VISIBLE);
+        binding.cidLayout.setVisibility(VISIBLE);
+        binding.createCollectionSwitch.setVisibility(VISIBLE);
         binding.loadingView.setBackgroundResource(R.drawable.animationscan_loading);
-        binding.loadingView.setVisibility(View.INVISIBLE);
+        binding.loadingView.setVisibility(INVISIBLE);
     }
 
 
@@ -137,45 +142,45 @@ public class SelectCollectionScreen extends AppCompatActivity {
             }
 
             private void handleException(Exception e) {
-                runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     loadingAnimation.stop();
-                    loadingImageView.setVisibility(View.INVISIBLE);
+                    loadingImageView.setVisibility(INVISIBLE);
+                    binding.connectButton.setEnabled(true);
                 });
-                runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(),
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity().getApplicationContext(), e.getMessage(),
                         Toast.LENGTH_SHORT).show());
 
-                Intent intent = new Intent(getApplicationContext(), SelectCollectionScreen.class);
-                intent.putExtra(getString(R.string.create_collection), binding.createCollectionSwitch.isChecked());
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                NavigationService.SelectCollectionNav.moveToHomeView(getView());
             }
 
 
             private void showDeleteAlert(String alertMessage) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SelectCollectionScreen.this).setCancelable(false);
-                builder.setIcon(R.drawable.dynamicelementlogo).setTitle("New Collection").
+                AlertDialog.Builder builder = new AlertDialog.Builder(SelectCollectionScreen.this.requireContext()).setCancelable(false);
+                builder.setIcon(R.drawable.dynamicelementlogo).setTitle(getString(R.string.new_collection)).
                         setMessage(alertMessage);
 
-                builder.setPositiveButton("Yes",
-                        (dialog, option) -> selectCollectionModel.deleteCollection(binding.cidEditText.getText().toString(), new CompletionCallback<DeleteResult>() {
-                            @Override
-                            public void onSuccess(DeleteResult response) {
-                                moveToNextActivity();
-                            }
+                builder.setPositiveButton(getString(R.string.text_yes),
+                        (dialog, option) -> selectCollectionModel.deleteCollection(binding.cidEditText.getText().toString(),
+                                new CompletionCallback<DeleteResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteResult response) {
+                                        moveToNextActivity();
+                                    }
 
-                            @Override
-                            public void onError(Exception e) {
-                                handleException(e);
-                            }
-                        }));
+                                    @Override
+                                    public void onError(Exception e) {
+                                        handleException(e);
+                                    }
+                                }));
 
-                builder.setNegativeButton("No", (dialog, option) -> {
-                    Toast.makeText(getApplicationContext(), "The operation has been cancelled",
+                builder.setNegativeButton(getString(R.string.text_no), (dialog, option) -> {
+                    Toast.makeText(requireActivity().getApplicationContext(), getString(R.string.operation_cancel),
                             Toast.LENGTH_SHORT).show();
                     binding.createCollectionSwitch.setChecked(false);
-                    runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         loadingAnimation.stop();
-                        loadingImageView.setVisibility(View.INVISIBLE);
+                        loadingImageView.setVisibility(INVISIBLE);
+                        binding.connectButton.setEnabled(true);
                     });
                     dialog.dismiss();
                 });
@@ -187,19 +192,13 @@ public class SelectCollectionScreen extends AppCompatActivity {
     }
 
     private void moveToNextActivity() {
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(), ModeSelectScreen.class);
-        intent.putExtra(getString(R.string.create_collection), binding.createCollectionSwitch.isChecked());
-        binding.createCollectionSwitch.setChecked(false);
-        intent.putExtra(getString(R.string.mddi_cid), binding.cidEditText.getText().toString());
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
+        Toast.makeText(requireActivity().getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        requireActivity().runOnUiThread(() -> {
+            loadingAnimation.stop();
+            binding.loadingView.setVisibility(INVISIBLE);
+        });
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        NavigationService.SelectCollectionNav.moveToModeSelectView(getView(), adminMode,
+                binding.createCollectionSwitch.isChecked(), binding.cidEditText.getText().toString());
     }
 }

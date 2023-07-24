@@ -8,7 +8,7 @@ import com.dynamicelement.sdk.android.mddiclient.MddiVariables;
 
 public interface Constants {
     String hostDefaultEC2 = "3.121.52.42";
-    //String hostDefaultEC2 = "52.59.118.81";
+   // String hostDefaultEC2 = "52.59.118.81";
     int port = 443;
     String username = "sri";
     String userid = "sri9101";
@@ -40,13 +40,11 @@ public interface Constants {
             "-----END CERTIFICATE-----";
     boolean DEFAULT_TOGGLE_FLASH = true;
     boolean DEFAULT_SHOW_SCORE = true;
-    boolean DEFAULT_CREATE_COLLECTION = false;
     boolean DEFAULT_OVERLAY = false;
     boolean DEFAULT_ZOOM_BUTTON_VISIBLE = false;
-    boolean DEFAULT_ADMIN_MODE = false;
     String DEFAULT_CID = "sridhar01";
     String DEFAULT_SNO = "sri01";
-    int NEGATIVE_SEARCH_THRESHOLD = 3;
+    int NEGATIVE_SEARCH_THRESHOLD = 15;
     int DEFAULT_LOGO_PRESS_COUNT = 5;
     int VIBRATION_MS = 60;
 

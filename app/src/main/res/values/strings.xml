@@ -1,59 +1,47 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Info values -->
     <string name="todo">TODO</string>
     <string name="Label">Dynco</string>
+    <string name="copyright_info" tools:ignore="TypographyOther">(C) 2020–2022 DynamicElement AG</string>
+    <string name="versionId">V1.1.2</string>
 
+    <!-- Onboarding screen values -->
     <string name="nextText">Next</string>
     <string name="finishText">Finish</string>
     <string name="prevText">Previous</string>
 
+    <!-- User type spinner values -->
     <string name="admin_User">Admin</string>
     <string name="test_user">Test</string>
-    <string name="user_name">User Name</string>
 
-    <string name="collection_id">Collection ID</string>
-    <string name="select_collection">Select Collection</string>
-    <string name="copyright_info" tools:ignore="TypographyOther">(C) 2020–2022 DynamicElement AG</string>
-    <string name="connect_button">Connect</string>
-    <string name="user_mode">USER_MODE</string>
-    <string name="mddi_cid">MDDI_CID</string>
-    <string name="create_collection">CREATE_COLLECTION</string>
+    <!-- Local text values -->
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
+    <string name="wait_for_some_time">Wait for some time</string>
+    <string name="operation_cancel">The operation has been cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="new_collection">New collection</string>
+    <string name="enter_the_details" tools:ignore="TypographyEllipsis">Enter the details and proceed...</string>
+    <string name="camera_scan_zoom_level">Zoom Level is</string>
+    <string name="camera_scan_collection_name">Collection name :</string>
+    <string name="camera_scan_add_alert_title">Add the image</string>
+    <string name="camera_scan_add_alert_message">Do you want to add this image?</string>
     <string name="invalid_cid_error">Invalid CID</string>
     <string name="create_cid_confirmation">The CID does not already exist. Do you want to create the selected CID?</string>
     <string name="cid_not_exist_error">The CID does not exist. Please select Create collection before proceeding.</string>
     <string name="wrong_size_format_error" tools:ignore="TypographyEllipsis">Wrong size format is selected. Select the correct size and continue...</string>
     <string name="cid_already_exists_warning">The CID already exists. Do you want to overwrite it?</string>
     <string name="cid_not_exist_warning">The CID does not already exist. Do you want to create the selected CID?</string>
+    <string name="summary_view_score">Score</string>
+    <string name="summary_view_verified">Verified</string>
 
-    <string name="shared_preferences">sharedPrefs</string>
-    <string name="home_screen_spinner_position">spinnerPosition</string>
-
-    <string name="camera_scan_screen_cid">cid</string>
-    <string name="camera_scan_screen_create_collection_mode">createCollectionMode</string>
-    <string name="camera_scan_screen_overlay_option">overlayOption</string>
-
-    <string name="mode_select_screen_cid">cid</string>
-    <string name="mode_select_screen_create_collection_mode">createCollectionMode</string>
-
-    <string name="select_collection_screen_cid">cid</string>
-    <string name="select_collection_screen_create_collection_mode">createCollectionMode</string>
-
-    <string name="select_collection_screen_create_user_mode">userMode</string>
-    <string name="camera_scan_screen_mddi_mode">mddiMode</string>
-    <string name="camera_scan_screen_default_mddi_mode">REGISTER</string>
-
-    <string name="summary_screen_bundle_key">option</string>
-    <string name="summary_screen_bundle_type_add">add</string>
-    <string name="summary_screen_bundle_type_search">search</string>
-    <string name="summary_screen_bundle_value_uid">uid</string>
-    <string name="summary_screen_bundle_value_score">score</string>
-    <string name="summary_screen_bundle_value_rating">rating</string>
-    <string name="summary_screen_bundle_value_image">image</string>
-
+    <!-- Layout values -->
+    <string name="collection_id">Collection ID</string>
+    <string name="select_collection">Select Collection</string>
+    <string name="connect_button">Connect</string>
     <string name="register_button">Register</string>
     <string name="verify_Button">Verify</string>
     <string name="back">Back</string>
-    <string name="verifying_hint_text" tools:ignore="TypographyEllipsis">Verifying...</string>
-
     <string name="summary_screen_verify">Verify</string>
     <string name="summary_screen_successful_add">Successfully Added</string>
     <string name="summary_screen_verify_again">Verify again</string>
@@ -62,11 +50,12 @@
     <string name="verification_failure_screen_select_mode">Select mode</string>
     <string name="go_home">Go home</string>
 
+    <!-- Shared preference values -->
+    <string name="shared_preferences">sharedPrefs</string>
     <string name="secret_screen_flash">Toggle flash</string>
     <string name="secret_screen_score">Show score</string>
-    <string name="versionId">V1.1.1</string>
-
-    <string name="mddi_mode">MDDI_MODE</string>
-
+    <string name="home_screen_spinner_position">spinnerPosition</string>
+    <string name="camera_scan_screen_overlay_option">overlayOption</string>
+    <string name="select_collection_screen_cid">cid</string>
 </resources>
 

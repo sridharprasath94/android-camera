@@ -1,49 +1,59 @@
 package com.DyncoApp.ui.home;
 
+import static android.content.Context.VIBRATOR_SERVICE;
 import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
 import static com.DyncoApp.ui.common.Miscellaneous.isInternetAvailable;
 
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.DyncoApp.R;
 import com.DyncoApp.databinding.HomeScreenBinding;
+import com.DyncoApp.navigation.NavigationService;
 import com.DyncoApp.ui.common.Constants;
-import com.DyncoApp.ui.secret.SecretScreen;
-import com.DyncoApp.ui.selectCollection.SelectCollectionScreen;
 import com.dynamicelement.sdk.android.Callback;
 import com.dynamicelement.sdk.android.exceptions.ExceptionType;
 import com.dynamicelement.sdk.android.ping.PingResult;
 
 import java.util.Arrays;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreen extends Fragment {
     private HomeScreenBinding binding;
     private AnimationDrawable loadingAnimation;
 
     private HomeScreenModel homeScreenModel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = HomeScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().finish();
+                requireActivity().finishAffinity();
+            }
+        });
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = HomeScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
         setUpLayoutItems();
-
-        homeScreenModel = new HomeScreenModel(this, Constants.getDefaultEc2ClientService1_1());
-
+        homeScreenModel = new HomeScreenModel(this.requireContext(), Constants.getDefaultEc2ClientService1_1());
         setupUserTypeSpinner();
         setupConnectButton();
         setupImageLogoView();
@@ -59,7 +69,7 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     private void setupUserTypeSpinner() {
-        binding.userTypeSpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+        binding.userTypeSpinner.setAdapter(new ArrayAdapter<>(requireActivity().getApplicationContext(),
                 R.layout.spinner_item_user, Arrays.asList(
                 getString(R.string.admin_User),
                 getString(R.string.test_user)
@@ -83,64 +93,57 @@ public class HomeScreen extends AppCompatActivity {
     }
 
     private void setupConnectButton() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
 
         binding.connectButton.setOnClickListener(v -> {
-            if (!isInternetAvailable(this)) {
-                Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            if (!isInternetAvailable(this.requireContext())) {
+                Toast.makeText(this.requireContext(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
                 return;
             }
             vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
 
-            runOnUiThread(() -> {
-                loadingAnimation.start();
-                binding.loadingHomeScreenView.setVisibility(View.VISIBLE);
-            });
+            startLoading();
 
             homeScreenModel.checkConnection(new Callback<PingResult>() {
                 @Override
                 public void onResponse(PingResult response) {
                     String userType = binding.userTypeSpinner.getSelectedItem().toString();
                     vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-                    stopLoadingAnimation();
-                    Intent intent = new Intent(getApplicationContext(), SelectCollectionScreen.class);
-                    intent.putExtra(getString(R.string.user_mode), userType.equals(getString(R.string.admin_User)));
+                    stopLoading();
                     homeScreenModel.saveData(binding.userTypeSpinner.getSelectedItemPosition());
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    NavigationService.HomeNav.moveToSelectCollectionView(getView(), userType.equals(getString(R.string.admin_User)), false);
                 }
 
                 @Override
                 public void onError(ExceptionType exceptionType, Exception e) {
-                    stopLoadingAnimation();
-                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), e.getMessage(),
+                    stopLoading();
+                    requireActivity().runOnUiThread(() -> Toast.makeText(requireActivity().getApplicationContext(), e.getMessage(),
                             Toast.LENGTH_SHORT).show());
                 }
 
-                private void stopLoadingAnimation() {
-                    runOnUiThread(() -> {
-                        loadingAnimation.stop();
-                        binding.loadingHomeScreenView.setVisibility(View.INVISIBLE);
-                    });
-                }
             });
         });
     }
 
-    private void setupImageLogoView() {
-        binding.logoView.setOnClickListener(v -> homeScreenModel.onLogoPressActionCompleted(() -> {
-            FragmentTransaction transaction =  getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_left)
-                    .replace(R.id.homeContainer, new SecretScreen())
-                    .addToBackStack(null);
-            transaction.commit();
-        }));
+
+    private void startLoading() {
+        requireActivity().runOnUiThread(() -> {
+            loadingAnimation.start();
+            binding.loadingHomeScreenView.setVisibility(View.VISIBLE);
+            binding.connectButton.setEnabled(false);
+        });
     }
 
-    @Override
-    public void onBackPressed() {
-        finishAffinity();
-        finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    private void stopLoading() {
+        requireActivity().runOnUiThread(() -> {
+            loadingAnimation.stop();
+            binding.loadingHomeScreenView.setVisibility(View.INVISIBLE);
+            binding.connectButton.setEnabled(true);
+        });
+    }
+
+
+    private void setupImageLogoView() {
+        binding.logoView.setOnClickListener(v -> homeScreenModel.onLogoPressActionCompleted(() -> NavigationService.HomeNav.moveToSecretView(getView())));
     }
 }

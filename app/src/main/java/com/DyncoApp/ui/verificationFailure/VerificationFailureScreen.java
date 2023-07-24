@@ -1,57 +1,64 @@
 package com.DyncoApp.ui.verificationFailure;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
 import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.DyncoApp.R;
 import com.DyncoApp.databinding.VerificationFailureScreenBinding;
-import com.DyncoApp.ui.cameraScan.CameraScanScreen;
-import com.DyncoApp.ui.common.MddiMode;
-import com.DyncoApp.ui.home.HomeScreen;
-import com.DyncoApp.ui.modeSelect.ModeSelectScreen;
+import com.DyncoApp.navigation.NavigationService;
 
-public class VerificationFailureScreen extends AppCompatActivity {
+public class VerificationFailureScreen extends Fragment {
+    private VerificationFailureScreenBinding binding;
+    private VerificationFailureScreenArgs args;
 
-
-    @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        com.DyncoApp.databinding.VerificationFailureScreenBinding binding = VerificationFailureScreenBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = VerificationFailureScreenBinding.inflate(inflater, container, false);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                NavigationService.VerificationFailureNav.moveToCameraView(getView(), args.getUserMode(),
+                        args.getCreateCollection(), args.getMddiCid(), args.getMddiMode());
+            }
+        });
+        return binding.getRoot();
+    }
 
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+    @Override
+    public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Vibrator vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
+        args = VerificationFailureScreenArgs.fromBundle(getArguments());
 
         binding.tryAgainButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent tryAgainIntent = new Intent(getApplicationContext(), CameraScanScreen.class);
-            tryAgainIntent.putExtra(getString(R.string.mddi_mode), MddiMode.VERIFY);
-            startActivity(tryAgainIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.VerificationFailureNav.moveToCameraView(getView(), args.getUserMode(),
+                    args.getCreateCollection(), args.getMddiCid(), args.getMddiMode());
         });
 
         binding.modeSelectButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent modeSelectIntent = new Intent(getApplicationContext(), ModeSelectScreen.class);
-            startActivity(modeSelectIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.VerificationFailureNav.moveToModeSelectView(getView(), args.getUserMode(),
+                    args.getCreateCollection(), args.getMddiCid());
         });
 
         binding.goHomeButton.setOnClickListener(view -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, VibrationEffect.DEFAULT_AMPLITUDE));
-            Intent goHomeIntent = new Intent(getApplicationContext(), HomeScreen.class);
-            goHomeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(goHomeIntent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
+            NavigationService.VerificationFailureNav.moveToHomeView(getView());
         });
 
     }
+
 }
