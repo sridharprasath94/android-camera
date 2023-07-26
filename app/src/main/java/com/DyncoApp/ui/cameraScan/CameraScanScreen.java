@@ -38,6 +38,7 @@ import com.DyncoApp.ui.common.MddiMode;
 import com.DyncoApp.ui.common.SummaryViewArguments;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 public class CameraScanScreen extends Fragment {
     private CameraScanScreenBinding binding;
@@ -316,11 +317,10 @@ public class CameraScanScreen extends Fragment {
             binding.addTextView.setVisibility(View.INVISIBLE);
             uploadingAnimation.stop();
             binding.uploadingImageView.setVisibility(View.INVISIBLE);
+            Toast.makeText(CameraScanScreen.this.requireActivity(),
+                    exception.getMessage(), Toast.LENGTH_SHORT).show();
         });
-        requireActivity().runOnUiThread(() ->
-                Toast.makeText(CameraScanScreen.this.requireActivity(),
-                        exception.getMessage(), Toast.LENGTH_SHORT).show());
-        NavigationService.CameraNav.moveToModeSelectView(getView(), userMode,
+        NavigationService.CameraNav.moveToModeSelectView(Objects.requireNonNull(getView()), userMode,
                 createCollectionSelected, mddiCid);
     }
 }

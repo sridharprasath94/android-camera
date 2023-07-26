@@ -1,5 +1,6 @@
 package com.DyncoApp.navigation;
 
+import android.util.Log;
 import android.view.View;
 
 import com.DyncoApp.R;
