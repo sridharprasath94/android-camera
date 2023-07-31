@@ -1,4 +1,4 @@
-rootProject.name='Dynco'
+rootProject.name='mddicamera'
 include ':app'
 include ':logic'
 include ':ui'

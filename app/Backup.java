@@ -1,4 +1,4 @@
-package com.DyncoApp.ui;
+package com.mddicamera.ui;
 
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.getBytesFromBitmap;
 
@@ -9,9 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.DyncoApp.R;
-import com.DyncoApp.ui.cameraScan.CameraScanScreen;
-import com.DyncoApp.ui.common.Constants;
+import com.mddicamera.ui.cameraScan.CameraScanScreen;
+import com.mddicamera.ui.common.Constants;
 import com.dynamicelement.mddi.AddStreamResponse;
 import com.dynamicelement.sdk.android.Callback;
 import com.dynamicelement.sdk.android.add.AddCallback;

@@ -1,12 +1,12 @@
-package com.DyncoApp.ui.cameraScan;
+package com.mddicamera.ui.cameraScan;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
 import static android.util.Base64.DEFAULT;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_OVERLAY;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_ZOOM_BUTTON_VISIBLE;
-import static com.DyncoApp.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
-import static com.DyncoApp.ui.common.Constants.VIBRATION_MS;
+import static com.mddicamera.ui.common.Constants.DEFAULT_OVERLAY;
+import static com.mddicamera.ui.common.Constants.DEFAULT_ZOOM_BUTTON_VISIBLE;
+import static com.mddicamera.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
+import static com.mddicamera.ui.common.Constants.VIBRATION_MS;
 import static com.dynamicelement.sdk.android.mddiclient.MddiParameters.createResizedBitmap;
 
 import android.graphics.Bitmap;
@@ -30,15 +30,13 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.DyncoApp.R;
-import com.DyncoApp.databinding.CameraScanScreenBinding;
-import com.DyncoApp.navigation.NavigationService;
-import com.DyncoApp.ui.common.Constants;
-import com.DyncoApp.ui.common.MddiMode;
-import com.DyncoApp.ui.common.SummaryViewArguments;
+import com.mddicamera.R;
+import com.mddicamera.databinding.CameraScanScreenBinding;
+import com.mddicamera.ui.common.Constants;
+import com.mddicamera.ui.common.MddiMode;
+import com.mddicamera.ui.common.SummaryViewArguments;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Objects;
 
 public class CameraScanScreen extends Fragment {
     private CameraScanScreenBinding binding;
@@ -59,7 +57,10 @@ public class CameraScanScreen extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
+                requireActivity().finishAffinity();
+                requireActivity().finish();
+              //  requireActivity().onBackPressed();
+//                NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
             }
         });
         return binding.getRoot();
@@ -73,12 +74,17 @@ public class CameraScanScreen extends Fragment {
         overlayEnabled = cameraScanModel.getOverlayValue();
         initializeLayout();
 
-        CameraScanScreenArgs args = CameraScanScreenArgs.fromBundle(getArguments());
+//        CameraScanScreenArgs args = CameraScanScreenArgs.fromBundle(getArguments());
 
-        createCollectionSelected = args.getCreateCollection();
-        mddiCid = args.getMddiCid();
-        mddiMode = args.getMddiMode();
-        userMode = args.getUserMode();
+//        createCollectionSelected = false;
+//        mddiCid = args.getMddiCid();
+//        mddiMode = args.getMddiMode();
+//        userMode = args.getUserMode();
+
+        createCollectionSelected = false;
+        mddiCid = "sridhar01";
+        mddiMode = MddiMode.REGISTER;
+        userMode = true;
 
         binding.collectionTextView.setText(String.format(getString(R.string.camera_scan_collection_name) + " %s", mddiCid));
         cameraScanModel.initMddi(binding.cameraView, mddiMode, mddiCid);
@@ -154,7 +160,9 @@ public class CameraScanScreen extends Fragment {
 
         binding.backButton.setOnClickListener(view1 -> {
             vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
-            NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
+            requireActivity().finishAffinity();
+            requireActivity().finish();
+//            NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
         });
     }
 
@@ -197,15 +205,15 @@ public class CameraScanScreen extends Fragment {
                     arguments.setMddiScore(searchResult.getScore());
                     arguments.setMddiUid(searchResult.getUid());
 
-                    NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
+//                    NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
                 });
 
         cameraScanModel.getNegativeThresholdObserver().observe(this.requireActivity(), unused -> {
             binding.cameraView.onPause();
             cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
             binding.progressBar.setProgress(0);
-            NavigationService.CameraNav.moveToVerificationFailureView(getView(), userMode,
-                    createCollectionSelected, mddiCid, mddiMode);
+//            NavigationService.CameraNav.moveToVerificationFailureView(getView(), userMode,
+//                    createCollectionSelected, mddiCid, mddiMode);
         });
     }
 
@@ -245,7 +253,7 @@ public class CameraScanScreen extends Fragment {
             arguments.setMddiBase64Image(base64String);
             arguments.setMddiCid(mddiCid);
 
-            NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
+//            NavigationService.CameraNav.moveToSummaryView(getView(), arguments);
         });
     }
 
@@ -320,7 +328,7 @@ public class CameraScanScreen extends Fragment {
             Toast.makeText(CameraScanScreen.this.requireActivity(),
                     exception.getMessage(), Toast.LENGTH_SHORT).show();
         });
-        NavigationService.CameraNav.moveToModeSelectView(Objects.requireNonNull(getView()), userMode,
-                createCollectionSelected, mddiCid);
+//        NavigationService.CameraNav.moveToModeSelectView(Objects.requireNonNull(getView()), userMode,
+//                createCollectionSelected, mddiCid);
     }
 }

@@ -1,11 +1,11 @@
-package com.DyncoApp.ui.cameraScan;
+package com.mddicamera.ui.cameraScan;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_OVERLAY;
-import static com.DyncoApp.ui.common.Constants.DEFAULT_TOGGLE_FLASH;
-import static com.DyncoApp.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
-import static com.DyncoApp.ui.common.MddiMode.REGISTER;
-import static com.DyncoApp.ui.common.MddiMode.VERIFY;
+import static com.mddicamera.ui.common.Constants.DEFAULT_OVERLAY;
+import static com.mddicamera.ui.common.Constants.DEFAULT_TOGGLE_FLASH;
+import static com.mddicamera.ui.common.Constants.NEGATIVE_SEARCH_THRESHOLD;
+import static com.mddicamera.ui.common.MddiMode.REGISTER;
+import static com.mddicamera.ui.common.MddiMode.VERIFY;
 import static com.dynamicelement.sdk.android.add.AddImageStatus.DUPLICATE;
 import static com.dynamicelement.sdk.android.add.AddImageStatus.ERROR;
 import static com.dynamicelement.sdk.android.add.AddImageStatus.SUCCESS;
@@ -25,9 +25,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.DyncoApp.R;
-import com.DyncoApp.ui.common.Constants;
-import com.DyncoApp.ui.common.MddiMode;
+import com.mddicamera.R;
+import com.mddicamera.ui.common.Constants;
+import com.mddicamera.ui.common.MddiMode;
 import com.dynamicelement.mddi.AddStreamResponse;
 import com.dynamicelement.mddi.SearchStreamResponse;
 import com.dynamicelement.sdk.android.Callback;

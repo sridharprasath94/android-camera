@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.DyncoApp">
+    package="com.mddicamera">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -35,7 +35,7 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
-            android:name=".ui.main.MainScreen"
+            android:name="com.mddicamera.ui.main.MainScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,40 +43,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.modeSelect.ModeSelectScreen"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-<!--        <activity
-            android:name=".ui.onboarding.OnboardingScreen"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashScreenTheme"
-            tools:ignore="LockedOrientationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
         <activity
-            android:name=".ui.cameraScan.CameraScanScreen"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.summary.SummaryScreen"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.verificationFailure.VerificationFailureScreen"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.selectCollection.SelectCollectionScreen"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.home.HomeScreen"
+            android:name="com.mddicamera.ui.cameraScan.CameraScanScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

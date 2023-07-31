@@ -3,83 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeScreen">
-    <fragment
-        android:id="@+id/homeScreen"
-        android:name="com.DyncoApp.ui.home.HomeScreen"
-        android:label="home_screen"
-        tools:layout="@layout/home_screen">
-        <action
-            android:id="@+id/action_homeScreen_to_secretScreen"
-            app:destination="@id/secretScreen" />
+    app:startDestination="@id/cameraScanScreen">
 
-        <action
-            android:id="@+id/action_homeScreen_to_selectCollectionScreen"
-            app:destination="@id/selectCollectionScreen" />
-
-    </fragment>
-    <fragment
-        android:id="@+id/secretScreen"
-        android:name="com.DyncoApp.ui.secret.SecretScreen"
-        android:label="SecretScreen">
-        <action
-            android:id="@+id/action_secretScreen_to_homeScreen"
-            app:destination="@id/homeScreen" />
-    </fragment>
-    <fragment
-        android:id="@+id/selectCollectionScreen"
-        android:name="com.DyncoApp.ui.selectCollection.SelectCollectionScreen"
-        android:label="select_collection_screen"
-        tools:layout="@layout/select_collection_screen">
-        <action
-            android:id="@+id/action_selectCollectionScreen_to_homeScreen"
-            app:destination="@id/homeScreen" />
-        <action
-            android:id="@+id/action_selectCollectionScreen_to_modeSelectScreen"
-            app:destination="@id/modeSelectScreen" />
-        <argument
-            android:name="user_mode"
-            app:argType="boolean" />
-        <argument
-            android:name="create_collection"
-            app:argType="boolean" />
-
-    </fragment>
-    <fragment
-        android:id="@+id/modeSelectScreen"
-        android:name="com.DyncoApp.ui.modeSelect.ModeSelectScreen"
-        android:label="ModeSelectScreen">
-        <action
-            android:id="@+id/action_modeSelectScreen_to_selectCollectionScreen"
-            app:destination="@id/selectCollectionScreen" />
-        <action
-            android:id="@+id/action_modeSelectScreen_to_cameraScanScreen"
-            app:destination="@id/cameraScanScreen" />
-        <argument
-            android:name="user_mode"
-            app:argType="boolean" />
-        <argument
-            android:name="create_collection"
-            app:argType="boolean" />
-        <argument
-            android:name="mddi_cid"
-            app:argType="string" />
-    </fragment>
     <fragment
         android:id="@+id/cameraScanScreen"
-        android:name="com.DyncoApp.ui.cameraScan.CameraScanScreen"
+        android:name="com.mddicamera.ui.cameraScan.CameraScanScreen"
         android:label="camera_scan_screen"
         tools:layout="@layout/camera_scan_screen">
 
-        <action
-            android:id="@+id/action_cameraScanScreen_to_modeSelectScreen"
-            app:destination="@id/modeSelectScreen" />
-        <action
-            android:id="@+id/action_cameraScanScreen_to_summaryScreen"
-            app:destination="@id/summaryScreen" />
-        <action
-            android:id="@+id/action_cameraScanScreen_to_verificationFailureScreen"
-            app:destination="@id/verificationFailureScreen" />
         <argument
             android:name="user_mode"
             app:argType="boolean" />
@@ -91,49 +22,6 @@
             app:argType="string" />
         <argument
             android:name="mddi_mode"
-            app:argType="com.DyncoApp.ui.common.MddiMode" />
-    </fragment>
-    <fragment
-        android:id="@+id/summaryScreen"
-        android:name="com.DyncoApp.ui.summary.SummaryScreen"
-        android:label="summary_screen"
-        tools:layout="@layout/summary_screen">
-        <action
-            android:id="@+id/action_summaryScreen_to_cameraScanScreen"
-            app:destination="@id/cameraScanScreen" />
-        <action
-            android:id="@+id/action_summaryScreen_to_homeScreen"
-            app:destination="@id/homeScreen" />
-        <argument
-            android:name="summary_arg"
-            app:argType="com.DyncoApp.ui.common.SummaryViewArguments" />
-
-    </fragment>
-    <fragment
-        android:id="@+id/verificationFailureScreen"
-        android:name="com.DyncoApp.ui.verificationFailure.VerificationFailureScreen"
-        android:label="verification_failure_screen"
-        tools:layout="@layout/verification_failure_screen">
-        <action
-            android:id="@+id/action_verificationFailureScreen_to_cameraScanScreen"
-            app:destination="@id/cameraScanScreen" />
-        <action
-            android:id="@+id/action_verificationFailureScreen_to_modeSelectScreen"
-            app:destination="@id/modeSelectScreen" />
-        <action
-            android:id="@+id/action_verificationFailureScreen_to_homeScreen"
-            app:destination="@id/homeScreen" />
-        <argument
-            android:name="user_mode"
-            app:argType="boolean" />
-        <argument
-            android:name="create_collection"
-            app:argType="boolean" />
-        <argument
-            android:name="mddi_cid"
-            app:argType="string" />
-        <argument
-            android:name="mddi_mode"
-            app:argType="com.DyncoApp.ui.common.MddiMode" />
+            app:argType="com.mddicamera.ui.common.MddiMode" />
     </fragment>
 </navigation>
