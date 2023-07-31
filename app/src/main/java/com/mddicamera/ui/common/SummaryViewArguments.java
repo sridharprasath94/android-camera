@@ -1,4 +1,4 @@
-package com.DyncoApp.ui.common;
+package com.mddicamera.ui.common;
 
 import android.os.Parcel;
 import android.os.Parcelable;

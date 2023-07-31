@@ -1,4 +1,4 @@
-package com.DyncoApp.ui.common;
+package com.mddicamera.ui.common;
 
 import static com.dynamicelement.sdk.android.misc.InstanceType.DB_SNO;
 

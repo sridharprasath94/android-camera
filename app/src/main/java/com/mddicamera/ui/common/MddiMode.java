@@ -1,4 +1,4 @@
-package com.DyncoApp.ui.common;
+package com.mddicamera.ui.common;
 
 public enum MddiMode {
     REGISTER,
