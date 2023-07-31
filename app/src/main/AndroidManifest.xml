@@ -36,6 +36,7 @@
         tools:targetApi="q">
         <activity
             android:name="com.mddicamera.ui.main.MainScreen"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,7 +48,7 @@
         <activity
             android:name="com.mddicamera.ui.cameraScan.CameraScanScreen"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="Instantiatable,LockedOrientationActivity" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"

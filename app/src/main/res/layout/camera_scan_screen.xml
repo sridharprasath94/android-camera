@@ -18,69 +18,13 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:gravity="top"
+        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:background="@drawable/gray_bg"
-            android:orientation="horizontal">
-
-
-            <ImageButton
-                android:id="@+id/flashButton"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="start"
-                android:layout_weight="0.25"
-                android:background="@drawable/gray_bg"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_flash_on"
-                tools:ignore="PrivateResource" />
-
-
-            <ImageButton
-                android:id="@+id/zoomButton"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="start"
-                android:layout_weight="0.25"
-                android:background="@drawable/gray_bg"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_zoom"
-                tools:ignore="PrivateResource" />
-
-
-            <ImageButton
-                android:id="@+id/overlayButton"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="start"
-                android:layout_weight="0.25"
-                android:background="@drawable/gray_bg"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_stack_slash"
-                tools:ignore="PrivateResource" />
-
-            <SeekBar
-                android:id="@+id/zoomSeekbar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.5"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </LinearLayout>
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,32 +45,6 @@
 
 
             <ImageView
-                android:id="@+id/uploadingImageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:layout_constraintBottom_toBottomOf="@+id/cameraView"
-                app:layout_constraintEnd_toEndOf="@+id/cameraView"
-                app:layout_constraintStart_toStartOf="@+id/cameraView"
-                app:layout_constraintTop_toTopOf="@+id/cameraView" />
-
-
-            <TextView
-                android:id="@+id/addTextView"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Adding..."
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/cameraView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/uploadingImageView" />
-
-
-            <ImageView
                 android:id="@+id/overlayImageView"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
@@ -139,130 +57,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/collectionTextView"
-            android:layout_width="300dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/backButtonLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:id="@+id/backButtonLayout1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="bottom"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <RelativeLayout
-                    android:id="@+id/buttonRelativeLayout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageButton
-                        android:id="@+id/backButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginStart="10dp"
-                        android:background="#07000000"
-                        android:src="@drawable/ic_back"
-                        android:text="@string/back"
-                        android:textAlignment="center"
-                        android:textColor="@color/cardview_light_background"
-                        android:textSize="40sp" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/gray_bg"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/verifyTextView"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:visibility="invisible"
-                android:textAlignment="center"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:indeterminate="false"
-                android:progressDrawable="@drawable/circle_progress"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/buttoncustom_blue"
-            android:text="@string/register_button"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="@color/cardview_light_background"
-            android:textSize="20sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

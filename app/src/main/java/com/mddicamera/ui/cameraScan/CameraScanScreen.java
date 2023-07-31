@@ -86,7 +86,6 @@ public class CameraScanScreen extends Fragment {
         mddiMode = MddiMode.REGISTER;
         userMode = true;
 
-        binding.collectionTextView.setText(String.format(getString(R.string.camera_scan_collection_name) + " %s", mddiCid));
         cameraScanModel.initMddi(binding.cameraView, mddiMode, mddiCid);
 
         if (mddiMode == MddiMode.REGISTER) {
@@ -99,78 +98,15 @@ public class CameraScanScreen extends Fragment {
 
         flashState = cameraScanModel.getSavedFlash();
         binding.cameraView.changeFlashState(flashState);
-        binding.flashButton.setImageResource(flashState ? R.drawable.ic_flash_on : R.drawable
-                .ic_flash_off_);
-        binding.zoomSeekbar.setProgress(binding.cameraView.getCurrentZoom());
-        binding.zoomSeekbar.setMin(1);
-        binding.zoomSeekbar.setMax(binding.cameraView.getMaxZoom());
         binding.cameraView.changeZoomLevel(binding.cameraView.getCurrentZoom());
-        binding.zoomSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                binding.cameraView.changeZoomLevel(progress);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                isZoomButtonVisible = true;
-                binding.zoomSeekbar.setProgress(seekBar.getProgress());
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                isZoomButtonVisible = false;
-                binding.zoomSeekbar.setVisibility(View.INVISIBLE);
-                binding.zoomSeekbar.setEnabled(false);
-                Toast.makeText(CameraScanScreen.this.requireContext(),
-                        getString(R.string.camera_scan_zoom_level) +
-                                " " + seekBar.getProgress() + "/" + seekBar.getMax(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
 
         binding.cameraView.setOnClickListener(v -> binding.cameraView.focusCamera());
 
 
-        binding.flashButton.setOnClickListener(view14 -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
-            binding.flashButton.setImageResource(flashState ? R.drawable.ic_flash_off_ : R.drawable
-                    .ic_flash_on);
-            binding.cameraView.changeFlashState(!flashState);
-            flashState = !flashState;
-        });
-
-        binding.overlayButton.setOnClickListener(view13 -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
-            binding.overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack_slash :
-                    R.drawable.ic_stack);
-            binding.overlayImageView.setVisibility(overlayEnabled ? View.INVISIBLE : View.VISIBLE);
-            overlayEnabled = !overlayEnabled;
-            cameraScanModel.saveOverlayValue(overlayEnabled);
-        });
-
-        binding.zoomButton.setOnClickListener(view12 -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
-            binding.zoomButton.setImageResource(isZoomButtonVisible ? R.drawable.ic_zoom : R
-                    .drawable.ic_baseline_zoom_in_24);
-            binding.zoomSeekbar.setVisibility(isZoomButtonVisible ? View.INVISIBLE : View.VISIBLE);
-            binding.zoomSeekbar.setEnabled(!isZoomButtonVisible);
-            isZoomButtonVisible = !isZoomButtonVisible;
-        });
-
-        binding.backButton.setOnClickListener(view1 -> {
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATION_MS, DEFAULT_AMPLITUDE));
-            requireActivity().finishAffinity();
-            requireActivity().finish();
-//            NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
-        });
     }
 
     private void verifyProcess() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.verifyTextView.setVisibility(View.VISIBLE);
-        binding.progressBar.setMax(NEGATIVE_SEARCH_THRESHOLD);
-
         cameraScanModel.getGetSampleImageObserver().observe(this.requireActivity(), bitmap -> {
             binding.overlayImageView.setVisibility(View.VISIBLE);
             binding.overlayImageView.setAlpha((float) 0.4);
@@ -180,11 +116,6 @@ public class CameraScanScreen extends Fragment {
             }
         });
 
-        cameraScanModel.getVerifyTextObserver().observe(this.requireActivity(),
-                text -> binding.verifyTextView.setText(text));
-
-        cameraScanModel.getServerResponseCountObserver().observe(this.requireActivity(),
-                binding.progressBar::setProgress);
 
         cameraScanModel.getPositiveResponseObserver().observe(this.requireActivity(),
                 searchResult -> {
@@ -211,30 +142,29 @@ public class CameraScanScreen extends Fragment {
         cameraScanModel.getNegativeThresholdObserver().observe(this.requireActivity(), unused -> {
             binding.cameraView.onPause();
             cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
-            binding.progressBar.setProgress(0);
+            //binding.progressBar.setProgress(0);
 //            NavigationService.CameraNav.moveToVerificationFailureView(getView(), userMode,
 //                    createCollectionSelected, mddiCid, mddiMode);
         });
     }
 
     private void registerProcess(boolean createCollectionSelected, String mddiCid) {
-        binding.registerButton.setVisibility(View.VISIBLE);
+//        binding.registerButton.setVisibility(View.VISIBLE);
         binding.overlayImageView.setVisibility(View.INVISIBLE);
-        binding.overlayButton.setVisibility(View.INVISIBLE);
-
-        binding.registerButton.setOnClickListener(view -> {
-            Bitmap addBitmap = cameraScanModel.getCurrentBitmap();
-            if (addBitmap == null) {
-                Toast.makeText(CameraScanScreen.this.requireActivity(),
-                        getString(R.string.wait_for_some_time), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Bitmap resizedBitmap = createResizedBitmap(addBitmap,
-                    cameraScanModel.getClientService().getMddiImageSize().getWidth(),
-                    cameraScanModel.getClientService().getMddiImageSize().getHeight(),
-                    Bitmap.Config.ARGB_8888);
-            addAlertDialog(resizedBitmap, mddiCid, createCollectionSelected);
-        });
+//
+//        binding.registerButton.setOnClickListener(view -> {
+//            Bitmap addBitmap = cameraScanModel.getCurrentBitmap();
+//            if (addBitmap == null) {
+//                Toast.makeText(CameraScanScreen.this.requireActivity(),
+//                        getString(R.string.wait_for_some_time), Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            Bitmap resizedBitmap = createResizedBitmap(addBitmap,
+//                    cameraScanModel.getClientService().getMddiImageSize().getWidth(),
+//                    cameraScanModel.getClientService().getMddiImageSize().getHeight(),
+//                    Bitmap.Config.ARGB_8888);
+//            addAlertDialog(resizedBitmap, mddiCid, createCollectionSelected);
+//        });
 
         cameraScanModel.getAddResponseObserver().observe(this.requireActivity(), addResult -> {
             requireActivity().runOnUiThread(() -> Toast.makeText(CameraScanScreen.this.requireActivity(),
@@ -277,17 +207,8 @@ public class CameraScanScreen extends Fragment {
      */
     @RequiresApi(api = Build.VERSION_CODES.P)
     protected void initializeLayout() {
-        binding.uploadingImageView.setBackgroundResource(R.drawable.upload_anim);
-        uploadingAnimation = (AnimationDrawable) binding.uploadingImageView.getBackground();
-        binding.uploadingImageView.setVisibility(View.INVISIBLE);
         binding.overlayImageView.setVisibility(View.INVISIBLE);
-        binding.addTextView.setVisibility(View.INVISIBLE);
-        binding.zoomSeekbar.setVisibility(View.INVISIBLE);
-
         vibrator = (Vibrator) requireActivity().getSystemService(VIBRATOR_SERVICE);
-
-        binding.overlayButton.setImageResource(overlayEnabled ? R.drawable.ic_stack :
-                R.drawable.ic_stack_slash);
         binding.overlayImageView.setVisibility(overlayEnabled ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -304,11 +225,11 @@ public class CameraScanScreen extends Fragment {
         builder.setView(showImage);
 
         builder.setPositiveButton(getString(R.string.text_yes), (dialog, option) -> {
-            requireActivity().runOnUiThread(() -> {
-                binding.addTextView.setVisibility(View.VISIBLE);
-                uploadingAnimation.start();
-                binding.uploadingImageView.setVisibility(View.VISIBLE);
-            });
+//            requireActivity().runOnUiThread(() -> {
+//                binding.addTextView.setVisibility(View.VISIBLE);
+//                uploadingAnimation.start();
+//                binding.uploadingImageView.setVisibility(View.VISIBLE);
+//            });
             cameraScanModel.createCollection(bitmap, cid, createCollection);
         });
 
@@ -322,9 +243,9 @@ public class CameraScanScreen extends Fragment {
 
     protected void handleException(Exception exception) {
         requireActivity().runOnUiThread(() -> {
-            binding.addTextView.setVisibility(View.INVISIBLE);
+//            binding.addTextView.setVisibility(View.INVISIBLE);
             uploadingAnimation.stop();
-            binding.uploadingImageView.setVisibility(View.INVISIBLE);
+//            binding.uploadingImageView.setVisibility(View.INVISIBLE);
             Toast.makeText(CameraScanScreen.this.requireActivity(),
                     exception.getMessage(), Toast.LENGTH_SHORT).show();
         });
