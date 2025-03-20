@@ -110,11 +110,14 @@ public class CameraSessionHandler {
     protected int currentRotationDegree = 0;
     protected boolean currentCapture;
     protected Image currentImage = null;
+    protected CameraConstants.CameraMode currentCameraMode;
 
-    public CameraSessionHandler(CameraView cameraView, boolean selectPrimaryCamera,
+    public CameraSessionHandler(CameraView cameraView, CameraConstants.CameraMode cameraMode, boolean selectPrimaryCamera,
                                 Integer captureDelayMs,
+
                                 CameraParameters.CameraRatioMode cameraRatioMode) {
         this.cameraView = cameraView;
+        this.currentCameraMode = cameraMode;
         this.backgroundThreads = new ArrayList<>();
         this.sharedPreferences =
                 this.cameraView.activity.getSharedPreferences(selectPrimaryCamera ?
@@ -364,7 +367,8 @@ public class CameraSessionHandler {
                                 if (this.currentImage != null) {
                                     this.currentImage = image;
                                     this.currentRotationDegree = imageRotation;
-                                    cameraView.activity.runOnUiThread(() -> this.cameraView.cameraCallback.onImageObtained(ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity)));
+                                    cameraView.activity.runOnUiThread(() -> this.cameraView.cameraCallback.onImageObtained(ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity),
+                                            null));
                                     this.currentImage.close();
                                 }
                             } catch (Exception e) {

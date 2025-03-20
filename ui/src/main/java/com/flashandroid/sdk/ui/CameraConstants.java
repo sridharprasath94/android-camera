@@ -2,5 +2,5 @@ package com.flashandroid.sdk.ui;
 
 public class CameraConstants {
 
-    protected enum CameraMode {DEFAULT_CLIENT}
+    public enum CameraMode {CAMERA_CAPTURE, BARCODE_SCAN}
 }

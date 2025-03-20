@@ -2,7 +2,7 @@ package com.flashandroid.sdk.ui;
 
 import static com.flashandroid.sdk.misc.ImageUtil.buildBitmapFromCameraImage;
 import static com.flashandroid.sdk.ui.CameraConstants.CameraMode;
-import static com.flashandroid.sdk.ui.CameraConstants.CameraMode.DEFAULT_CLIENT;
+import static com.flashandroid.sdk.ui.CameraConstants.CameraMode.CAMERA_CAPTURE;
 import static com.flashandroid.sdk.ui.CameraSessionHandler.CAMERA_REQUEST_CODE;
 import static com.flashandroid.sdk.ui.CameraSessionHandler.UPDATE_PREVIEW_DELAY;
 
@@ -37,7 +37,6 @@ public class CameraView extends ConstraintLayout {
     private CameraSessionHandler cameraSessionHandler;
     protected CameraParameters.CameraRatioMode ratioMode = null;
     protected Activity activity;
-    private Integer captureDelayMs;
     private CameraMode currentCameraMode;
 
     public CameraView(Context context) {
@@ -95,23 +94,47 @@ public class CameraView extends ConstraintLayout {
     }
 
     /**
-     * Initialize the camera (Default client) with the default settings.
+     * Initialize the camera (CAMERA_CAPTURE) with the default settings.
      * Flash will be ON by default.
      * Changing camera flash level and zoom level will be stored in the shared preferences.
      * Next time,load all the stored settings from shared preferences.
+     *
      * @param cameraParameters is the camera parameters.
-     * @param activity        is the current activity context.
+     * @param activity         is the current activity context.
      */
     public void initCameraCaptureOnly(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
+        this.currentCameraMode = CameraMode.CAMERA_CAPTURE;
         this.activity = activity;
         this.cameraCallback = cameraCallback;
         this.cameraParameters = cameraParameters;
         this.ratioMode = cameraParameters.cameraRatioMode;
-        this.captureDelayMs = this.cameraParameters.captureDelay;
-        this.initCamera(this.cameraParameters.defaultLayout,
-                this.cameraParameters.enableBarcodeScan, this.cameraParameters.enableBarcodeScan,
-                this.cameraParameters.primaryCamera,
-                this.cameraParameters.captureDelay);
+        this.initCamera(this.currentCameraMode, cameraParameters.defaultLayout,
+                cameraParameters.enableBarcodeScan,
+                cameraParameters.enableBarcodeScan,
+                cameraParameters.primaryCamera,
+                cameraParameters.captureDelay);
+    }
+
+    /**
+     * Initialize the camera (CAMERA_CAPTURE) with the default settings.
+     * Flash will be ON by default.
+     * Changing camera flash level and zoom level will be stored in the shared preferences.
+     * Next time,load all the stored settings from shared preferences.
+     *
+     * @param cameraParameters is the camera parameters.
+     * @param activity         is the current activity context.
+     */
+    public void initCameraCaptureWithBarcodeScan(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
+        this.currentCameraMode = CameraMode.BARCODE_SCAN;
+        this.activity = activity;
+        this.cameraCallback = cameraCallback;
+        this.cameraParameters = cameraParameters;
+        this.ratioMode = cameraParameters.cameraRatioMode;
+        this.initCamera(this.currentCameraMode, cameraParameters.defaultLayout,
+                cameraParameters.enableBarcodeScan,
+                cameraParameters.enableBarcodeScan,
+                cameraParameters.primaryCamera,
+                cameraParameters.captureDelay);
     }
 
     /**
@@ -124,17 +147,17 @@ public class CameraView extends ConstraintLayout {
      * @param selectPrimaryCamera is set as 'true' if the primary camera needs to be enabled.
      *                            Otherwise set as 'false'.
      */
-    private void initCamera(boolean defaultLayout,
+    private void initCamera(CameraMode cameraMode, boolean defaultLayout,
                             boolean barcodeScanMode,
                             boolean enableScanAnimation,
                             boolean selectPrimaryCamera,
                             Integer captureDelayMs) {
-        this.currentCameraMode = CameraMode.DEFAULT_CLIENT;
+        this.currentCameraMode = CameraMode.CAMERA_CAPTURE;
         this.cameraInitialized = true;
         this.enableScan = enableScanAnimation;
         this.enableLayout = defaultLayout;
         this.barcodeScanMode = barcodeScanMode;
-        this.cameraSessionHandler = new CameraSessionHandler(this, selectPrimaryCamera,
+        this.cameraSessionHandler = new CameraSessionHandler(this,cameraMode, selectPrimaryCamera,
                 captureDelayMs, this.ratioMode);
     }
 
@@ -189,7 +212,7 @@ public class CameraView extends ConstraintLayout {
      * Returns the current captured image in bitmap format
      */
     public Bitmap captureCurrentImage() {
-        if (this.currentCameraMode != DEFAULT_CLIENT) {
+        if (this.currentCameraMode != CAMERA_CAPTURE) {
             return null;
         }
         if (this.cameraSessionHandler.currentImage == null) {

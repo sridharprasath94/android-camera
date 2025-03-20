@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -24,7 +26,7 @@ public class CameraFocus {
      * @return the focus distance calibration value.
      */
     protected static int getFocusDistanceCalibration(CameraCharacteristics cameraCharacteristics) {
-        return cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_FOCUS_DISTANCE_CALIBRATION);
+        return Objects.requireNonNull(cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_FOCUS_DISTANCE_CALIBRATION));
     }
 
     /**
@@ -34,7 +36,7 @@ public class CameraFocus {
      * @return the minimum focus distance.
      */
     protected static float getMinimumFocusDistance(CameraCharacteristics cameraCharacteristics) {
-        return cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
+        return Objects.requireNonNull(cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE));
     }
 
     /**
@@ -52,7 +54,7 @@ public class CameraFocus {
         try {
             CameraCaptureSession.CaptureCallback captureCallbackHandler = new CameraCaptureSession.CaptureCallback() {
                 @Override
-                public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
 
                     if (request.getTag() == "FOCUS_TAG") {
@@ -65,15 +67,13 @@ public class CameraFocus {
                 }
 
                 @Override
-                public void onCaptureFailed(CameraCaptureSession session, CaptureRequest request, CaptureFailure failure) {
+                public void onCaptureFailed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureFailure failure) {
                     super.onCaptureFailed(session, request, failure);
                     Log.e("CAMERA_FOCUS_Manual AF failure", "Manual AF failure: " + failure);
                 }
             };
 
-            // First stop the existing repeating request.
             cameraCaptureSession.stopRepeating();
-
             // Cancel any existing AF trigger (repeated touches, etc.).
             previewCaptureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             previewCaptureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
@@ -85,7 +85,6 @@ public class CameraFocus {
             Log.d("CAMERA_FOCUS_AFTER_CAPTURE_COMPLETED", "Starting the camera trigger..");
             // We'll capture this later for resuming the preview.
             previewCaptureBuilder.setTag("FOCUS_TAG");
-
             cameraCaptureSession.capture(previewCaptureBuilder.build(), captureCallbackHandler, handler);
         } catch (CameraAccessException e) {
             Log.d("CAMERA_FOCUS_EXCEPTION", Objects.requireNonNull(e.getMessage()));
@@ -108,7 +107,6 @@ public class CameraFocus {
      *
      * @param arr The integer array
      * @param key The integer value
-     * @return
      */
     private static boolean contains(final int[] arr, final int key) {
         return Arrays.stream(arr).anyMatch(i -> i == key);
@@ -127,7 +125,7 @@ public class CameraFocus {
                                               String selectedCamera,
                                               CaptureResult captureResult) {
         if (Build.BRAND.equals("samsung") && selectedCamera.equals("2")) {
-            if (captureResult.get(CaptureResult.LENS_FOCUS_DISTANCE) != getMinimumFocusDistance(cameraCharacteristics)) {
+            if (Objects.requireNonNull(captureResult.get(CaptureResult.LENS_FOCUS_DISTANCE)) != getMinimumFocusDistance(cameraCharacteristics)) {
                 return 1;
             }
         }
@@ -141,6 +139,6 @@ public class CameraFocus {
      * @return true if there is inbuilt support for the selected camera. Otherwise false.
      */
     protected static boolean getFlashInbuiltSupport(CameraCharacteristics cameraCharacteristics) {
-        return cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+        return Objects.requireNonNull(cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE));
     }
 }

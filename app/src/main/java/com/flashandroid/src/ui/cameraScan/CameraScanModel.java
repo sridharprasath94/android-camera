@@ -66,7 +66,7 @@ public class CameraScanModel extends ViewModel {
 
         cameraView.initCameraCaptureOnly(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
             @Override
-            public void onImageObtained(Bitmap bitmap) {
+            public void onImageObtained(Bitmap bitmap, String barcodeResult) {
                 currentBitmap = bitmap;
             }
 

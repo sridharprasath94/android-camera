@@ -8,7 +8,7 @@ public interface CameraCallback {
     /**
      * @param bitmap is the actual camera image in full resolution in bitmap format.
      */
-    void onImageObtained(Bitmap bitmap);
+    void onImageObtained(Bitmap bitmap, String barcodeResult);
 
     /**
      * @param type is the type of exception.
