@@ -19,11 +19,11 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
-    namespace "com.sridharprasath.android.camera"
+    namespace "com.flashandroid"
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.sridharprasath.android.camera"
+        applicationId "com.flashandroid"
         minSdk 26
         versionCode 5
         versionName "0.0.1"
@@ -97,7 +97,6 @@ android {
 }
 
 dependencies {
-    implementation libs.dynamicelement.client.java
     implementation libs.constraintlayout
     implementation libs.appcompat
     implementation libs.glide

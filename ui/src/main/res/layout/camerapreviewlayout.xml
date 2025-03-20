@@ -16,27 +16,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.dynamicelement.sdk.android.ui.util.AutoFitTextureView
+        <com.flashandroid.sdk.ui.util.AutoFitTextureView
             android:id="@+id/preview_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
-        <com.dynamicelement.sdk.android.ui.util.AutoFitSurfaceView
+        <com.flashandroid.sdk.ui.util.AutoFitSurfaceView
             android:id="@+id/surface_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
 
-        <com.dynamicelement.sdk.android.ui.util.AutoFitImageView
+        <com.flashandroid.sdk.ui.util.AutoFitImageView
             android:id="@+id/scanImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
             android:layout_gravity="center" />
 
-        <com.dynamicelement.sdk.android.ui.util.AutoFitImageView
+        <com.flashandroid.sdk.ui.util.AutoFitImageView
             android:id="@+id/recImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -44,7 +44,7 @@
             android:layout_gravity="center" />
 
 
-        <com.dynamicelement.sdk.android.ui.util.AutoFitTextView
+        <com.flashandroid.sdk.ui.util.AutoFitTextView
             android:id="@+id/barcodeHintTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

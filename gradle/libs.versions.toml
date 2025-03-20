@@ -3,7 +3,6 @@ agp = "8.7.2"
 appcompat = "28.0.0"
 barcodeScanning = "17.3.0"
 constraintlayout = "2.2.0"
-dynamicelementClientJava = "0.0.6"
 firebaseBom = "33.6.0"
 glide = "4.12.0"
 googleServices = "4.4.2"
@@ -16,7 +15,6 @@ okhttp = "4.11.0"
 appcompat = { module = "com.android.support:appcompat-v7", version.ref = "appcompat" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
-dynamicelement-client-java = { module = "com.github.DynamicElement:dynamicelement-client-java", version.ref = "dynamicelementClientJava" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }

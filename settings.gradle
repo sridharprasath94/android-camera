@@ -19,12 +19,6 @@ pluginManagement {
         maven {
             url "https://maven.google.com"
         }
-        maven {
-            url "https://www.jitpack.io"
-            credentials {
-                username localProperties.getProperty("JITPACK_AUTH_TOKEN", System.getenv("JITPACK_AUTH_TOKEN"))
-            }
-        }
     }
 }
 
@@ -44,12 +38,6 @@ dependencyResolutionManagement {
         maven {
             url "https://maven.google.com"
         }
-        maven {
-            url "https://jitpack.io"
-            credentials {
-                username localProperties.getProperty("JITPACK_AUTH_TOKEN", System.getenv("JITPACK_AUTH_TOKEN"))
-            }
-        }
         flatDir {
             dirs 'libs'
         }
@@ -58,5 +46,4 @@ dependencyResolutionManagement {
 
 rootProject.name='AndroidCamera'
 include ':app'
-include ':logic'
 include ':ui'

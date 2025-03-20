@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dynamicelement.sdk.android.ui">
+    package="com.flashandroid.sdk.ui">
 
     <uses-permission android:name="android.permission.CAMERA" />
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gray_bg"
-    tools:context=".ui.cameraScan.CameraScanScreen"
+    tools:context=".src.ui.cameraScan.CameraScanScreen"
     tools:visibility="visible">
 
 
@@ -34,22 +34,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp">
 
-            <com.dynamicelement.sdk.android.ui.CameraView
+            <com.flashandroid.sdk.ui.CameraView
                 android:id="@+id/cameraView"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <ImageView
-                android:id="@+id/overlayImageView"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

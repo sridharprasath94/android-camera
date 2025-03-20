@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mddicamera">
+    package="com.flashandroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -16,6 +16,9 @@
     <uses-feature
         android:name="android.hardware.camera.setDisplayOrientation(90)"
         android:hardwareAccelerated="false"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false" />
 
     <supports-screens
@@ -35,8 +38,8 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
-            android:name="com.mddicamera.ui.main.MainScreen"
-            android:screenOrientation="portrait"
+            android:name="com.flashandroid.src.ui.main.MainScreen"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +49,9 @@
         </activity>
 
         <activity
-            android:name="com.mddicamera.ui.cameraScan.CameraScanScreen"
+            android:name="com.flashandroid.src.ui.cameraScan.CameraScanScreen"
             android:screenOrientation="portrait"
-            tools:ignore="Instantiatable,LockedOrientationActivity" />
+            tools:ignore="DiscouragedApi,Instantiatable,LockedOrientationActivity" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
