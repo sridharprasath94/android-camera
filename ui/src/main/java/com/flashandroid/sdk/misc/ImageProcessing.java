@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
@@ -152,7 +153,7 @@ public class ImageProcessing {
             resizeHeight = bitmap.getHeight() / 2;
         }
 
-        Bitmap barcodeBitmap = Bitmap.createBitmap(resizeWidth, resizeHeight, bitmap.getConfig());
+        Bitmap barcodeBitmap = Bitmap.createBitmap(resizeWidth, resizeHeight, Objects.requireNonNull(bitmap.getConfig()));
         cvtBarcodeBitmap2(bitmap, barcodeBitmap, blurValue);
 
         int borderWidth = resizeWidth / 3;
@@ -192,22 +193,6 @@ public class ImageProcessing {
         for (Object par : params) {
             Objects.requireNonNull(par);
         }
-    }
-
-    /**
-     * Get the user agent information required for the MDDI requests.
-     */
-    public static String getUserAgent(Context context) {
-        String applicationName = convertToCamelCase(context.getApplicationInfo().loadLabel(context.getPackageManager()).toString());
-        String applicationVersion = "";
-        try {
-            applicationVersion = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "Application:" + applicationName + "/" + applicationVersion +
-                " DeviceId:" + Build.MANUFACTURER + "/" + Build.MODEL +
-                " OperatingSystem:" + "Android" + "/" + Build.VERSION.RELEASE;
     }
 
     private static String convertToCamelCase(String input) {

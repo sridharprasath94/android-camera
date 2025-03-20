@@ -51,7 +51,7 @@ public class CameraScanScreen extends Fragment {
         cameraScanModel = new CameraScanModel(this.getContext());
         initializeLayout();
 
-        cameraScanModel.initMddi(binding.cameraView);
+        cameraScanModel.initCamera(binding.cameraView);
         cameraScanModel.getExceptionObserver().observe(this.requireActivity(), this::handleException);
 
         flashState = cameraScanModel.getSavedFlash();

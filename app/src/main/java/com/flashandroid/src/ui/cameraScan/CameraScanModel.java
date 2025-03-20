@@ -55,7 +55,7 @@ public class CameraScanModel extends ViewModel {
         editor.putBoolean(KEY_TOGGLE_FLASH, toggleFlash).apply();
     }
 
-    void initMddi(CameraView cameraView) {
+    void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
                 .enableBarcodeScan(false)
