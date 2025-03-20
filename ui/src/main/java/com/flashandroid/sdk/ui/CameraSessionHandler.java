@@ -114,7 +114,6 @@ public class CameraSessionHandler {
     private CameraZoom cameraZoom;
     private String selectedCamera;
     private flash currentFlashState;
-    protected boolean currentCapture;
     protected Bitmap currentImage = null;
     protected CameraConstants.CameraMode currentCameraMode;
 
