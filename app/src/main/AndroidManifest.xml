@@ -29,7 +29,7 @@
         android:smallScreens="true" />
 
     <application
-        android:icon="@drawable/dynamicelementlogo"
+        android:icon="@drawable/splash_image"
         android:label="@string/Label"
         android:largeHeap="true"
         android:screenOrientation="portrait"
