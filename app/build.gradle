@@ -102,7 +102,6 @@ dependencies {
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
     // For testing the github aar package, use this
-    // api project(path: ':ui')
     implementation libs.android.sdk.ui
     // For local development, use this
     // api project(path: ':ui')
