@@ -69,6 +69,13 @@ jobs:
         run: |
           echo "VERSION_STRING=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
+      # Publish to Maven Local
+      - name: Publish AAR to Maven Local
+        working-directory: ${{env.working-directory}}
+        run: ./gradlew publishBarPublicationToMavenLocal
+
+      # Publish to GitHub Packages
       - name: Publish AAR to GitHub Packages
         working-directory: ${{env.working-directory}}
-        run: ./gradlew publish
+        run: ./gradlew publishBarPublicationToGitHubPackagesRepository
+
