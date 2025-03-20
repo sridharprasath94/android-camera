@@ -101,5 +101,5 @@ dependencies {
     implementation libs.glide
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
-    api(libs.android.sdk.ui)
+    api project(path: ':ui')
 }
