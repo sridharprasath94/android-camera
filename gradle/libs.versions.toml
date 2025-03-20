@@ -15,6 +15,7 @@ gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 navigation-safe-args-gradle-plugin = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigationSafeArgsGradlePlugin" }
 navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationFragmentKtx" }
+android-sdk-ui = { module = "com.github.sridharprasath94:android-camera", version = "0.1.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

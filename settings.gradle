@@ -19,7 +19,13 @@ pluginManagement {
         maven {
             url "https://maven.google.com"
         }
-        maven { url 'https://jitpack.io' }
+        maven {
+            url 'https://jitpack.io'
+            credentials {
+                username = localProperties.getProperty("gpr.user")
+                password = localProperties.getProperty("gpr.token")
+            }
+        }
     }
 }
 
@@ -46,6 +52,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name='AndroidCamera'
+rootProject.name = 'AndroidCamera'
 include ':app'
 include ':ui'
