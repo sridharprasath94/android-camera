@@ -60,7 +60,7 @@ public class CameraScanModel extends ViewModel {
     void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
-                .updateCameraMode(CameraConstants.CameraMode.CAMERA_PREVIEW)
+                .updateCameraMode(CameraConstants.CameraMode.BARCODE_SCAN)
                 .enableDefaultLayout(false)
                 .selectPrimaryCamera(false)
                 .build();
@@ -69,7 +69,8 @@ public class CameraScanModel extends ViewModel {
             @Override
             public void onImageObtained(Bitmap bitmap, String barcodeResult) {
                 currentBitmap = bitmap;
-                Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Bitmap and barcode result " + bitmap + " " + barcodeResult);
+                Bitmap currentBitmap = cameraView.captureCurrentImage();
+                Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Bitmap and barcode result " + bitmap + " " + barcodeResult + " " + currentBitmap);
             }
 
             @Override

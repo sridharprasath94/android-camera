@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -189,15 +190,7 @@ public class CameraView extends ConstraintLayout {
      * Returns the current captured image in bitmap format
      */
     public Bitmap captureCurrentImage() {
-        if (this.currentCameraMode != CAMERA_CAPTURE) {
-            return null;
-        }
-        if (this.cameraSessionHandler.currentImage == null) {
-            return null;
-        }
-        this.cameraSessionHandler.currentCapture = true;
-        return buildBitmapFromCameraImage(this.cameraSessionHandler.currentImage,
-                this.cameraSessionHandler.currentRotationDegree, this.activity);
+        return cameraSessionHandler.currentImage;
     }
 
     /**

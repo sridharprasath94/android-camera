@@ -114,9 +114,8 @@ public class CameraSessionHandler {
     private CameraZoom cameraZoom;
     private String selectedCamera;
     private flash currentFlashState;
-    protected int currentRotationDegree = 0;
     protected boolean currentCapture;
-    protected Image currentImage = null;
+    protected Bitmap currentImage = null;
     protected CameraConstants.CameraMode currentCameraMode;
 
     public CameraSessionHandler(CameraView cameraView, CameraConstants.CameraMode cameraMode, boolean selectPrimaryCamera,
@@ -371,25 +370,23 @@ public class CameraSessionHandler {
 
                         imageProcessHandler.post(() -> {
                             try {
-                                if (this.currentCapture) {
-                                    return;
-                                }
-
-                                this.currentImage = image;
-                                this.currentRotationDegree = imageRotation;
-                                if (this.currentCameraMode == CameraConstants.CameraMode.CAMERA_PREVIEW) {
-                                    this.currentImage.close();
-                                    image.close();
-                                    return;
-                                }
+                                this.cameraView.safeToSwitchCamera = true;
                                 Bitmap bitmap = ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity);
-                                Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
-                                                this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
-                                        this.cameraView.ratioMode == RATIO_3X4 ? this.heightCropped : this.widthCropped);
-                                String barcodeResult = this.currentCameraMode == CameraConstants.CameraMode.BARCODE_SCAN ?
-                                        getBarcodeText(null, getBytesFromBitmap(croppedBitmap), imageRotation) : null;
-                                cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult));
-                                this.currentImage.close();
+                                this.currentImage = bitmap;
+                                switch (this.currentCameraMode) {
+                                    case CAMERA_PREVIEW:
+                                        break;
+                                    case BARCODE_SCAN:
+                                        Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
+                                                        this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
+                                                this.cameraView.ratioMode == RATIO_3X4 ? this.heightCropped : this.widthCropped);
+                                        String barcodeResult = getBarcodeText(null, getBytesFromBitmap(croppedBitmap), imageRotation);
+                                        cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult));
+                                        break;
+                                    case CAMERA_CAPTURE:
+                                        cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, null));
+                                        break;
+                                }
                                 image.close();
 
                             } catch (Exception e) {

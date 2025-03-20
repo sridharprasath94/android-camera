@@ -1,13 +1,10 @@
 package com.flashandroid.sdk.misc;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.os.Build;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
