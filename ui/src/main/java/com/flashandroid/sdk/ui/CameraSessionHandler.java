@@ -349,7 +349,6 @@ public class CameraSessionHandler {
                 }
                 Image image;
                 try {
-                    Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "onImageObtained: ");
                     image = imageReader.acquireLatestImage();
                 } catch (Throwable t) {
                     // No logging here, as a warning occurs if image cannot be retrieved (e.g.
@@ -378,6 +377,11 @@ public class CameraSessionHandler {
 
                                 this.currentImage = image;
                                 this.currentRotationDegree = imageRotation;
+                                if (this.currentCameraMode == CameraConstants.CameraMode.CAMERA_PREVIEW) {
+                                    this.currentImage.close();
+                                    image.close();
+                                    return;
+                                }
                                 Bitmap bitmap = ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity);
                                 Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
                                                 this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
@@ -387,6 +391,7 @@ public class CameraSessionHandler {
                                 cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult));
                                 this.currentImage.close();
                                 image.close();
+
                             } catch (Exception e) {
                                 Log.d(TAG + "_EXCEPTION_CAMERA_TASK", e.toString());
                                 throwErrorOnCallback(e);

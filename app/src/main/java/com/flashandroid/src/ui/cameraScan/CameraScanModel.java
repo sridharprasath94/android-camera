@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel;
 import com.flashandroid.R;
 import com.flashandroid.sdk.misc.exceptions.ExceptionType;
 import com.flashandroid.sdk.ui.CameraCallback;
+import com.flashandroid.sdk.ui.CameraConstants;
 import com.flashandroid.sdk.ui.CameraParameters;
 import com.flashandroid.sdk.ui.CameraView;
 
@@ -59,17 +60,16 @@ public class CameraScanModel extends ViewModel {
     void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
-                .enableBarcodeScan(true)
+                .updateCameraMode(CameraConstants.CameraMode.CAMERA_PREVIEW)
                 .enableDefaultLayout(false)
                 .selectPrimaryCamera(false)
-                .blurBeforeBarcode(true)
                 .build();
 
         cameraView.initCameraCapture(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
             @Override
             public void onImageObtained(Bitmap bitmap, String barcodeResult) {
                 currentBitmap = bitmap;
-                Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "onImageObtained: with barcode" + barcodeResult);
+                Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Bitmap and barcode result " + bitmap + " " + barcodeResult);
             }
 
             @Override

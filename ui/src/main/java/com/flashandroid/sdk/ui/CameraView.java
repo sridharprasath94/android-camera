@@ -103,14 +103,14 @@ public class CameraView extends ConstraintLayout {
      * @param activity         is the current activity context.
      */
     public void initCameraCapture(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
-        this.currentCameraMode = cameraParameters.enableBarcodeScan ? CameraMode.BARCODE_SCAN : CameraMode.CAMERA_CAPTURE;
+        this.currentCameraMode = cameraParameters.cameraMode;
         this.activity = activity;
         this.cameraCallback = cameraCallback;
         this.cameraParameters = cameraParameters;
         this.ratioMode = cameraParameters.cameraRatioMode;
         this.initCamera(this.currentCameraMode, cameraParameters.defaultLayout,
-                cameraParameters.enableBarcodeScan,
-                cameraParameters.enableBarcodeScan,
+                cameraParameters.cameraMode == CameraMode.BARCODE_SCAN,
+                cameraParameters.cameraMode == CameraMode.BARCODE_SCAN,
                 cameraParameters.primaryCamera,
                 cameraParameters.captureDelay);
     }
@@ -135,7 +135,7 @@ public class CameraView extends ConstraintLayout {
         this.enableScan = enableScanAnimation;
         this.enableLayout = defaultLayout;
         this.barcodeScanMode = barcodeScanMode;
-        this.cameraSessionHandler = new CameraSessionHandler(this,cameraMode, selectPrimaryCamera,
+        this.cameraSessionHandler = new CameraSessionHandler(this, cameraMode, selectPrimaryCamera,
                 captureDelayMs, this.ratioMode);
     }
 
