@@ -4,5 +4,5 @@
         android:state_pressed="true" />
     <item android:drawable="@drawable/rating_bg"
         android:state_focused="true" />
-    <item android:drawable="@drawable/gray_bg" />
+    <item android:drawable="@drawable/black_bg" />
 </selector>

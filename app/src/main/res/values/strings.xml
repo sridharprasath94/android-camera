@@ -1,8 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Info values -->
     <string name="todo">TODO</string>
-    <string name="Label">Dynco</string>
-    <string name="copyright_info" tools:ignore="TypographyOther">(C) 2020–2022 DynamicElement AG</string>
+    <string name="Label">Android camera</string>
     <string name="versionId">V1.1.2</string>
 
     <!-- Onboarding screen values -->

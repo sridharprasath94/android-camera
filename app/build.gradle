@@ -8,7 +8,6 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.maven.publish)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.androidx.navigation.safe.args)
 }
 
@@ -103,8 +102,4 @@ dependencies {
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
     api project(path: ':ui')
-
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.config
-    implementation(libs.firebase.storage)
 }
