@@ -19,12 +19,12 @@ pluginManagement {
         maven {
             url "https://maven.google.com"
         }
-        maven {
-            url 'https://jitpack.io'
-            credentials {
-                username = localProperties.getProperty("authToken")
-            }
-        }
+//        maven {
+//            url 'https://jitpack.io'
+//            credentials {
+//                username = localProperties.getProperty("authToken")
+//            }
+//        }
     }
 }
 
@@ -44,10 +44,10 @@ dependencyResolutionManagement {
         maven {
             url "https://maven.google.com"
         }
-        maven { url 'https://jitpack.io'
-            credentials {
-                username = localProperties.getProperty("authToken")
-            }}
+//        maven { url 'https://jitpack.io'
+//            credentials {
+//                username = localProperties.getProperty("authToken")
+//            }}
         flatDir {
             dirs 'libs'
         }
