@@ -22,7 +22,7 @@ pluginManagement {
         maven {
             url 'https://jitpack.io'
             credentials {
-                username localProperties.getProperty("authToken")
+                username = localProperties.getProperty("authToken")
             }
         }
     }
@@ -46,7 +46,7 @@ dependencyResolutionManagement {
         }
         maven { url 'https://jitpack.io'
             credentials {
-                username localProperties.getProperty("authToken")
+                username = localProperties.getProperty("authToken")
             }}
         flatDir {
             dirs 'libs'

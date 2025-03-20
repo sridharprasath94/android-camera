@@ -1,0 +1,75 @@
+name: Android Release
+
+# Trigger conditions (build on published release and also on workflow dispatch)
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      gitRef:
+        description: 'Git ref or empty for latest'
+        required: false
+        default: ''
+      version:
+        description: "Package version"
+        required: true
+
+env:
+  working-directory: .
+  android-api-level: 35
+  VERSION_STRING: ${{ github.event.inputs.version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      PUBLISH_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      JITPACK_AUTH_TOKEN: ${{ secrets.JITPACK_AUTH_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.gitRef }}
+
+      # Set up Eclipse Temurin Java 17
+      - name: Set up Eclipse Temurin Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: '3.25.1'
+      - run: cmake --version
+      - run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build
+          ninja --version
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Gradlew Build
+        working-directory: ${{env.working-directory}}
+        run: ./gradlew clean build
+
+      - name: Gradlew Test
+        working-directory: ${{env.working-directory}}
+        run: ./gradlew test --stacktrace
+
+      - name: Set git ref i.e. tag of a release as version string
+        if: github.event_name == 'release'
+        run: |
+          echo "VERSION_STRING=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Publish AAR to GitHub Packages
+        working-directory: ${{env.working-directory}}
+        run: ./gradlew publish
