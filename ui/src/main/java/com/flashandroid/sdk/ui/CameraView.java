@@ -102,30 +102,8 @@ public class CameraView extends ConstraintLayout {
      * @param cameraParameters is the camera parameters.
      * @param activity         is the current activity context.
      */
-    public void initCameraCaptureOnly(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
-        this.currentCameraMode = CameraMode.CAMERA_CAPTURE;
-        this.activity = activity;
-        this.cameraCallback = cameraCallback;
-        this.cameraParameters = cameraParameters;
-        this.ratioMode = cameraParameters.cameraRatioMode;
-        this.initCamera(this.currentCameraMode, cameraParameters.defaultLayout,
-                cameraParameters.enableBarcodeScan,
-                cameraParameters.enableBarcodeScan,
-                cameraParameters.primaryCamera,
-                cameraParameters.captureDelay);
-    }
-
-    /**
-     * Initialize the camera (CAMERA_CAPTURE) with the default settings.
-     * Flash will be ON by default.
-     * Changing camera flash level and zoom level will be stored in the shared preferences.
-     * Next time,load all the stored settings from shared preferences.
-     *
-     * @param cameraParameters is the camera parameters.
-     * @param activity         is the current activity context.
-     */
-    public void initCameraCaptureWithBarcodeScan(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
-        this.currentCameraMode = CameraMode.BARCODE_SCAN;
+    public void initCameraCapture(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
+        this.currentCameraMode = cameraParameters.enableBarcodeScan ? CameraMode.BARCODE_SCAN : CameraMode.CAMERA_CAPTURE;
         this.activity = activity;
         this.cameraCallback = cameraCallback;
         this.cameraParameters = cameraParameters;
@@ -181,8 +159,7 @@ public class CameraView extends ConstraintLayout {
                 "method. Setting up the texture view listener");
         // When resuming, if the preview is available, open the camera.
         if (binding.previewView.isAvailable()) {
-            this.initCameraCaptureOnly(this.cameraParameters, this.activity, this.cameraCallback);
-
+            this.initCameraCapture(this.cameraParameters, this.activity, this.cameraCallback);
         } else {
             cameraSessionHandler.setupTextureListener(this.ratioMode);
         }

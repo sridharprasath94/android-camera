@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -58,16 +59,17 @@ public class CameraScanModel extends ViewModel {
     void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
-                .enableBarcodeScan(false)
+                .enableBarcodeScan(true)
                 .enableDefaultLayout(false)
                 .selectPrimaryCamera(false)
                 .blurBeforeBarcode(true)
                 .build();
 
-        cameraView.initCameraCaptureOnly(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
+        cameraView.initCameraCapture(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
             @Override
             public void onImageObtained(Bitmap bitmap, String barcodeResult) {
                 currentBitmap = bitmap;
+                Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "onImageObtained: with barcode" + barcodeResult);
             }
 
             @Override

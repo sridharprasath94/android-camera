@@ -68,6 +68,8 @@ public class CameraSessionHandler {
     private static final String currentCaptureState = "currentCaptureState";
     private final static String CAMERA_SETTINGS = "sharedPrefsCameraSettings";
     private final static String CAMERA_SETTINGS_PRIMARY_CAMERA = "sharedPrefsPrimaryCamera";
+
+    private boolean captureStarted = false;
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAIT_LOCK = 1;
     private static final int STATE_FOCUSING = 1;
@@ -341,9 +343,13 @@ public class CameraSessionHandler {
             ImageReader imageReader = ImageReader.newInstance(this.widthUncropped,
                     this.heightUncropped, ImageFormat.YUV_420_888, 5);
             imageReader.setOnImageAvailableListener(reader -> {
-                this.enableImageReader = false;
+                if (!this.captureStarted) {
+                    this.enableImageReader = false;
+                    this.captureStarted = true;
+                }
                 Image image;
                 try {
+                    Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "onImageObtained: ");
                     image = imageReader.acquireLatestImage();
                 } catch (Throwable t) {
                     // No logging here, as a warning occurs if image cannot be retrieved (e.g.
@@ -369,24 +375,18 @@ public class CameraSessionHandler {
                                 if (this.currentCapture) {
                                     return;
                                 }
-                                if (this.currentImage != null) {
-                                    this.currentImage = image;
-                                    this.currentRotationDegree = imageRotation;
-                                    Bitmap bitmap = ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity);
-                                    cameraView.activity.runOnUiThread(() -> {
-                                        if (this.currentCameraMode == CameraConstants.CameraMode.BARCODE_SCAN) {
-//                                            Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
-//                                                    this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
-//                                                    this.cameraView.ratioMode == RATIO_3X4 ? this.heightCropped : this.widthCropped);
-                                            String barcodeResult = getBarcodeText(null, getBytesFromBitmap(bitmap), imageRotation);
-//                                            String barcodeResult = getBarcodeText(currentImage, null, imageRotation);
-                                            cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult);
-                                        } else {
-                                            cameraView.cameraCallback.onImageObtained(bitmap, null);
-                                        }
-                                    });
-                                    this.currentImage.close();
-                                }
+
+                                this.currentImage = image;
+                                this.currentRotationDegree = imageRotation;
+                                Bitmap bitmap = ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity);
+                                Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
+                                                this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
+                                        this.cameraView.ratioMode == RATIO_3X4 ? this.heightCropped : this.widthCropped);
+                                String barcodeResult = this.currentCameraMode == CameraConstants.CameraMode.BARCODE_SCAN ?
+                                        getBarcodeText(null, getBytesFromBitmap(croppedBitmap), imageRotation) : null;
+                                cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult));
+                                this.currentImage.close();
+                                image.close();
                             } catch (Exception e) {
                                 Log.d(TAG + "_EXCEPTION_CAMERA_TASK", e.toString());
                                 throwErrorOnCallback(e);
