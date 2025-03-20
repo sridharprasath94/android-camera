@@ -19,12 +19,13 @@ pluginManagement {
         maven {
             url "https://maven.google.com"
         }
-//        maven {
-//            url 'https://jitpack.io'
-//            credentials {
-//                username = localProperties.getProperty("authToken")
-//            }
-//        }
+        maven {
+            url = uri("https://maven.pkg.github.com/sridharprasath94/android-camera")
+            credentials {
+                username = localProperties.getProperty("gpr.user")
+                password = localProperties.getProperty("gpr.key")
+            }
+        }
     }
 }
 
@@ -50,9 +51,6 @@ dependencyResolutionManagement {
                 username = localProperties.getProperty("gpr.user")
                 password = localProperties.getProperty("gpr.key")
             }
-        }
-        flatDir {
-            dirs 'libs'
         }
     }
 }
