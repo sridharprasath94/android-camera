@@ -85,8 +85,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/sridharprasath94/android-camera")
             credentials {
-                username = localProperties.getProperty("gpr.user", "technical-user")
-                password = localProperties.getProperty("gpr.key.publish", System.getenv("PUBLISH_GITHUB_TOKEN"))
+                username = localProperties.getProperty("gpr.user")
+                password = localProperties.getProperty("gpr.key")
             }
         }
     }
