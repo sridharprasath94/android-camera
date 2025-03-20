@@ -104,6 +104,7 @@ public class CameraView extends ConstraintLayout {
      */
     public void initCameraCaptureOnly(CameraParameters cameraParameters, Activity activity, CameraCallback cameraCallback) {
         this.activity = activity;
+        this.cameraCallback = cameraCallback;
         this.cameraParameters = cameraParameters;
         this.ratioMode = cameraParameters.cameraRatioMode;
         this.captureDelayMs = this.cameraParameters.captureDelay;

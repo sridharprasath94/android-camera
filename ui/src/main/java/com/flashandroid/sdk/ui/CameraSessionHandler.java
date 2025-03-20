@@ -333,6 +333,7 @@ public class CameraSessionHandler {
             ImageReader imageReader = ImageReader.newInstance(this.widthUncropped,
                     this.heightUncropped, ImageFormat.YUV_420_888, 5);
             imageReader.setOnImageAvailableListener(reader -> {
+                this.enableImageReader = false;
                 Image image;
                 try {
                     image = imageReader.acquireLatestImage();
@@ -361,11 +362,11 @@ public class CameraSessionHandler {
                                     return;
                                 }
                                 if (this.currentImage != null) {
+                                    this.currentImage = image;
+                                    this.currentRotationDegree = imageRotation;
+                                    cameraView.activity.runOnUiThread(() -> this.cameraView.cameraCallback.onImageObtained(ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity)));
                                     this.currentImage.close();
                                 }
-                                this.currentImage = image;
-                                this.currentRotationDegree = imageRotation;
-                                this.cameraView.cameraCallback.onImageObtained(ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity));
                             } catch (Exception e) {
                                 Log.d(TAG + "_EXCEPTION_CAMERA_TASK", e.toString());
                                 throwErrorOnCallback(e);

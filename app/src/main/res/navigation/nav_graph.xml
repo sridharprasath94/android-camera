@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/cameraScanScreen"
-        android:name="com.mddicamera.ui.cameraScan.CameraScanScreen"
+        android:name="com.flashandroid.src.ui.cameraScan.CameraScanScreen"
         android:label="camera_scan_screen"
         tools:layout="@layout/camera_scan_screen">
 
@@ -20,8 +20,5 @@
         <argument
             android:name="mddi_cid"
             app:argType="string" />
-        <argument
-            android:name="mddi_mode"
-            app:argType="com.mddicamera.ui.common.MddiMode" />
     </fragment>
 </navigation>
