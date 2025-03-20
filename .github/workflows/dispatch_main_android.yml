@@ -25,7 +25,6 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       PUBLISH_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      JITPACK_AUTH_TOKEN: ${{ secrets.JITPACK_AUTH_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
