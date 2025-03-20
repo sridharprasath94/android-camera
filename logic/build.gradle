@@ -1,41 +1,39 @@
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.maven.publish)
+}
 // Optionally load a local property file, e.g. file containing secrets of user for private repositories.
 def localProperties = new Properties()
-if (rootProject.file("local.properties").exists()) {
-    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+File localPropertiesFile = new File(rootDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
 }
 
 
-apply plugin: 'com.google.protobuf'
-apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
-
 android {
-    compileSdkVersion 33
-    buildToolsVersion "30.0.3"
+    namespace 'com.dynamicelement.mddi.sdk.logic'
+    compileSdk 35
     defaultConfig {
-        minSdkVersion 26
+        minSdk 26
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
         }
+        ndkVersion '21.1.6352462'
         externalNativeBuild {
             cmake {
                 cppFlags "-frtti -fexceptions"
                 abiFilters 'arm64-v8a', 'armeabi-v7a'
                 arguments "-DOpenCV_DIR=" + getProjectDir().toString() + "/src/main/native"
+                arguments "-DCMAKE_BUILD_TYPE=Release"
             }
         }
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     externalNativeBuild {
@@ -57,17 +55,18 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
+        dataBinding true
     }
     viewBinding {
         enabled = true
     }
     buildTypes {
         debug {
-            //testCoverageEnabled = true
+            testCoverageEnabled = true
         }
         release {
             minifyEnabled false
-            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -89,47 +88,11 @@ android {
 }
 
 dependencies {
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.android.support:multidex:1.0.3'
-
-    api 'com.google.mlkit:barcode-scanning:17.1.0'
-    api 'io.grpc:grpc-android:1.53.0'
-    api 'io.grpc:grpc-okhttp:1.53.0'
-    api 'io.grpc:grpc-protobuf-lite:1.53.0'
-    api 'io.grpc:grpc-stub:1.53.0'
-
-    testImplementation 'androidx.test:runner:1.5.2'
-    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
-    testImplementation 'org.mockito:mockito-inline:5.1.1'
+    implementation libs.dynamicelement.client.java
+    implementation libs.okhttp
+    api libs.barcode.scanning
 }
 
-
-// Setting an architecture classifier when in Mac OSX for the protobuf dependencies.
-OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
-String archClassifier = os.macOsX ? ":osx-x86_64" : ""
-
-protobuf {
-    protoc { artifact = 'com.google.protobuf:protoc:3.12.4' + archClassifier }
-    plugins {
-        grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.38.0' + archClassifier
-            // CURRENT_GRPC_VERSION
-        }
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java { option 'lite' }
-            }
-            task.plugins {
-                grpc { // Options added to --grpc_out
-                    option 'lite'
-                }
-            }
-        }
-    }
-}
 
 def getArtifactId = { ->
     return "logic" // Replace with appropriate name

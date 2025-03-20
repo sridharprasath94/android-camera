@@ -1,23 +1,32 @@
-def localProperties = new Properties()
-if (rootProject.file("local.properties").exists()) {
-    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+buildscript {
+    dependencies {
+        //noinspection GradleDependency
+        classpath(libs.navigation.safe.args.gradle.plugin)
+    }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.protobuf'
-apply plugin: 'maven-publish'
-apply plugin: 'androidx.navigation.safeargs'
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.maven.publish)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.androidx.navigation.safe.args)
+}
+
+def localProperties = new Properties()
+File localPropertiesFile = new File(rootDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+}
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "30.0.3"
+    namespace "com.sridharprasath.android.camera"
+    compileSdk 35
 
     defaultConfig {
-        applicationId "com.mddicamera"
-        minSdkVersion 26
-        targetSdkVersion 33
-        versionCode 2
-        versionName "1.1"
+        applicationId "com.sridharprasath.android.camera"
+        minSdk 26
+        versionCode 5
+        versionName "0.0.1"
         multiDexEnabled true
         resConfigs "en"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -27,31 +36,28 @@ android {
         abortOnError false
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
     buildTypes {
         debug {
             debuggable = true
             //testCoverageEnabled = true
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
-            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     splits {
         abi {
             enable true
             reset()
-            include "arm64-v8a", "armeabi-v7a"
+            include "arm64-v8a", "armeabi-v7a", "x86_64"
             universalApk false
         }
     }
@@ -61,7 +67,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
+        dataBinding true
     }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -87,39 +96,16 @@ android {
     }
 }
 
-
 dependencies {
-    implementation 'com.android.support:multidex:1.0.3'
-    //noinspection GradleDependency,GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    //noinspection GradleDependency,GradleCompatible
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:design:28.0.3'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation libs.dynamicelement.client.java
+    implementation libs.constraintlayout
+    implementation libs.appcompat
+    implementation libs.glide
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+    api project(path: ':ui')
 
-    implementation 'com.google.mlkit:barcode-scanning:17.1.0'
-//    implementation 'com.dynamicelement.mddi.sdk.android:logic:1.1.1'
-//    implementation 'com.dynamicelement.sdk.android:ui:1.1.1'
-    implementation project(':logic')
-    implementation project(':ui')
-
-    implementation 'io.grpc:grpc-android:1.53.0'
-    implementation 'io.grpc:grpc-okhttp:1.53.0'
-    implementation 'io.grpc:grpc-protobuf-lite:1.53.0'
-    implementation 'io.grpc:grpc-stub:1.53.0'
-    implementation 'com.google.android.material:material:1.4.0'
-
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.0'
-
-
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-    androidTestImplementation 'androidx.test:runner:1.5.2'
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.config
+    implementation(libs.firebase.storage)
 }

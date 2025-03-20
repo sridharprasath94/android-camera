@@ -1,4 +1,62 @@
-rootProject.name='mddicamera'
+pluginManagement {
+    def localProperties = new Properties()
+
+    File localPropertiesFile = new File(rootDir, "local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(new FileInputStream(localPropertiesFile))
+    }
+
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+        maven {
+            url "https://maven.google.com"
+        }
+        maven {
+            url "https://www.jitpack.io"
+            credentials {
+                username localProperties.getProperty("JITPACK_AUTH_TOKEN", System.getenv("JITPACK_AUTH_TOKEN"))
+            }
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    def localProperties = new Properties()
+
+    // Load the local.properties file if it exists
+    File localPropertiesFile = new File(rootDir, "local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(new FileInputStream(localPropertiesFile))
+    }
+
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://maven.google.com"
+        }
+        maven {
+            url "https://jitpack.io"
+            credentials {
+                username localProperties.getProperty("JITPACK_AUTH_TOKEN", System.getenv("JITPACK_AUTH_TOKEN"))
+            }
+        }
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+rootProject.name='AndroidCamera'
 include ':app'
 include ':logic'
 include ':ui'
