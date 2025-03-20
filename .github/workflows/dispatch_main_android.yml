@@ -24,7 +24,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      PUBLISH_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PUBLISH_GITHUB_USER: ${{secrets.PUBLISH_GITHUB_USER}}
+      PUBLISH_GITHUB_TOKEN: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
