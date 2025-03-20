@@ -74,7 +74,7 @@ dependencies {
 
 
 def getArtifactId = { ->
-    return "ui" // Replace with appropriate name
+    return "ui"
 }
 
 // Publishing android library in a GitHub repository (maven repository)
@@ -83,7 +83,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/DynamicElement/dynamicelement-mddi-sdk-android")
+            url = uri("https://maven.pkg.github.com/sridharprasath94/android-camera")
             credentials {
                 username = localProperties.getProperty("gpr.user", "technical-user")
                 password = localProperties.getProperty("gpr.key.publish", System.getenv("PUBLISH_GITHUB_TOKEN"))
@@ -92,10 +92,14 @@ publishing {
     }
     publications {
         bar(MavenPublication) {
-            groupId 'com.dynamicelement.sdk.android' // Replace with group ID
+            groupId 'com.android-camera'
             artifactId getArtifactId()
             version System.getenv("VERSION_STRING")
             artifact("$buildDir/outputs/aar/ui-release.aar")
         }
     }
+}
+
+tasks.named('publishBarPublicationToMavenLocal') {
+    dependsOn ':ui:bundleReleaseAar'
 }
