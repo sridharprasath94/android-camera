@@ -19,6 +19,7 @@ pluginManagement {
         maven {
             url "https://maven.google.com"
         }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -38,6 +39,7 @@ dependencyResolutionManagement {
         maven {
             url "https://maven.google.com"
         }
+        maven { url 'https://jitpack.io' }
         flatDir {
             dirs 'libs'
         }
