@@ -1,8 +1,11 @@
 package com.flashandroid.src.ui.cameraScan;
 
 import static com.flashandroid.src.ui.common.Constants.DEFAULT_ZOOM_BUTTON_VISIBLE;
+
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +38,6 @@ public class CameraScanScreen extends Fragment {
             public void handleOnBackPressed() {
                 requireActivity().finishAffinity();
                 requireActivity().finish();
-                //  requireActivity().onBackPressed();
-//                NavigationService.CameraNav.moveToModeSelectView(getView(), userMode, createCollectionSelected, mddiCid);
             }
         });
         return binding.getRoot();
@@ -51,6 +52,8 @@ public class CameraScanScreen extends Fragment {
         initializeLayout();
 
         cameraScanModel.initCamera(binding.cameraView);
+        cameraScanModel.getStreamBitmapObserver().observe(this.requireActivity(), this::handleStreamBitmap);
+        cameraScanModel.getBarcodeResultObserver().observe(this.requireActivity(), this::handleBarcodeResult);
         cameraScanModel.getExceptionObserver().observe(this.requireActivity(), this::handleException);
 
         flashState = cameraScanModel.getSavedFlash();
@@ -85,6 +88,12 @@ public class CameraScanScreen extends Fragment {
         });
 
         this.binding.cameraView.setOnClickListener(v -> binding.cameraView.focusCamera());
+        this.binding.cameraView.setOnLongClickListener(
+                v -> {
+                    requireActivity().runOnUiThread(() -> binding.currentCaptureImage.setImageBitmap(binding.cameraView.captureCurrentImage()));
+                    return true;
+                }
+        );
 
         this.binding.flashButton.setOnClickListener(view14 -> {
             this.vibrationModel.createVibration();
@@ -120,6 +129,7 @@ public class CameraScanScreen extends Fragment {
         cameraScanModel.saveFlash(binding.cameraView.isFlashEnabled());
     }
 
+
     /**
      * Initialize the layout
      */
@@ -134,5 +144,15 @@ public class CameraScanScreen extends Fragment {
             Toast.makeText(CameraScanScreen.this.requireActivity(),
                     exception.getMessage(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    protected void handleStreamBitmap(Bitmap bitmap) {
+        Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Bitmap " + bitmap);
+        requireActivity().runOnUiThread(() -> binding.previewImage.setImageBitmap(bitmap));
+    }
+
+    protected void handleBarcodeResult(String barcodeResult) {
+        Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Barcode: " + barcodeResult);
+        requireActivity().runOnUiThread(() -> binding.barcodeText.setText(barcodeResult != null ? barcodeResult : ""));
     }
 }
