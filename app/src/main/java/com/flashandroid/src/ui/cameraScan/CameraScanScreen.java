@@ -5,6 +5,8 @@ import static com.flashandroid.src.ui.common.Constants.DEFAULT_ZOOM_BUTTON_VISIB
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,12 +90,14 @@ public class CameraScanScreen extends Fragment {
         });
 
         this.binding.cameraView.setOnClickListener(v -> binding.cameraView.focusCamera());
-        this.binding.cameraView.setOnLongClickListener(
-                v -> {
-                    requireActivity().runOnUiThread(() -> binding.currentCaptureImage.setImageBitmap(binding.cameraView.captureCurrentImage()));
-                    return true;
-                }
-        );
+        this.binding.cameraView.setOnLongClickListener(v -> {
+            requireActivity().runOnUiThread(() -> {
+                binding.currentCaptureImage.setImageBitmap(binding.cameraView.captureCurrentImage());
+                new Handler(Looper.getMainLooper()).postDelayed(() ->
+                        binding.currentCaptureImage.setImageBitmap(null), 2000);
+            });
+            return true;
+        });
 
         this.binding.flashButton.setOnClickListener(view14 -> {
             this.vibrationModel.createVibration();
@@ -140,19 +144,18 @@ public class CameraScanScreen extends Fragment {
 
 
     protected void handleException(Exception exception) {
-        requireActivity().runOnUiThread(() -> {
-            Toast.makeText(CameraScanScreen.this.requireActivity(),
-                    exception.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        Log.d("CAMERA_SCAN_SCREEN", "Exception" + exception);
+        requireActivity().runOnUiThread(() -> Toast.makeText(CameraScanScreen.this.requireActivity(),
+                exception.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     protected void handleStreamBitmap(Bitmap bitmap) {
-        Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Bitmap " + bitmap);
+        Log.d("CAMERA_SCAN_SCREEN", "Bitmap " + bitmap);
         requireActivity().runOnUiThread(() -> binding.previewImage.setImageBitmap(bitmap));
     }
 
     protected void handleBarcodeResult(String barcodeResult) {
-        Log.d("SRIDHAR_CAMERA_SCAN_MODEL", "Barcode: " + barcodeResult);
+        Log.d("CAMERA_SCAN_SCREEN", "Barcode: " + barcodeResult);
         requireActivity().runOnUiThread(() -> binding.barcodeText.setText(barcodeResult != null ? barcodeResult : ""));
     }
 }

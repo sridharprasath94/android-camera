@@ -65,10 +65,10 @@ public class CameraScanModel extends ViewModel {
     void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
-                .updateCameraMode(CameraConstants.CameraMode.CAMERA_PREVIEW)
+                .updateCameraMode(CameraConstants.CameraMode.BARCODE_SCAN)
                 .enableDefaultLayout(false)
                 .selectPrimaryCamera(false)
-                .initialiseCaptureDelay(250)
+                .initialiseCaptureDelay(500)
                 .build();
 
         cameraView.initCameraCapture(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
