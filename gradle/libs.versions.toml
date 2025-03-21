@@ -7,7 +7,7 @@ gradle = "8.9.0"
 navigationFragmentKtx = "2.8.9"
 navigationSafeArgsGradlePlugin = "2.8.9"
 barcodeScanning = "17.3.0"
-androidSdkUi = "0.1.1"
+androidSdkUi = "0.2.0"
 
 [libraries]
 appcompat = { module = "com.android.support:appcompat-v7", version.ref = "appcompat" }

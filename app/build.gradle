@@ -99,6 +99,7 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.appcompat
     implementation libs.glide
+    implementation libs.barcode.scanning
     implementation libs.navigation.fragment.ktx
     implementation libs.navigation.ui.ktx
     // For testing the github aar package, use this
