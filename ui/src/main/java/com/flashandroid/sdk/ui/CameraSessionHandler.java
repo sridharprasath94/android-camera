@@ -2,10 +2,14 @@ package com.flashandroid.sdk.ui;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.INVISIBLE;
+import static com.flashandroid.sdk.misc.BarcodeReader.getBarcodeText;
+import static com.flashandroid.sdk.misc.ImageProcessing.centerCropBitmap;
+import static com.flashandroid.sdk.misc.ImageProcessing.getBytesFromBitmap;
 import static com.flashandroid.sdk.misc.ImageUtil.cameraSensorRotation;
 import static com.flashandroid.sdk.ui.CameraFocus.getFlashInbuiltSupport;
 import static com.flashandroid.sdk.ui.CameraFocus.initialiseCameraFocus;
 import static com.flashandroid.sdk.ui.CameraFocus.setCameraFocus;
+import static com.flashandroid.sdk.ui.CameraParameters.CameraRatioMode.RATIO_3X4;
 import static com.flashandroid.sdk.ui.CameraPreviewUtil.setCameraFrameSize;
 import static com.flashandroid.sdk.ui.CameraSelect.detectMainBackLens;
 import static com.flashandroid.sdk.ui.CameraSelect.getCameraList;
@@ -18,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -61,8 +66,10 @@ public class CameraSessionHandler {
     private static final String CurrentCameraKey = "currentCamera";
     private static final String currentFlashMode = "currentFlashMode";
     private static final String currentCaptureState = "currentCaptureState";
-    private final static String CAMERA_SETTINGS_MDDI = "sharedPrefsMddiSdk";
+    private final static String CAMERA_SETTINGS = "sharedPrefsCameraSettings";
     private final static String CAMERA_SETTINGS_PRIMARY_CAMERA = "sharedPrefsPrimaryCamera";
+
+    private boolean captureStarted = false;
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAIT_LOCK = 1;
     private static final int STATE_FOCUSING = 1;
@@ -107,18 +114,19 @@ public class CameraSessionHandler {
     private CameraZoom cameraZoom;
     private String selectedCamera;
     private flash currentFlashState;
-    protected int currentRotationDegree = 0;
-    protected boolean currentCapture;
-    protected Image currentImage = null;
+    protected Bitmap currentImage = null;
+    protected CameraConstants.CameraMode currentCameraMode;
 
-    public CameraSessionHandler(CameraView cameraView, boolean selectPrimaryCamera,
+    public CameraSessionHandler(CameraView cameraView, CameraConstants.CameraMode cameraMode, boolean selectPrimaryCamera,
                                 Integer captureDelayMs,
+
                                 CameraParameters.CameraRatioMode cameraRatioMode) {
         this.cameraView = cameraView;
+        this.currentCameraMode = cameraMode;
         this.backgroundThreads = new ArrayList<>();
         this.sharedPreferences =
                 this.cameraView.activity.getSharedPreferences(selectPrimaryCamera ?
-                        CAMERA_SETTINGS_PRIMARY_CAMERA : CAMERA_SETTINGS_MDDI, MODE_PRIVATE);
+                        CAMERA_SETTINGS_PRIMARY_CAMERA : CAMERA_SETTINGS, MODE_PRIVATE);
         this.cameraManager =
                 (CameraManager) this.cameraView.activity.getSystemService(Context.CAMERA_SERVICE);
         try {
@@ -333,7 +341,10 @@ public class CameraSessionHandler {
             ImageReader imageReader = ImageReader.newInstance(this.widthUncropped,
                     this.heightUncropped, ImageFormat.YUV_420_888, 5);
             imageReader.setOnImageAvailableListener(reader -> {
-                this.enableImageReader = false;
+                if (!this.captureStarted) {
+                    this.enableImageReader = false;
+                    this.captureStarted = true;
+                }
                 Image image;
                 try {
                     image = imageReader.acquireLatestImage();
@@ -358,15 +369,25 @@ public class CameraSessionHandler {
 
                         imageProcessHandler.post(() -> {
                             try {
-                                if (this.currentCapture) {
-                                    return;
+                                this.cameraView.safeToSwitchCamera = true;
+                                Bitmap bitmap = ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity);
+                                this.currentImage = bitmap;
+                                switch (this.currentCameraMode) {
+                                    case CAMERA_PREVIEW:
+                                        break;
+                                    case BARCODE_SCAN:
+                                        Bitmap croppedBitmap = centerCropBitmap(bitmap, this.cameraView.ratioMode == RATIO_3X4 ?
+                                                        this.heightCropped : (int) (this.heightCropped * RATIO_3X4.getNumVal()),
+                                                this.cameraView.ratioMode == RATIO_3X4 ? this.heightCropped : this.widthCropped);
+                                        String barcodeResult = getBarcodeText(null, getBytesFromBitmap(croppedBitmap), imageRotation);
+                                        cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, barcodeResult));
+                                        break;
+                                    case CAMERA_CAPTURE:
+                                        cameraView.activity.runOnUiThread(() -> cameraView.cameraCallback.onImageObtained(bitmap, null));
+                                        break;
                                 }
-                                if (this.currentImage != null) {
-                                    this.currentImage = image;
-                                    this.currentRotationDegree = imageRotation;
-                                    cameraView.activity.runOnUiThread(() -> this.cameraView.cameraCallback.onImageObtained(ImageUtil.buildBitmapFromCameraImage(image, imageRotation, cameraView.activity)));
-                                    this.currentImage.close();
-                                }
+                                image.close();
+
                             } catch (Exception e) {
                                 Log.d(TAG + "_EXCEPTION_CAMERA_TASK", e.toString());
                                 throwErrorOnCallback(e);

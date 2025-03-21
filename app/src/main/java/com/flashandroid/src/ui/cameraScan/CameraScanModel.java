@@ -16,26 +16,33 @@ import androidx.lifecycle.ViewModel;
 import com.flashandroid.R;
 import com.flashandroid.sdk.misc.exceptions.ExceptionType;
 import com.flashandroid.sdk.ui.CameraCallback;
+import com.flashandroid.sdk.ui.CameraConstants;
 import com.flashandroid.sdk.ui.CameraParameters;
 import com.flashandroid.sdk.ui.CameraView;
 
 import java.lang.ref.WeakReference;
 
 public class CameraScanModel extends ViewModel {
-    public Bitmap getCurrentBitmap() {
-        return currentBitmap;
-    }
-
     public MutableLiveData<Exception> getExceptionObserver() {
         return exceptionObserver;
+    }
+
+    public MutableLiveData<Bitmap> getStreamBitmapObserver() {
+        return bitmapStreamObserver;
+    }
+
+    public MutableLiveData<String> getBarcodeResultObserver() {
+        return barcodeResultObserver;
     }
 
     private final WeakReference<Context> contextRef;
     private final String KEY_TOGGLE_FLASH;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
-    private Bitmap currentBitmap;
     private final MutableLiveData<Exception> exceptionObserver = new MutableLiveData<>();
+    private final MutableLiveData<Bitmap> bitmapStreamObserver = new MutableLiveData<>();
+
+    private final MutableLiveData<String> barcodeResultObserver = new MutableLiveData<>();
 
     public CameraScanModel(Context context) {
         this.contextRef = new WeakReference<>(context);
@@ -55,19 +62,24 @@ public class CameraScanModel extends ViewModel {
         editor.putBoolean(KEY_TOGGLE_FLASH, toggleFlash).apply();
     }
 
-    void initMddi(CameraView cameraView) {
+    void initCamera(CameraView cameraView) {
         CameraParameters cameraParameters = new CameraParameters.Builder()
                 .selectRatio(RATIO_1X1)
-                .enableBarcodeScan(false)
+                .updateCameraMode(CameraConstants.CameraMode.BARCODE_SCAN)
                 .enableDefaultLayout(false)
                 .selectPrimaryCamera(false)
-                .blurBeforeBarcode(true)
+                .initialiseCaptureDelay(500)
                 .build();
 
-        cameraView.initCameraCaptureOnly(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
+        cameraView.initCameraCapture(cameraParameters, (Activity) this.contextRef.get(), new CameraCallback() {
             @Override
-            public void onImageObtained(Bitmap bitmap) {
-                currentBitmap = bitmap;
+            public void onImageObtained(Bitmap bitmap, String barcodeResult) {
+                if(bitmap != null) {
+                    bitmapStreamObserver.postValue(bitmap);
+                }
+
+                barcodeResultObserver.postValue(barcodeResult);
+
             }
 
             @Override

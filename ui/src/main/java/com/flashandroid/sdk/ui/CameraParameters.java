@@ -2,34 +2,28 @@ package com.flashandroid.sdk.ui;
 
 public class CameraParameters {
     protected boolean defaultLayout;
-    protected boolean enableBarcodeScan;
+    protected CameraConstants.CameraMode cameraMode;
     protected boolean primaryCamera;
     protected CameraRatioMode cameraRatioMode;
     protected Integer captureDelay;
-    protected boolean blurBeforeBarcode;
-    protected boolean checkBarcodeFormat;
 
     /**
      * @param cameraParametersBuilder Build the camera parameters with camera parameters builder.
      */
     public CameraParameters(Builder cameraParametersBuilder) {
         this.defaultLayout = cameraParametersBuilder.defaultLayout;
-        this.enableBarcodeScan = cameraParametersBuilder.enableBarcodeScan;
+        this.cameraMode = cameraParametersBuilder.cameraMode;
         this.primaryCamera = cameraParametersBuilder.primaryCamera;
         this.cameraRatioMode = cameraParametersBuilder.cameraRatioMode;
         this.captureDelay = cameraParametersBuilder.captureDelay;
-        this.blurBeforeBarcode = cameraParametersBuilder.blurBeforeBarcode;
-        this.checkBarcodeFormat = cameraParametersBuilder.checkBarcodeFormat;
     }
 
     public static class Builder {
         private boolean defaultLayout = false;
-        private boolean enableBarcodeScan = false;
+        private CameraConstants.CameraMode cameraMode = CameraConstants.CameraMode.CAMERA_PREVIEW;
         private boolean primaryCamera = false;
         private CameraRatioMode cameraRatioMode = CameraRatioMode.RATIO_3X4;
         private Integer captureDelay = 1000;
-        private boolean blurBeforeBarcode = false;
-        private boolean checkBarcodeFormat = true;
 
         /**
          * Enable the default layout.
@@ -42,8 +36,8 @@ public class CameraParameters {
         /**
          * Enable the barcode scan.
          **/
-        public Builder enableBarcodeScan(boolean enableBarcodeScan) {
-            this.enableBarcodeScan = enableBarcodeScan;
+        public Builder updateCameraMode(CameraConstants.CameraMode cameraMode) {
+            this.cameraMode = cameraMode;
             return this;
         }
 
@@ -68,19 +62,6 @@ public class CameraParameters {
          **/
         public Builder initialiseCaptureDelay(Integer captureDelay) {
             this.captureDelay = captureDelay;
-            return this;
-        }
-
-        /**
-         * Initialise the option blurBeforeBarcode(To check whether image needs to be blurred for efficient barcode detection)
-         **/
-        public Builder blurBeforeBarcode(boolean blurBeforeBarcode) {
-            this.blurBeforeBarcode = blurBeforeBarcode;
-            return this;
-        }
-
-        public Builder checkBarcodeFormat(boolean checkBarcodeFormat) {
-            this.checkBarcodeFormat = checkBarcodeFormat;
             return this;
         }
 
@@ -120,13 +101,6 @@ public class CameraParameters {
         return this.captureDelay;
     }
 
-    public boolean isBlurBeforeBarcode() {
-        return this.blurBeforeBarcode;
-    }
-
-    public boolean isCheckBarcodeFormat() {
-        return this.checkBarcodeFormat;
-    }
 
 
     public void setPrimaryCamera(boolean primaryCamera) {
@@ -139,13 +113,5 @@ public class CameraParameters {
 
     public void setCaptureDelay(Integer captureDelay) {
         this.captureDelay = captureDelay;
-    }
-
-    public void setBlurBeforeBarcode(boolean blurBeforeBarcode) {
-        this.blurBeforeBarcode = blurBeforeBarcode;
-    }
-
-    public void setCheckBarcodeFormat(boolean checkBarcodeFormat) {
-        this.checkBarcodeFormat = checkBarcodeFormat;
     }
 }
