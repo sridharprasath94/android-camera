@@ -18,14 +18,56 @@
         android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:gravity="center"
+        android:gravity="top"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/black_bg"
+            android:orientation="horizontal">
 
+
+            <ImageButton
+                android:id="@+id/flashButton"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_gravity="start"
+                android:layout_weight="0.25"
+                android:background="@drawable/black_bg"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_flash_on"
+                tools:ignore="PrivateResource" />
+
+
+            <ImageButton
+                android:id="@+id/zoomButton"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_gravity="start"
+                android:layout_weight="0.25"
+                android:background="@drawable/black_bg"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_zoom"
+                tools:ignore="PrivateResource" />
+
+            <SeekBar
+                android:id="@+id/zoomSeekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cameraLayout"
